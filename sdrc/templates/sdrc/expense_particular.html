@@ -1,0 +1,228 @@
+{% extends "sdrc/base.html" %}
+{% block style %}
+{% endblock %}
+
+{% block content %}
+        <div class="col-md-12 col-sm-12 col-xs-12">
+
+    <div class="x_panel">
+                  <div class="x_title">
+                    <h2>Create Price Schedule <small>Please fill out the following</small></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+
+                  <div class="x_content">
+
+                    <br>
+                      <form class="form-horizontal form-label-left input_mask" method="POST">
+                        {% csrf_token %}
+                      <div class="form-group">
+                        <label class="control-label col-md-1">Title<span class="requird red">*</span>
+                        </label>
+                        <div class="col-md-4">
+                          <div class="col-md-12">
+                          <select class = "form-control" name="category">
+                              <option value="Personnel">Personnel</option>
+                               <option value="Fieldwork">FieldWork Expenses</option>
+                               <option value="Equipment">Office Equipment</option>
+                              <option value="Miscellaneous">Travel and Survey Cost</option>
+                              <option value="Miscellaneous">Operating Expenses</option>
+                               <option value="Miscellaneous">Miscellaneous</option>
+                          </select>
+                         </div>
+                        </div>
+                      </div><br>
+                      {{ formset.management_form }}
+                      {% for form in formset %}
+                              <div class="form-group form-row" id="expenseDetail">
+                               <div class="form-group input-group">
+                                        <label class="control-label col-md-1">Particulars<span class="requird red">*</span></label>
+                                      <div class="col-md-2" style="margin-left: 10px;">
+                                     {{ form.expenseName }}
+                          </div>
+                                    <div class="form-group input-group">
+                                        <label class="control-label col-md-1" style="margin-right: 10px;" >Quantity<span class="requird red">*</span></label>
+                                      <div class="col-md-2" style="margin-left: 0px;">
+                                      {{ form.expenseQuantity}}
+                          </div>
+                                        <div class="form-group input-group">
+                                        <label class="control-label col-md-1" style="margin-left: -10px;">Amount<span class="requird red">*</span></label>
+                                      <div class="col-md-3" style="margin-left: 30px;">
+                                          {{ form.expenseAmount}}
+                              </div>
+                                               <div class="form-group input-group">
+
+                                                      <div class="form-group input-group">
+                                                     <label class="control-label col-md-3">Subtotal<span class="requird red">*</span></label>
+                                              <div class="col-md-6">
+                                                      {{ form.expenseTotal }}
+                                              </div>
+                                           <div class="input-group-append">
+                                                <button type="button" onclick="calc()" class="add-form-row  btn-primary"><span><i class="fa fa-plus"></i></span></button>
+                                              <button type="button" class="remove-form-row btn-danger"><span><i class="fa fa-close"></i></span></button>
+                                              </div>
+                                                      </div>
+
+
+                                          </div>
+
+
+                                          </div>
+                               </div>
+                               </div>
+                               </div>
+                      {% endfor %}
+                          <div class="ln_solid"></div>
+                      <h4 class=""><b>Total Projected Expense:<span id="totalAmount"> </span></b></h4>
+                       <h4 class=""><b>Total Budget Remaning:<span id="totalBudget"></span></b></h4>
+
+                      <div class="form-group">
+                          <br>
+                          <button type="button" class="btn btn-primary">Cancel</button>
+                          <button type="submit" class="btn btn-success">Submit</button>
+                        </div>
+                      </form>
+                  </div>
+    </div>
+                  </div>
+                </div>
+
+{% endblock %}
+
+{% block script %}
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script type="text/javascript">
+function updateElementIndex(el, prefix, ndx) {
+    var id_regex = new RegExp('(' + prefix + '-\\d+)');
+    var replacement = prefix + '-' + ndx;
+    if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex, replacement));
+    if (el.id) el.id = el.id.replace(id_regex, replacement);
+    if (el.expenseName) el.expenseName = el.expenseName.replace(id_regex, replacement);
+    if (el.expenseQuantity) el.expenseQuantity = el.expenseQuantity.replace(id_regex, replacement);
+    if (el.expenseAmount) el.expenseAmount = el.expenseAmount.replace(id_regex, replacement);
+    if (el.expenseTotal) el.expenseTotal = el.expenseTotal.replace(id_regex, replacement);
+
+
+}
+function cloneMore(selector, prefix) {
+    var newElement = $(selector).clone(true);
+    var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
+
+    newElement.find(':input').each(function() {
+        var expenseName = $(this).attr('expenseName')
+        var expenseQuantity = $(this).attr('expenseQuantity')
+        var expenseAmount = $(this).attr('expenseAmount')
+        var subtotal = $(this).attr('expenseTotal')
+
+        if(expenseName) {
+            expenseName = expenseName.replace('-' + (total-1) + '-', '-' + total + '-');
+            var id = 'id_' + expenseName;
+            $(this).attr({'expenseName': expenseName, 'id': id}).val('').removeAttr('checked');
+
+        }
+        else if(expenseQuantity) {
+            expenseQuantity = expenseQuantity.replace('-' + (total-1) + '-', '-' + total + '-');
+            var id = 'id_' + expenseQuantity;
+            $(this).attr({'expenseQuantity': expenseQuantity, 'id': id}).val('').removeAttr('checked');
+
+        }
+        else if(expenseAmount) {
+            expenseAmount = expenseAmount.replace('-' + (total-1) + '-', '-' + total + '-');
+            var id = 'id_' + expenseAmount;
+
+           $(this).attr({'expenseAmount': expenseAmount, 'id': id}).val('').removeAttr('checked');
+
+        }
+
+        else if(subtotal) {
+            subtotal = subtotal.replace('-' + (total-1) + '-', '-' + total + '-');
+            var id = 'id_' + subtotal;
+           $(this).attr({'expenseTotal': subtotal, 'id': id}).val('').removeAttr('checked');
+
+        }
+console.log(this.id)
+
+})
+      alert(total)
+
+    total++;
+    $('#id_' + prefix + '-TOTAL_FORMS').val(total);
+    $(selector).after(newElement);
+    var conditionRow = $('.form-row:not(:last)');
+    conditionRow.find('.btn.add-form-row')
+    .removeClass('btn-success').addClass('btn-danger')
+    .removeClass('add-form-row').addClass('remove-form-row')
+    .html('-');
+    return false;
+
+}
+
+function deleteForm(prefix, btn) {
+    var total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+    if (total > 1){
+        btn.closest('.form-row').remove();
+        var forms = $('.form-row');
+        $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+        for (var i=0, formCount=forms.length; i<formCount; i++) {
+            $(forms.get(i)).find(':input').each(function() {
+                updateElementIndex(this, prefix, i);
+            });
+        }
+    }
+    return false;
+}
+$(document).on('click', '.add-form-row', function(e){
+    e.preventDefault();
+    cloneMore('.form-row:last', 'form');
+    return false;
+});
+$(document).on('click', '.remove-form-row', function(e){
+    e.preventDefault();
+    deleteForm('form', $(this));
+    return false;
+});
+
+
+function calc(){
+    var newWVal = 0;
+     var x = document.getElementsByClassName("form-control amount");
+          var y = document.getElementsByClassName("form-control quantity");
+        var w = document.getElementsByClassName("form-control total");
+     for (var i = 0; i<x.length; i++){
+         xVal = x[i].value;
+         yVal = y[i].value;
+         xyzVal =  xVal*yVal;
+         wVal = w[i].value = xyzVal;
+
+
+     }
+     newWVal += wVal;
+    <!-- budgetRem =  ; -->
+     document.getElementById("totalAmount").innerHTML = newWVal;
+
+   //  document.getElementById("totalBudget").innerHTML = budgetRem - newWVal;
+     alert("Total Budget Remaining:" + newWVal)
+
+
+}
+</script>
+
+
+
+{% endblock %}

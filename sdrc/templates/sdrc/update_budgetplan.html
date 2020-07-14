@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Budget Plan</title>
+</head>
+<body>
+{% extends 'sdrc/base.html' %}
+
+{% block style %}
+    <style>
+
+/* ALERT RELATED CLASS (START) */
+
+.alert-area1 {
+  max-height: 100%;
+  position: fixed;
+  bottom: 5px;
+  left: 20px;
+  right: 20px;
+}
+
+.alert-box1 {
+  font-size: 16px;
+  color: white;
+  background: rgba(243,156,18,.88);
+  line-height: 1.3em;
+  padding: 10px 15px;
+  margin: 5px 10px;
+  position: relative;
+  border-radius: 5px;
+  transition: opacity 0.5s ease-in;
+  border-color: rgba(243,156,18,.88);
+}
+
+.alert-box.hide {
+  opacity: 0;
+}
+
+.alert-close {
+  background: transparent;
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.alert-close:before,
+.alert-close:after {
+  content: '';
+  width: 15px;
+  border-top: solid 2px white;
+  position: absolute;
+  top: 5px;
+  right: -1px;
+  display: block;
+}
+
+.alert-close:before {
+  transform: rotate(45deg);
+}
+
+.alert-close:after {
+  transform: rotate(135deg);
+}
+
+.alert-close:hover:before,
+.alert-close:hover:after {
+  border-top: solid 2px #d8d8d8;
+}
+
+@media (max-width: 767px) and (min-width: 481px) {
+  .alert-area1 {
+    left: 100px;
+    right: 100px;
+  }
+}
+
+@media (min-width: 768px) {
+  .alert-area1 {
+    width: 350px;
+    left: auto;
+    right: 0;
+  }
+}
+
+/* ALERT RELATED CLASS (END) */
+
+.alert-message-container {
+  text-align: center;
+  line-height: 2.5em;
+  margin-top: 50px;
+}
+
+.alert-message-box {
+  font-size: 20px;
+  width: 300px;
+  border: solid 1px #444;
+  padding: 10px 15px;
+  outline: none;
+  transition: box-shadow 0.1s;
+}
+
+.alert-message-box:focus {
+  box-shadow: 0 0 15px 2px #888;
+}
+
+.alert-message-button {
+  font-size: 18px;
+  color: white;
+  background: #14b9ff;
+  width: 250px;
+  border: solid 1px #14b9ff;
+  padding: 10px 20px;
+  margin-top: 5px;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.1s;
+}
+
+.alert-message-button:hover,
+.alert-message-button:focus,
+.alert-message-button:active {
+  background: #7dd8ff;
+}
+
+
+/* ALERT RELATED CLASS (END) */
+
+.alert-message-container {
+  text-align: center;
+  line-height: 2.5em;
+  margin-top: 50px;
+}
+
+.alert-message-box {
+  font-size: 20px;
+  width: 300px;
+  border: solid 1px #444;
+  padding: 10px 15px;
+  outline: none;
+  transition: box-shadow 0.1s;
+}
+
+.alert-message-box:focus {
+  box-shadow: 0 0 15px 2px #888;
+}
+
+.alert-message-button {
+  font-size: 18px;
+  color: white;
+  background: #14b9ff;
+  width: 250px;
+  border: solid 1px #14b9ff;
+  padding: 10px 20px;
+  margin-top: 5px;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.1s;
+}
+
+.alert-message-button:hover,
+.alert-message-button:focus,
+.alert-message-button:active {
+  background: #7dd8ff;
+}
+
+
+/* ALERT RELATED CLASS (START) */
+
+.alert-area {
+  max-height: 100%;
+  position: fixed;
+  bottom: 5px;
+  left: 20px;
+  right: 20px;
+}
+
+.alert-box {
+  font-size: 16px;
+  color: white;
+  background: rgba(231,76,60,.88);
+  line-height: 1.3em;
+  padding: 10px 15px;
+  margin: 5px 10px;
+  position: relative;
+  border-radius: 5px;
+  transition: opacity 0.5s ease-in;
+  border-color:rgba(231,76,60,.88);
+}
+
+.alert-box.hide {
+  opacity: 0;
+}
+
+.alert-close {
+  background: transparent;
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.alert-close:before,
+.alert-close:after {
+  content: '';
+  width: 15px;
+  border-top: solid 2px white;
+  position: absolute;
+  top: 5px;
+  right: -1px;
+  display: block;
+}
+
+.alert-close:before {
+  transform: rotate(45deg);
+}
+
+.alert-close:after {
+  transform: rotate(135deg);
+}
+
+.alert-close:hover:before,
+.alert-close:hover:after {
+  border-top: solid 2px #d8d8d8;
+}
+
+@media (max-width: 767px) and (min-width: 481px) {
+  .alert-area {
+    left: 100px;
+    right: 100px;
+  }
+}
+
+@media (min-width: 768px) {
+  .alert-area {
+    width: 350px;
+    left: auto;
+    right: 0;
+  }
+}
+
+/* ALERT RELATED CLASS (END) */
+
+.alert-message-container {
+  text-align: center;
+  line-height: 2.5em;
+  margin-top: 50px;
+}
+
+.alert-message-box {
+  font-size: 20px;
+  width: 300px;
+  border: solid 1px #444;
+  padding: 10px 15px;
+  outline: none;
+  transition: box-shadow 0.1s;
+}
+
+.alert-message-box:focus {
+  box-shadow: 0 0 15px 2px #888;
+}
+
+.alert-message-button {
+  font-size: 18px;
+  color: white;
+  background: #14b9ff;
+  width: 250px;
+  border: solid 1px #14b9ff;
+  padding: 10px 20px;
+  margin-top: 5px;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.1s;
+}
+
+.alert-message-button:hover,
+.alert-message-button:focus,
+.alert-message-button:active {
+  background: #7dd8ff;
+}
+
+
+
+
+    </style>
+{% endblock %}
+{% block content %}
+
+{% load humanize %}
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <div class="x_panel">
+
+                  <div class="x_title">
+                    <h2>Update Budget Plan </h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+
+
+
+    <br>
+  <h1> Project Name: {{ projects.projectTitle }}</h1>
+        <br>
+        <!-- display of budget and expense -->
+         <div class="animated flipInY col-lg-4 col-md-3 col-sm-6 col-xs-12">
+<div class="tile-stats">
+    <h3 class="projectBudgetTitle" id="projectBudgetTitle">Total Project Budget</h3>
+<div class="count projectBudgetAmount" id="projectBudgetAmount">P {{projects.projectCost|intcomma}}</div>
+
+
+</div>
+</div>
+
+         <div class="animated flipInY col-lg-4 col-md-3 col-sm-6 col-xs-12">
+<div class="tile-stats">
+    <h3>Total Projected Expenses</h3>
+{#    <input style="display:none" name="totalExpense" id="totalExpense">#}
+<div class="count" id="projectedExpense">P {{project.projectCost|intcomma}}</div><span><p class="red"><b>+ administrative cost</b></p></span>
+
+
+</div>
+</div>
+ <!--end display of budget and expense -->
+
+        <!-- page content -->
+        <div class="x_content">
+     <hr>
+        <form id="form" class="form-horizontal form-label-left input_mask" method="POST">
+            {% csrf_token %}
+
+            <!-- PERSONNEL PANEL -->
+
+                 <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+       <div class="panel-title">
+            <h4 style="color:#4E5D73;">
+                <input type="text" id="personnel_category" value="Personnel" style="display:none">
+                <b style="display: inline-block;" >PROFESSIONAL FEES</b>
+                <b  style="display: inline-block;position: relative;margin-left: 40%">Budget Allocated: P <span id="personnelAlloc">
+                    {% for c in category %}
+
+                    {% endfor %}
+
+                </span></b>
+
+                <hr>
+
+            </h4>
+
+
+
+       </div>
+
+      </div>
+      <div>
+          <br>
+           <table class="table table-striped" >
+                      <thead>
+                        <tr>
+                               <th></th>
+                          <th>Personnel</th>
+                          <th>Pax</th>
+                            <th>Unit Rate</th>
+                            <th>Subtotal</th>
+                                 <th>Last Update</th>
+
+
+
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for c in category %}
+                          {% if c.category == 'Personnel' %}
+                              <tr>
+                               <td> <input  id="category_id" name="category_id{{ c.id }}" style="display:none" value={{ c.id }}></td>
+                              <td><input class="form-control" type="text" name="title{{ c.id }}" value="{{ c.title }}"></td>
+                              <td><input class="form-control" id="personnelquantity{{ c.id }}" onchange="getPersonnelSubtotal({{ c.id }})"  type="number" name="pax{{ c.id }}" value="{{ c.quantity }}"></td>
+                              <td><input class="form-control " id="personnelamount{{ c.id }}" onchange="getPersonnelSubtotal({{ c.id }})" type="number" name="amount{{ c.id }}" value="{{ c.amount }}"></td>
+                              <td><input class="form-control " id="personnelsubtotal{{ c.id }}"  readonly  type="number" name="subtotal{{ c.id }}" value="{{ c.subtotal }}"></td>
+                              <td>{{ c.updated }}</td>
+                              </tr>
+                          {% endif %}
+                      {% endfor %}
+
+                      </tbody>
+                    </table>
+
+
+      </div>
+
+    </div>
+  </div>
+
+            <!-- TRAVEL AND SURVEY PANEL -->
+              <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+       <div class="panel-title">
+            <h4 style="color:#4E5D73;">
+                <b style="display: inline-block;" >TRAVEL AND SURVEY COST</b>
+
+
+                <b  style="display: inline-block;position: relative;margin-left: 40%">Budget Allocated: P <span id="fieldAlloc"></span></b>
+
+                <hr>
+            </h4>
+
+
+
+       </div>
+
+      </div>
+      <div>
+
+            <table class="table table-striped" >
+                      <thead>
+                        <tr>
+                            <th></th>
+                          <th>Particulars</th>
+                          <th>Pax</th>
+                            <th>Unit Rate</th>
+                            <th>Total</th>
+                                 <th>Last Update</th>
+
+
+
+                        </tr>
+                      </thead>
+
+                 {% for c in category %}
+                          {% if c.category == 'Travel and Survey Cost' %}
+                              <tr>
+                              <td> <input  id="category_id" name="category_id{{ c.id }}" style="display: none" value={{ c.id }}></td>
+                              <td><input class="form-control" type="text" name="title{{ c.id }}" value="{{ c.title }}"></td>
+                              <td><input class="form-control" id="travelquantity{{ c.id }}" onchange="getTravelSubtotal({{ c.id }})"  type="number" name="pax{{ c.id }}" value="{{ c.quantity }}"></td>
+                              <td><input class="form-control"  id="travelamount{{ c.id }}" onchange="getTravelSubtotal({{ c.id }})" type="number" name="amount{{ c.id }}" value="{{ c.amount }}"></td>
+                              <td><input class="form-control"  id="travelsubtotal{{ c.id }}" type="number" name="subtotal{{ c.id }}" value="{{ c.subtotal }}"></td>
+                              <td> manag{{ c.updated }}</td>
+                              </tr>
+                          {% endif %}
+                      {% endfor %}
+                    </table>
+
+
+
+      </div>
+
+    </div>
+  </div>
+
+
+            <!-- OPERATING PANEL -->
+            <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+       <div class="panel-title">
+            <h4 style="color:#4E5D73;">
+                <input type="text" id="operating_category" value="Operating Expense"  style="display:none">
+                <b style="display: inline-block;" >OPERATING EXPENSE</b>
+                <b  style="display: inline-block;position: relative;margin-left: 40%">Budget Allocated: P <span id="operatingAlloc">0.00</span></b>
+                <hr>
+
+                <br><br>
+
+            </h4>
+
+
+
+       </div>
+
+      </div>
+      <div>
+          <br>
+
+
+                <table class="table table-striped">
+                      <thead>
+                        <tr>
+                            <th></th>
+                          <th>Particulars</th>
+                          <th>Pax</th>
+                            <th>Unit Rate</th>
+                            <th>Total</th>
+                             <th>Last Update</th>
+
+                        </tr>
+                      </thead>
+
+
+                      {% for c in category %}
+                          {% if c.category == 'Operating Expense' %}
+                              <tr>
+                               <td> <input  id="category_id" name="category_id{{ c.id }}" style="display:none" value={{ c.id }}></td>
+                              <td><input class="form-control" type="text" name="title{{ c.id }}" value="{{ c.title }}"></td>
+                              <td><input class="form-control" id="operatingquantity{{ c.id }}" onchange="getOperatingSubtotal({{ c.id }})"  type="number" name="pax{{ c.id }}" value="{{ c.quantity }}"></td>
+                              <td><input class="form-control"  id="operatingamount{{ c.id }}" onchange="getOperatingSubtotal({{ c.id }})" type="number" name="amount{{ c.id }}" value="{{ c.amount }}"></td>
+                              <td><input class="form-control"  id="operatingsubtotal{{ c.id }}" type="number" name="subtotal{{ c.id }}" value="{{ c.subtotal }}"></td>
+                              <td> {{ c.updated }}</td>
+                              </tr>
+                          {% endif %}
+                      {% endfor %}
+
+                    </table>
+
+      </div>
+
+    </div>
+  </div>
+
+            <!-- OTHERS PANEL -->
+            <!-- ADMINISTRATIVE EXPENSE PANEL -->
+             <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+       <div class="panel-title">
+            <h4 style="color:#4E5D73;">
+                <input style="display:none" id="adminCost" name="adminCost">
+                <b style="display: inline-block;" >ADMINISTRATIVE COST</b>
+
+            </h4>
+
+
+
+       </div>
+
+      </div>
+      <div>
+
+          <table class="table table-striped" id="admintable">
+                      <thead>
+
+                      </thead>
+                      <tbody>
+                      <tr id="adminrow">
+                          <td class="red"><b>20% of Total Projected Expense</b></td>
+                          <b><td class="red"></td></b>
+
+                      </tr>
+
+                      </tbody>
+                    </table>
+
+
+      </div>
+
+    </div>
+  </div>
+         <button class="btn btn-warning" type="submit">UPDATE</button>
+
+
+        </form>
+    </div>
+    </div>
+
+  <!-- alert popup -->
+<div id="alert-area" class="alert-area"></div>
+<div id="alert-area1" class="alert-area1"></div>
+        <!-- end of page content -->
+    <script>
+
+    function getPersonnelSubtotal(id){
+        var quantity = document.getElementById("personnelquantity"+id).value
+        var amount = document.getElementById("personnelamount"+id).value
+        document.getElementById("personnelsubtotal"+id).value= quantity*amount
+
+
+
+    }
+
+    function getTravelSubtotal(id){
+        var quantity = document.getElementById("travelquantity"+id).value
+        var amount = document.getElementById("travelamount"+id).value
+        document.getElementById("travelsubtotal"+id).value= quantity*amount
+
+
+
+    }
+    function getOperatingSubtotal(id){
+        var quantity = document.getElementById("operatingquantity"+id).value
+        var amount = document.getElementById("operatingamount"+id).value
+        document.getElementById("operatingsubtotal"+id).value= quantity*amount
+
+
+
+    }
+
+
+
+
+    </script>
+{% endblock %}
+
+</body>
+</html>

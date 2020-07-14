@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>jQuery Dynamic Forms Plugin Example</title>
+    <link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/4.1.3/darkly/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="js/dynamic-form.js"></script>
+    <style>
+
+    .container { margin: 150px auto; }
+    h1 { margin-bottom: 50px; }
+  </style>
+</head>
+<body><div id="jquery-script-menu">
+<div class="jquery-script-center">
+<ul>
+<li><a href="https://www.jqueryscript.net/form/dynamic-forms-fields.html">Download This Plugin</a></li>
+<li><a href="https://www.jqueryscript.net/">Back To jQueryScript.Net</a></li>
+</ul>
+<div class="jquery-script-ads"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-2783044520727903";
+/* jQuery_demo */
+google_ad_slot = "2780937993";
+google_ad_width = 728;
+google_ad_height = 90;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+<div class="jquery-script-clear"></div>
+</div>
+</div>
+    <div class="container">
+        <h1>jQuery Dynamic Forms Plugin Example</h1>
+        <form method="POST">
+	        <div class="form-group" id="dynamic_form">
+                <div class="row">
+	                <div class="col-md-3">
+	                    <input type="text" name="p_name" id="p_name" placeholder="Enter Product Name" class="form-control">
+	                </div>
+	                <div class="col-md-3">
+	                    <input type="text" class="form-control" name="quantity" id="quantity" placeholder="Enter Product Quantity" onkeyup = "if (/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')";>
+	                </div>
+	                <div class="col-md-4">
+	                    <textarea class="form-control" rows="1" name="remarks" placeholder="Enter Remarks" id="remarks"></textarea>
+	                </div>
+	                <div class="button-group">
+	                    <a href="javascript:void(0)" class="btn btn-primary" id="plus5">Add More</a>
+	                    <a href="javascript:void(0)" class="btn btn-danger" id="minus5">Remove</a>
+	                </div>
+	            </div>
+            </div>
+			<button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+    <script>
+        $(document).ready(function() {
+        	var dynamic_form =  $("#dynamic_form").dynamicForm("#dynamic_form","#plus5", "#minus5", {
+		        limit:10,
+		        formPrefix : "dynamic_form",
+		        normalizeFullForm : false
+		    });
+
+        	dynamic_form.inject([{p_name: 'Hemant',quantity: '123',remarks: 'testing remark'},{p_name: 'Harshal',quantity: '123',remarks: 'testing remark'}]);
+
+		    $("#dynamic_form #minus5").on('click', function(){
+		    	var initDynamicId = $(this).closest('#dynamic_form').parent().find("[id^='dynamic_form']").length;
+		    	if (initDynamicId === 2) {
+		    		$(this).closest('#dynamic_form').next().find('#minus5').hide();
+		    	}
+		    	$(this).closest('#dynamic_form').remove();
+		    });
+
+		    $('form').on('submit', function(event){
+	        	var values = {};
+				$.each($('form').serializeArray(), function(i, field) {
+				    values[field.name] = field.value;
+				});
+				console.log(values)
+        		event.preventDefault();
+        	})
+        });
+    </script>
+</body><script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36251023-1']);
+  _gaq.push(['_setDomainName', 'jqueryscript.net']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</html>

@@ -1,0 +1,88 @@
+<html>
+<head>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed|Poppins" rel="stylesheet">
+<!------ Include the above in your HEAD tag ---------->
+
+    <style>
+        @import url("//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css");
+        .login-block{
+            background: #DE6262;  /* fallback for old browsers */
+        background: -webkit-linear-gradient(to bottom, #336B87, #90AFC5);  /* Chrome 10-25, Safari 5.1-6 */
+        background: linear-gradient(to bottom, #336B87, #90AFC5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        float:left;
+        width:100%;
+        padding : 50px 0;
+        }
+        .banner-sec{background:url(https://images.unsplash.com/photo-1521709986901-579827f9924a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1098&q=80)  no-repeat left bottom; background-size:cover; min-height:500px; border-radius: 0 10px 10px 0; padding:0;}
+        .container{background:#fff; border-radius: 10px; box-shadow:15px 20px 0px rgba(0,0,0,0.1);}
+        .carousel-inner{border-radius:0 10px 10px 0;}
+        .carousel-caption{text-align:left; left:5%;}
+        .login-sec{padding: 50px 30px; position:relative;}
+        .login-sec .copy-text{position:absolute; width:80%; bottom:20px; font-size:13px; text-align:center;}
+        .login-sec .copy-text i{color:#FEB58A;}
+        .login-sec .copy-text a{color:#E36262;}
+        .login-sec h2{margin-bottom:30px; font-weight:800; font-size:30px; color: #336B87; font-family: 'Poppins', sans-serif;}
+        .login-sec h2:after{content:" "; width:100px; height:5px; background: #90AFC5; display:block; margin-top:20px; border-radius:3px; margin-left:auto;margin-right:auto}
+        .btn-login{background: #336B87; color:#fff; font-weight:600;}
+        .banner-text{width:100%; position:absolute; bottom:40px; padding-left:20px; padding-top: 10px; background: white;}
+        .banner-text h2{color:#336B87; font-weight:600; font-family: 'Poppins', sans-serif;}
+        .banner-text h2:after{content:" "; width:100px; height:5px; background:#336B87; display:block; margin-top:20px; border-radius:3px;}
+        .banner-text p{color:black; font-family: 'Poppins', sans-serif; font-size: 18px;}
+    </style>
+</head>
+<body>
+        <section class="login-block">
+            <div class="container">
+            <div class="row">
+                <div class="col-md-4 login-sec">
+                    <h2 class="text-center">Login</h2>
+                    <form class="login-form" method="post">
+                        {% csrf_token %}
+          <div class="form-group">
+              <div class="row">
+            <label for="exampleInputEmail1" class="text-uppercase col-md-4"> {{ form.username.label }}</label>
+              <div class="col-md-8">{{ form.username }}</div>
+                </div>
+          </div>
+          <div class="form-group">
+              <div class="row">
+            <label for="exampleInputPassword1" class="text-uppercase col-md-4">{{ form.password.label }}</label>
+              <div class="col-md-8">{{ form.password }}</div>
+                  </div>
+          </div>
+
+
+            <div class="form-check">
+            <label class="form-check-label">
+             <small> <a href="/password_reset/" style="margin-left: -20px;">Forgot Password</a></small>
+            </label>
+            <button type="submit" class="btn btn-login float-right">Submit</button>
+          </div>
+
+        </form>
+                </div>
+                <div class="col-md-8 banner-sec">
+                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+
+                    <div class="carousel-inner" role="listbox">
+            <div class="carousel-item active">
+              <img src="https://images.unsplash.com/photo-1537781533839-18be21dba491?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" alt="First slide" style="height: 500px; width: 800px;">
+              <div class="carousel-caption d-none d-md-block">
+                <div class="banner-text">
+                    <h2>Project Management System for SDRC Research</h2>
+                    <p></p>
+                </div>
+          </div>
+            </div>
+                    </div>
+
+                </div>
+            </div>
+            </div>
+            </div>
+        </section>
+</body>
+</html>

@@ -1,0 +1,70 @@
+{% extends 'sdrc/base.html' %}
+
+{% block content %}
+
+    <div class="x_panel" style="height: 570px;">
+        <div class="x_title">
+            <h2>Upload Final Report</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i
+                            class="fa fa-wrench"></i></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Settings 1</a>
+                        </li>
+                        <li><a href="#">Settings 2</a>
+                        </li>
+                    </ul>
+                </li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+
+
+        <div class="x_content">
+
+            {% if tasks and incidents %}
+                <h4>You still have {{ tasks|length }} unfinished task/s and {{ incidents|length }} unresolved issue/s. You are only allowed to upload the final report once all issues has been solved and all tasks has been completed.</h4>
+            {% elif incidents %}
+                <h4>You still have {{ incidents|length }} unresolved issue/s. You are only allowed to upload the final report once all issues has been solved.</h4>
+            {% elif tasks %}
+                <h4>You still have {{ tasks|length }} unfinished tasks. You are only allowed to upload the final report once all tasks has been completed.</h4>
+            {% else %}
+                {% if project.finalReport %}
+                    <h4>Final Report: <a href="{{ project.finalReport.url }}">File</a></h4>
+                    <h4>Status: {{ project.status }}</h4>
+                    <h4>Remarks: {{ project.remarks }}</h4>
+
+                {% else %}
+                    <h4>Upload final report here for approval of funding agency. Status of final report will be sent to your email. </h4>
+
+                    <form method="POST" enctype="multipart/form-data" onsubmit="return submitAlert(event)">
+                        {% csrf_token %}
+                        <div class="form-group" style="margin-top: 40px; margin-left: 320px;">
+
+
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                <div class="btn-group">
+                                    <input type="file" required=required name="finalReport" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-md" style="margin-top: 20px;margin-left: 350px;">Upload</button>
+                    </form>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    <script>
+        function submitAlert(e){
+            confirm('Final report successfully uploaded!')
+
+
+
+        };
+    </script>
+{% endblock %}

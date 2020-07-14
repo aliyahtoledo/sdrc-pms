@@ -1,0 +1,383 @@
+ {% extends 'sdrc/base.html' %}
+
+ {% block content %}
+        <!-- page content -->
+
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                  <h3><b>FORM FOR APPOINTMENT OF PROJECT/RESEARCH STAFF</b></h3></b><br>
+              </div>
+
+
+            </div>
+            <div class="clearfix"></div>
+
+            <div class="row">
+
+              <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_title">
+
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+
+
+                    <!-- Smart Wizard -->
+
+                    <div id="wizard" class="form_wizard wizard_horizontal">
+                      <ul class="wizard_steps">
+                        <li>
+                          <a href="#step-1">
+                            <span class="step_no">1</span>
+                            <span class="step_descr">
+                                              Step 1<br />
+                                              <small>Personal Information</small>
+                                          </span>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#step-2">
+                            <span class="step_no">2</span>
+                            <span class="step_descr">
+                                              Step 2<br />
+                                              <small>Hiring Details</small>
+                                          </span>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#step-3">
+                            <span class="step_no">3</span>
+                            <span class="step_descr">
+                                              Step 3<br />
+                                              <small>Project Details</small>
+                                          </span>
+                          </a>
+                        </li>
+
+                      </ul>
+                      <div id="step-1">
+					    <h3 style="text-align:center; margin-bottom: 20px;">Personal Information</h3>
+                    <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">First Name <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" required="required" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                        <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Middle Name
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                        <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Last Name<span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" required="required" class="form-control col-md-7 col-xs-12">
+                        </div>
+                        </div>
+                          <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Citizenship
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" required ="required" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                            <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Home Address
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" required ="required" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                         <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Email Address
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" required ="required" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                         <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Contact <Number></Number>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" required ="required" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                          <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Date of Birth</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class='input-group date' id='myDatepicker2'>
+                            <input type='text' class="form-control" />
+                            <span class="input-group-addon">
+                               <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                            </div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">College/Department <small>(For DLSU Faculty only)</small>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                       <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">ID Number
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="col-md-6 col-sm-6 col-xs-12" style="margin-top: 5px;">
+                            <input type="radio" class="flat" name="gender" id="genderM" value="M" checked="" required />
+                                <label style="margin-left: 5px; margin-right: 10px;">DLSU</label>
+                            <input type="radio" class="flat" name="gender" id="genderF" value="F" />
+                                <label style="margin-left: 5px;">Other Institution</label>
+                             </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="first-name" style="width: 215px; margin-top: 5px;" class="form-control">
+                            </div>
+                        </div>
+                      </div>
+                        <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Tax Identification Number(TIN)
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                         <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">SSS Number
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                         <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">PAG IBIG Number
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                         <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Philhealth Number
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                    </form>
+
+					  </div>
+                      <div id="step-2">
+                         <h3 style="text-align:center; margin-top: 20px; margin-bottom: 20px;">Hiring Details</h3>
+                   <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+					 <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Type of Request
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="radio" class="flat" name="request" id="genderM" value="M" checked="" onclick="noCheck();"  />
+                                <label style="margin-left: 5px; margin-right: 10px;">New </label>
+                            <input type="radio" class="flat" name="request" id="genderF" value="F" onclick="noCheck();"  />
+                                <label style="margin-left: 5px; margin-right: 10px;">Renewal of Contract</label>
+                         </div>
+                         <div class="col-md-6 col-sm-6 col-xs-12" style="margin-top: 5px;">
+                                <div class="col-md-7 col-sm-7 col-xs-12"  style="margin-left: -10px;">
+                                    <input type="radio" class="flat" name="request" id="replacementcheck" onclick="yesCheck();" value="M" checked="" required />
+                                    <label style="margin-left: 5px; margin-right: 10px;">Replacement For</label>
+                                </div>
+                                 <div class="col-md-5 col-sm-5 col-xs-12" id="replacementfield">
+                                    <input type="text" id="first-name" class="form-control" style="width: 240px; margin-left: -110px;">
+                                 </div>
+                         </div>
+                        </div>
+                       <div class="form-group" style="margin-top: 20px;">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Classification
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="radio" class="flat" name="classification" id="genderM" value="M" checked="" required />
+                                <label style="margin-left: 5px; margin-right: 10px;">Project Assistant</label>
+                            <input type="radio" class="flat" name="classification" id="genderF" value="F" />
+                                <label style="margin-left: 5px; margin-right: 10px;">Research Assistant</label>
+                                <input type="radio" class="flat" name="classification" id="genderM" value="M" checked="" required />
+                                <label style="margin-left: 5px; margin-right: 10px;">Encoder</label>
+                         </div>
+                         <div class ="col-md-6 col-sm-6 col-xs-12" style="margin-top: 5px;">
+                                <div class="col-md-7 col-sm-7 col-xs-12"  style="margin-left: -10px;">
+                                    <input type="radio" class="flat" name="classification" id="genderM" value="M" checked="" required />
+                                    <label style="margin-left: 5px; margin-right: 10px;">Transcriber</label>
+                                    <input type="radio" class="flat" name="classification" id="genderM" value="M" checked="" required />
+                                    <label style="margin-left: 5px; margin-right: 10px;">Others</label>
+                                </div>
+                                 <div class="col-md-5 col-sm-5 col-xs-12">
+                                    <input type="text" id="first-name" class="form-control" style="width: 200px; margin-left: -70px;">
+                                 </div>
+                         </div>
+                        </div>
+                        <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Position and rate/fee/salary according to the most recent contract
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" class="form-control col-md-7 col-xs-12" style="margin-top: 10px;">
+                        </div>
+                      </div>
+                        <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Personnel status pursuant to the most recent contract
+                        </label>
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                          <input type="radio" class="flat" name="personnel" id="genderM" value="M" checked="" required />
+                                <label style="margin-left: 5px; margin-right: 10px;">Output-based Independent Contractor</label>
+                            <input type="radio" class="flat" name="personnel" id="genderF" value="F" />
+                                <label style="margin-left: 5px; margin-right: 10px;">Time-based Independent</label>
+                        </div>
+                      </div>
+                         <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Job Description/Duties and Reponsibilities
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <textarea class="form-control" rows="2"></textarea>
+                        </div>
+                      </div>
+                        <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Do you have any relative, by blood or marriage within the 4th civil degree,
+                            who is already hired or engaged at present by the university in whatever capacity?
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                   </form>
+			            </div>
+
+				     <div id="step-3">
+                        <h3 style="text-align:center; margin-bottom: 20px;">Project Details</h3>
+                          <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+                         <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Start of Appointment
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <div class='input-group date' id='myDatepicker2'>
+                            <input type='text' class="form-control" />
+                            <span class="input-group-addon">
+                               <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                            </div>
+                        </div>
+                      </div>
+                         <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">End of Appointment
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <div class='input-group date' id='myDatepicker2'>
+                            <input type='text' class="form-control" />
+                            <span class="input-group-addon">
+                               <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                            </div>
+                        </div>
+                      </div>
+                         <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Number of work hours/day
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                         <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Number of work day/week
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                         <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Fund of source
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                        <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Rate/Fee/Salary
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                         <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Name of Proponent/s
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                         <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Department/Office
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                         <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Contact Number
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                         <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Title of Project
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                         <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Project Number
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                         <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Project Account Number
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="first-name" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                          </form>
+                    </div>
+                    <!-- End SmartWizard Content -->
+
+
+
+
+
+
+                    <!-- End SmartWizard Content -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+        <!-- /page content -->
+ {% endblock %}
+{% block script %}
+    <script>
+    function yesCheck() {
+        document.getElementById('replacementfield').style.display = 'block';
+    }
+    function noCheck(){
+  document.getElementById('replacementfield').style.display ='none';
+    }
+    </script>
+}
+{% endblock %}

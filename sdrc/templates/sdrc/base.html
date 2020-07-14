@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <title>Project Management System for SDRC Research </title>
+
+    {% load staticfiles %}
+    <link href="{% static 'sdrc/vendors/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- images -->
+    <link href="{% static 'sdrc/src/image/sdrc-logo.png' %}" rel="stylesheet">
+
+    <!-- Datatables -->
+    <link href="{% static 'sdrc/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'sdrc/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'sdrc/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'sdrc/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}"
+          rel="stylesheet">
+    <link href="{% static 'sdrc/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}" rel="stylesheet">
+
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" type="text/css" href="{% static 'sdrc/vendors/gantt/src/jsgantt.css' %}"/>
+    <script language="javascript" src="{% static 'sdrc/vendors/gantt/src/jsgantt.css' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'sdrc/vendors/jsgantt_v12/jsgantt.css' %}"/>
+
+    <!-- Font Awesome -->
+    <link href="{% static 'sdrc/vendors/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="{% static 'sdrc/vendors/nprogress/nprogress.css' %}" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="{% static 'sdrc/vendors/iCheck/skins/flat/green.css' %}" rel="stylesheet">
+    <!-- bootstrap-wysiwyg -->
+    <link href="{% static 'sdrc/vendors/google-code-prettify/bin/prettify.min.css' %}" rel="stylesheet">
+    <!-- Select2 -->
+    <link href="{% static 'sdrc/vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+    <!-- Switchery -->
+    <link href="{% static 'sdrc/vendors/switchery/dist/switchery.min.css' %}" rel="stylesheet">
+    <!-- starrr -->
+    <link href="{% static 'sdrc/vendors/starrr/dist/starrr.css' %}" rel="stylesheet">
+    <!-- bootstrap-progressbar -->
+    <link href="{% static 'sdrc/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css' %}"
+          rel="stylesheet">
+    <!-- bootstrap-daterangepicker -->
+    <link href="{% static 'sdrc/vendors/bootstrap-daterangepicker/daterangepicker.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Raleway|Poppins" rel="stylesheet">
+
+
+
+    <!-- Dropzone.js -->
+    <link href="{% static 'sdrc/vendors/dropzone/dist/min/dropzone.min.css' %}" rel="stylesheet">
+    <!-- PNotify -->
+    <link href="{% static 'sdrc/vendors/pnotify/dist/pnotify.css ' %}" rel="stylesheet">
+    <link href="{% static 'sdrc/vendors/pnotify/dist/pnotify.buttons.css' %}" rel="stylesheet">
+    <!-- Select2 -->
+    <link href="{% static 'sdrc/vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+    <!-- Custom Theme Style -->
+    <link href="{% static 'sdrc/build/css/custom.min.css' %}" rel="stylesheet">
+    <style>
+        body {
+            font-family:'Raleway', sans-serif;
+        }
+
+
+    </style>
+    {% block style %}
+
+    {% endblock %}
+    <!-- put STYLES here for the extended html -->
+
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <a href="index.html" class="site_title"><span> SDRC Project Management System</span></a>
+                </div>
+
+                <div class="clearfix"></div>
+
+                <!-- menu profile quick info -->
+                <div class="profile clearfix">
+                    <div class="profile_info">
+                        <span style="font-size: 20px;">Welcome,</span>
+                        {% if request.user.is_staff and not request.user.username == 'sdrcdirector'  %}
+                            <h2 style="font-size: 20px;">Admin</h2>
+                        {% elif request.user.is_staff and request.user.username == 'sdrcdirector' %}
+                            <h2 style="font-size: 17px;">SDRC Director</h2>
+                        {% else %}
+                            <h2 style="font-size: 20px;">{{ request.user.first_name }} {{ request.user.last_name }}</h2>
+                        {% endif %}
+                    </div>
+                </div>
+                <!-- /menu profile quick info -->
+
+                <br/>
+
+                {% if request.user.is_staff and not request.user.username == 'sdrcdirector' %}
+                    <!-- sidebar menu -->
+                    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                        <div class="menu_section">
+                            <h3>Modules</h3>
+
+                            <ul class="nav side-menu">
+                                <li><a href="/piindex/"><i class="fa fa-bar-chart"></i> DASHBOARD </a>
+                                <li><a><i class="fa fa-folder"></i> PROJECTS <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/create-project-account/">Create new project account</a></li>
+                                        <li><a href="/milestone_list/">Create/View Milestones</a></li>
+                                        <li><a href="/task_list/">Create/View Tasks</a></li>
+                                        <li><a href="/member_list/">Add/View Members</a></li>
+                                        <li><a href="/view-projects/">View all projects</a></li>
+                                        <li><a href="/view_projectextension/">View project extension requests</a></li>
+                                        <li><a href="/request_final/">View final projects</a></li>
+                                        <li><a href="/signup/">Create new principal investigator account</a></li>
+                                        <li><a href="/user_list/">Manage users</a></li>
+                                    </ul>
+
+
+                                <li><a><i class="fa fa-dollar"></i> BUDGET <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/view-budget-plan/">Create/View Budget Plan</a></li>
+                                        <li><a href="/budget-status/">View Budget Status</a></li>
+                                        <li><a href="/view_reimbursements/">View Requests for Reimbursement</a>
+                                        </li>
+                                        <li><a href="/view_procurement/">View Requests for Procurement</a></li>
+                                        <li><a href="/view_cashadvance/">View Requests for Cash Advance</a></li>
+                                        <li><a href="/budgetextension/">View Requests for Budget Extension</a></li>
+                                        <li><a href="/view_reallocation/">View Requests for Budget Reallocation</a></li>
+                                    </ul>
+                                </li>
+
+                                <li><a><i class="fa fa-warning"></i> ISSUES <span class="fa fa-chevron-down"></span><span
+                                        class="badge bg-red"></span></a>
+
+                                    <ul class="nav child_menu">
+                                        <li><a href="/incidentreport/">View all incident reports</a></li>
+                                    </ul>
+                                </li>
+
+                                <li><a><i class="fa fa-files-o"></i> REPORTS <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/generatereports/">Generate Reports</a></li>
+                                        <li><a href="/inventoryrequestadmin/">Inventory Report</a></li>
+                                        <li><a href="/viewcompleteprojects/">Final Reports</a></li>
+                                        <li><a href="/reportsarchive/">Reports Archive</a></li>
+                                    </ul>
+                                </li>
+
+
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+                {% if not request.user.is_staff and request.user.profile.active_project == True and request.user.profile.principal_investigator == True %}
+                    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                        <div class="menu_section">
+                            <h3>Modules</h3>
+
+                            <ul class="nav side-menu">
+                                <li><a href="/piindex/"><i class="fa fa-bar-chart"></i> DASHBOARD </a>
+                                <li><a><i class="fa fa-folder"></i> PROJECTS <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+
+                                        <li><a href="/addmembers/">View/Add Project Members</a></li>
+                                        <li><a href="/createmilestone/">View/Add Milestones</a></li>
+                                        <li><a href="/createtasks/">View/Add Tasks</a></li>
+                                        <li><a href="/milestonestatus/">Milestone Monitoring</a></li>
+                                        <li><a href="/samplegantt/">Create Gantt Chart</a></li>
+
+                                    </ul>
+
+
+                                <li><a><i class="fa fa-dollar"></i> BUDGET <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a>Reimbursement<span class="fa fa-chevron-down"></span></a>
+                                            <ul class="nav child_menu">
+                                                <li class="sub_menu"><a href="/request_reimbursement/">Request for Reimbursement</a>
+                                                </li>
+                                                <li><a href="/view_reimbursements/">View Requests for Reimbursement</a>
+                                                </li>
+
+                                            </ul>
+                                        </li>
+                                        <li><a>Procurement<span class="fa fa-chevron-down"></span></a>
+                                            <ul class="nav child_menu">
+                                                <li class="sub_menu"><a href="/request_procurement/">Request for Procurement</a>
+                                                </li>
+                                                <li><a href="/view_procurement/">View Requests for Procurement</a>
+                                                </li>
+
+                                            </ul>
+                                        </li>
+                                        <li><a>Cash Advance<span class="fa fa-chevron-down"></span></a>
+                                            <ul class="nav child_menu">
+                                                <li class="sub_menu"><a href="/request_cashadvance/">Request for Cash Advance</a>
+                                                </li>
+                                                <li><a href="/view_cashadvance/">View Requests for Cash Advance</a>
+                                                </li>
+
+                                            </ul>
+                                        </li>
+                                        <li><a href="/expensetracking/">Expense Tracker<span
+                                                class="fa fa-chevron-down"></span></a>
+
+                                        </li>
+                                        <li><a href="/view_reallocation/">View Requests for Reallocation<span
+                                                class="fa fa-chevron-down"></span></a>
+
+                                        </li>
+                                         <li><a href="/budgetextension/">View Requests for Budget Extension<span
+                                                class="fa fa-chevron-down"></span></a>
+
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <li><a><i class="fa fa-warning"></i> ISSUES <span class="fa fa-chevron-down"></span><span
+                                        class="badge bg-red"></span></a>
+
+                                    <ul class="nav child_menu">
+                                        <li><a href="/incidentreport/">View all incident reports</a></li>
+                                        <li><a href="/resolvedissues/">View resolved issues</a></li>
+                                    </ul>
+                                </li>
+
+                                <li><a><i class="fa fa-files-o"></i> REPORTS <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/progressreport/">Generate Progress Report</a></li>
+                                        <li><a href="/accomplishmentreport/">Generate Accomplishment Report</a></li>
+                                        <li><a href="/expensereport/">Generate Financial Report</a></li>
+                                        <li><a href="/inventoryrequest/">Generate Inventory Report</a></li>
+                                        <li><a href="/uploadfinalreport/">Upload Final Report</a></li>
+                                    </ul>
+                                </li>
+
+
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+            {% if not request.user.is_staff and request.user.profile.active_project == True and request.user.profile.principal_investigator == False %}
+                    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                        <div class="menu_section">
+                            <h3>Modules</h3>
+
+                            <ul class="nav side-menu">
+                                <li><a href="/piindex/"><i class="fa fa-bar-chart"></i> DASHBOARD </a>
+                                <li><a><i class="fa fa-folder"></i> PROJECTS <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+
+                                        <li><a href="/milestonestatus/">Milestone Monitoring</a></li>
+
+
+                                    </ul>
+
+
+                                <li><a><i class="fa fa-dollar"></i> BUDGET <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a>Reimbursement<span class="fa fa-chevron-down"></span></a>
+                                            <ul class="nav child_menu">
+                                                <li class="sub_menu"><a href="/request_reimbursement/">Request for Reimbursement</a>
+                                                </li>
+                                                <li><a href="/view_reimbursements/">View Requests for Reimbursement</a>
+                                                </li>
+
+                                            </ul>
+                                        </li>
+                                        <li><a>Procurement<span class="fa fa-chevron-down"></span></a>
+                                            <ul class="nav child_menu">
+                                                <li class="sub_menu"><a href="/request_procurement/">Request for Procurement</a>
+                                                </li>
+                                                <li><a href="/view_procurement/">View Requests for Procurement</a>
+                                                </li>
+
+                                            </ul>
+                                        </li>
+                                        <li><a>Cash Advance<span class="fa fa-chevron-down"></span></a>
+                                            <ul class="nav child_menu">
+                                                <li class="sub_menu"><a href="/request_cashadvance/">Request for Cash Advance</a>
+                                                </li>
+                                                <li><a href="/view_cashadvance/">View Requests for Cash Advance</a>
+                                                </li>
+
+                                            </ul>
+                                        </li>
+                                        <li><a href="/expensetracking/">Expense Tracker<span
+                                                class="fa fa-chevron-down"></span></a>
+
+                                        </li>
+                                        <li><a href="/view_reallocation/">View Requests for Reallocation<span
+                                                class="fa fa-chevron-down"></span></a>
+
+                                        </li>
+                                         <li><a href="/budgetextension/">View Requests for Budget Extension<span
+                                                class="fa fa-chevron-down"></span></a>
+
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <li><a><i class="fa fa-warning"></i> ISSUES <span class="fa fa-chevron-down"></span><span
+                                        class="badge bg-red"></span></a>
+
+                                    <ul class="nav child_menu">
+                                        <li><a href="/incidentreport/">View all incident reports</a></li>
+                                        <li><a href="/resolvedissues/">View resolved issues</a></li>
+                                    </ul>
+                                </li>
+
+                                <li><a><i class="fa fa-files-o"></i> REPORTS <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/progressreport/">Generate Progress Report</a></li>
+                                        <li><a href="/accomplishmentreport/">Generate Accomplishment Report</a></li>
+                                        <li><a href="/expensereport/">Generate Financial Report</a></li>
+                                        <li><a href="/uploadfinalreport/">Upload Final Report</a></li>
+                                    </ul>
+                                </li>
+
+
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+            {% if not request.user.is_staff and request.user.profile.active_project == False %}
+                <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                        <div class="menu_section">
+                            <h3>Modules</h3>
+
+                            <ul class="nav side-menu">
+                                <li><a href="/viewpastprojects/"><i class="fa fa-folder"></i> View Past Projects</a>
+                                <li><a href="/viewcompleteprojects/"><i class="fa fa-folder"></i> View Completed Projects under SDRC</a>
+                                <li><a href="/resolvedissues/"><i class="fa fa-folder"></i> View Resolved Incident Reports</a>
+
+
+
+                            </ul>
+                        </div>
+                    </div>
+            {% endif %}
+                {% if request.user.username == "sdrcdirector" %}
+                    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                        <div class="menu_section">
+                            <h3>Modules</h3>
+
+                            <ul class="nav side-menu">
+                                <li><a href="/piindex/"><i class="fa fa-bar-chart"></i> DASHBOARD </a>
+                                <li><a><i class="fa fa-folder"></i> PROJECTS <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/view-projects/">View all projects</a></li>
+
+
+                                    </ul>
+
+
+                                <li><a><i class="fa fa-dollar"></i> BUDGET <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/budget-status/">View All Budget Status</a></li>
+
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <li><a><i class="fa fa-warning"></i> ISSUES <span class="fa fa-chevron-down"></span><span
+                                        class="badge bg-red"></span></a>
+
+                                    <ul class="nav child_menu">
+                                        <li><a href="/incidentreport/">View all incident reports</a></li>
+                                    </ul>
+                                </li>
+
+                                <li><a><i class="fa fa-files-o"></i> REPORTS <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/generatereports/">Generate Reports</a></li>
+                                        <li><a href="/viewcompleteprojects/">Final Reports</a></li>
+                                        <li><a href="/reportsarchive/">Reports Archive</a></li>
+                                    </ul>
+                                </li>
+
+
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+                <!-- /sidebar menu -->
+
+                <!-- /menu footer buttons -->
+                <div class="sidebar-footer hidden-small">
+
+                    <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+                        <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
+                    </a>
+                </div>
+                <!-- /menu footer buttons -->
+            </div>
+        </div>
+
+        <!-- top navigation -->
+        <div class="top_nav">
+            <div class="nav_menu">
+                <nav>
+                    <div class="nav toggle">
+                        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                    </div>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="">
+                            <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown"
+                               aria-expanded="false">
+                                <img src="images/img.jpg" alt="">{% if request.user.is_staff and not request.user.username == 'sdrcdirector' %}Admin {% elif request.user.is_staff and request.user.username == 'sdrcdirector' %}SDRC Director {% else %}{{ request.user.first_name }} {{ request.user.last_name }} {% endif %}
+                                <span class=" fa fa-angle-down"></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-usermenu pull-right">
+                                <li><a href="javascript:;"> Profile</a></li>
+                                <li>
+                                    <a href="javascript:;">
+                                        <span class="badge bg-red pull-right">50%</span>
+                                        <span>Settings</span>
+                                    </a>
+                                </li>
+                                <li><a href="javascript:;">Help</a></li>
+                                <li><a href="/login/"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
+                            </ul>
+                        </li>
+
+
+                        <li role="presentation" class="dropdown">
+                            <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown"
+                               aria-expanded="false">
+                                <i class="fa fa-bell-o"></i>
+                                <!-- Notification Counter -->
+                                {% if notifications %}
+                                    <span class="badge bg-green">!</span>
+                                {% endif %}
+
+                            </a>
+                            <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
+
+                                <!-- Notification-->
+                                {% for notification in notifications %}
+                                    <div class="card">
+                                        <div class="card-body">
+
+                                            <li>
+
+                                                <a href="{{ notification.url }}">
+                                                    <span class="bg-secondary">
+                                                        <span class="{{ notification.css_class }}">
+                                                            <b>{{ notification.notification_type }}</b>
+                                                        </span>
+                                                        <span class="time">{{ notification.date }}</span>
+                                                    </span>
+                                                    <span class="message">
+                                                        <b>{{ notification.highlight}}</b> {{ notification.message }}
+                                                    </span>
+                                                </a>
+                                            </li>
+
+                                        </div>
+                                    </div>
+                                {% endfor %}
+
+                                <li>
+                                    <div class="text-center">
+                                        <a>
+                                            <strong>See All Alerts</strong>
+                                            <i class="fa fa-angle-right"></i>
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <!-- /top navigation -->
+        <!-- page content -->
+
+        <div class="content-page">
+
+            <div class="title_left">
+
+                <!--put title here in the extended html -->
+                {% block title %} {% endblock %}
+            </div>
+        </div>
+
+
+        <!-- start of contents -->
+        <div class="right_col" role="main" style="height: auto;">
+            {% block content %}
+
+            {% endblock %}
+            <!-- end of contents -->
+
+
+        </div>
+    </div>
+
+
+    <!-- /page content -->
+
+    <script>
+
+    </script>
+
+    <script src="{% static 'sdrc/vendors/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <!-- FastClick -->
+    <script src="{% static 'sdrc/vendors/fastclick/lib/fastclick.js' %}"></script>
+
+
+    <!-- Datatables -->
+    <script src="{% static 'sdrc/vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/jszip/dist/jszip.min.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/pdfmake/build/pdfmake.min.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/pdfmake/build/vfs_fonts.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/validator/validator.js' %}"></script>
+
+    <!-- NProgress -->
+    <script src="{% static 'sdrc/vendors/nprogress/nprogress.js' %}"></script>
+    <!-- Chart.js -->
+    <script src="{% static 'sdrc/vendors/Chart.js/dist/Chart.min.js' %}"></script>
+    <!-- jQuery Sparklines -->
+    <script src="{% static 'sdrc/vendors/jquery-sparkline/dist/jquery.sparkline.min.js' %}"></script>
+    <!-- morris.js -->
+    <script src="{% static 'sdrc/vendors/raphael/raphael.min.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/morris.js/morris.min.js' %}"></script>
+    <!-- gauge.js -->
+    <script src="{% static 'sdrc/vendors/gauge.js/dist/gauge.min.js' %}"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="{% static 'sdrc/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js' %}"></script>
+    <!-- Skycons -->
+    <script src="{% static 'sdrc/vendors/skycons/skycons.js' %}"></script>
+    <!-- Flot -->
+    <script src="{% static 'sdrc/vendors/Flot/jquery.flot.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/Flot/jquery.flot.pie.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/Flot/jquery.flot.time.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/Flot/jquery.flot.stack.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/Flot/jquery.flot.resize.js' %}"></script>
+    <!-- Flot plugins -->
+    <script src="{% static 'sdrc/vendors/flot.orderbars/js/jquery.flot.orderBars.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/flot-spline/js/jquery.flot.spline.min.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/flot.curvedlines/curvedLines.js' %}"></script>
+    <!-- DateJS -->
+    <script src="{% static 'sdrc/vendors/DateJS/build/date.js' %}"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="{% static 'sdrc/vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/bootstrap-daterangepicker/daterangepicker.js' %}"></script>
+
+    <!-- Custom Theme Scripts -->
+    <script src="{% static 'sdrc/build/js/custom.min.js' %}"></script>
+
+    <!-- jQuery Tags Input -->
+    <script src="{% static 'sdrc/vendors/jquery.tagsinput/src/jquery.tagsinput.js' %}"></script>
+
+    <!-- iCheck -->
+    <script src="{% static 'sdrc/vendors/iCheck/icheck.min.js' %}"></script>
+
+    <!-- jQuery Tags Input -->
+    <script src="{% static 'sdrc/vendors/jquery.tagsinput/src/jquery.tagsinput.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/autoNumeric-master/src/main.js' %}"></script>
+    <!-- Select2 -->
+    <script src="{% static 'sdrc/vendors/select2/dist/js/select2.full.min.js' %}"></script>
+    <!-- Dropzone.js -->
+    <script src="{% static 'sdrc/vendors/dropzone/dist/min/dropzone.min.js' %}"></script>
+    <!-- search.js-->
+    <script src="{% static 'sdrc/sdrc/search/search.js' %}"></script>
+    <!-- jQuery Smart Wizard -->
+    <script src="{% static 'sdrc/vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js' %}"></script>
+    <script language="javascript" src="{% static 'sdrc/vendors/jsgantt_v12/jsgantt.js' %}"></script>
+    <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://momentjs.com/downloads/moment.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <!-- bootstrap-datetimepicker -->
+    <script src="{% static 'sdrc/vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js' %}"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="{% static 'sdrc/vendors/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'sdrc/vendors/bootstrap-daterangepicker/daterangepicker.js' %}"></script>
+    <!-- put scripts here for the extended html -->
+    <script>
+        $('#myDatepicker').datetimepicker();
+
+        $('#myDatepicker2').datetimepicker({
+            format: 'DD.MM.YYYY'
+        });
+
+        $('#myDatepicker3').datetimepicker({
+            format: 'hh:mm A'
+        });
+
+        $('#myDatepicker4').datetimepicker({
+            ignoreReadonly: true,
+            allowInputToggle: true
+        });
+
+        $('#datetimepicker6').datetimepicker();
+
+        $('#datetimepicker7').datetimepicker({
+            useCurrent: false
+        });
+
+        $("#datetimepicker6").on("dp.change", function(e) {
+            $('#datetimepicker7').data("DateTimePicker").minDate(e.date);
+        });
+
+        $("#datetimepicker7").on("dp.change", function(e) {
+            $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
+        });
+
+
+    </script>
+    {% block script %}
+    {% endblock %}
+</div>
+</body>
+</html>

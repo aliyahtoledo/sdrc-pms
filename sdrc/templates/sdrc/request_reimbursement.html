@@ -1,0 +1,2514 @@
+{% extends 'sdrc/base.html' %}
+{% load humanize %}
+{% block style %}
+    <style>
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    <script type="text/javascript" src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+    {% if project.hasTranche %}
+
+
+
+        <div class="row">
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+
+
+                <!-- Closure -->
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Request for Reimbursement</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#">Settings 1</a>
+                                    </li>
+                                    <li><a href="#">Settings 2</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix">
+                        </div>
+
+                        <div class="x_content" style="margin-top: 20px;">
+                            {% if milestone %}
+                                <h4>Request for reimbursement will only be available once
+                                    milestone {{ milestone.milestoneName }} has been finished. Thank you.</h4>
+                            {% else %}
+                                {% if messages %}
+                                    <div class="alert alert-danger alert-dismissible fade in" role="alert"
+                                         style="height: 50%;">
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                        <ul class="messages">
+                                            {% for message in messages %}
+                                                <li class="{{ message.tags }}">{{ message }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                                <h1>{{ milestones.milestoneName }}
+                                    <small class="green">(Tranche Amount: {{ milestones.trancheAmount|intcomma }})
+                                    </small>
+                                </h1>
+                                <input type="number" style="display: none;" name="trancheAmount" value="{{ milestones.trancheAmount }}"
+                                       id="trancheAmount">
+                                <hr>
+                                <!-- Smart Wizard -->
+                                <h5><b>Notes:</b>
+                                    <br>The maximum allowable amount for the following item types are:
+                                    <br>- Hotel Bookings (<b>8,000</b> per night for overseas hotels and
+                                    <b>5,000</b> per night for local hotels)
+                                    <br>- Flight Tickets (<b>80,000</b> for flights outside Asia and <b>30,000</b>
+                                    for flights within Asia)
+                                    <br>- Specialized Scientific/Laboratory Services (<b>80,000</b>)
+                                    <br>- Scientific Equipment and Supplies (<b>80,000</b>)
+                                    <br>- Purchase of Scientific Software and Databases (<b>80,000</b>)
+                                    <br>- Scientific Literature (<b>20,000</b>)
+                                    <br>- Research Dissemination Expenses (<b>40,000</b>)
+                                    <br>- Field Expenses (No Official Receipt) (<b>10,000</b>)
+                                    <p>- Field Expenses (Repair and Maintenance of Equipment (<b>15,000</b>)</h5>
+
+                                <form class="form-horizontal" id="reimbursement" method="POST"
+                                      action="/view_reimbursements/" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Item Type<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                            <select class="form-control col-md-7 col-xs-12"
+                                                    name="itemType" id="itemType" onchange='yesNoCheck()'>
+                                                <option>Select Item Type</option>
+                                                <option value="Hotel Booking">Hotel Booking</option>
+                                                <option value="Flight Tickets">Flight Tickets</option>
+                                                <option value="Field Expense (No Official Receipt)">Field Expense
+                                                    (No Official Receipt)
+                                                </option>
+                                                <option value="Field Expense (Repair and Maintenance of Equipment)">
+                                                    Field Expense (Repair and Maintenance of Equipment)
+                                                </option>
+                                                <option value="Scientific Equipment and Supplies">Off-the-shelf
+                                                    Scientific Equipment and Supplies
+                                                </option>
+                                                <option value="Specialized Scientific/Laboratory Services">
+                                                    Specialized Scientific/Laboratory Services
+                                                </option>
+                                                <option value="Scientific Software and Databases">Scientific
+                                                    Software and Databases
+                                                </option>
+                                                <option value="Scientific Literature">Scientific Literature</option>
+                                                <option value="Research Dissemination Expenses">Research
+                                                    Dissemination Expenses
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+
+                                    <div id="hotelbooking" style="display: none;">
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                                            <div class="animated flipInY col-lg-7 col-md-7 col-sm-7 col-xs-12">
+                                                <div class="tile-stats" style="padding: 10px;">
+                                                    <h3>Budget Left</h3>
+                                                    <h2 style="margin-left: 10px;" id="hotelbudgetleft">Lorem ipsum
+                                                        psdea itgum rixt.</h2>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                                        </div>
+                                        <div class="form-group input-group col-md-12" style="margin-top:7px">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="item-type">Currency</label>
+                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                <select class="form-control" name="currency"
+                                                        id="selectcurrency">
+                                                    <option value="0" selected="selected" disabled>Select Currency
+                                                    </option>
+                                                    <option value="PHP">Philippine Peso</option>
+                                                    <option value="USD">US Dollar</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Location<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                <select class="form-control col-md-7 col-xs-12"
+                                                        name="hotellocation" id="hotellocation">
+                                                    <option>Location</option>
+                                                    <option value="Local">Local</option>
+                                                    <option value="Overseas">Overseas</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Hotel/Venue<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-5 col-sm-5 col-xs-12">
+                                                <input class="form-control col-md-5 col-xs-12" name="hotel"
+                                                       id="hotel" placeholder="Hotel/Venue"
+                                                       type="text">
+                                            </div>
+                                            <div class="col-md-2 col-sm-2 col-xs-12">
+                                                <input class="form-control col-md-2 col-xs-12" name="hotelpax"
+                                                       id="hotelpax" placeholder="Pax"
+                                                       type="number">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Check-in Date<span class="required"></span>
+                                            </label>
+
+                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                <input class="form-control col-md-7 col-xs-12" name="hotelcheckin"
+                                                       id="hotelcheckin" onchange="cal()"
+                                                       type="date">
+                                            </div>
+
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Check-out Date<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                <input class="form-control col-md-7 col-xs-12" name="hotelcheckout"
+                                                       id="hotelcheckout" onchange="cal()"
+                                                       type="date">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">No. of Nights<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                                <input class="form-control col-md-3 col-xs-12" name="hoteldays"
+                                                       id="hoteldays" readonly
+                                                       type="number">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Total Amount<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                                <input class="form-control col-md-3 col-xs-12" name="hotelamount"
+                                                       onchange="changeCard()" id="hotelamount"
+                                                       placeholder="Total Amount"
+                                                       type="number">
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Receipt<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                <input type="file" class="form-control col-md-2 col-xs-12"
+                                                       name="hotelreceipt" placeholder="Receipt" id="hotelreceipt"
+                                                       data-role="magic-overlay" data-target="#pictureBtn"
+                                                       data-edit="insertImage">
+                                            </div>
+                                        </div>
+                                        <div class="form-group input-group col-md-12">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="hotelBudget">Description</label>
+                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                    <textarea class="form-control" name="hoteldescription"
+                                                              id="hotelDescription"></textarea>
+                                            </div>
+                                        </div>
+
+
+                                        <input type="submit" style="margin-top: 10px; margin-left: 400px;"
+                                               id="submitBtn" onclick="return expenseAlert()"
+                                               class="btn btn-primary">
+                                    </div>
+                                    <div id="flightdetails" style="display: none;">
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                                            <div class="animated flipInY col-lg-7 col-md-7 col-sm-7 col-xs-12">
+                                                <div class="tile-stats" style="padding: 10px;">
+                                                    <h3>Budget Left</h3>
+                                                    <h2 style="margin-left: 10px;" id="flightbudgetleft">Lorem ipsum
+                                                        psdea itgum rixt.</h2>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                                        </div>
+                                        <div class="form-group input-group col-md-12">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="item-type">Currency</label>
+                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                <select class="form-control" name="currency"
+                                                        id="selectcurrency">
+                                                    <option value="0" selected="selected" disabled>Select Currency
+                                                    </option>
+                                                    <option value="PHP">Philippine Peso</option>
+                                                    <option value="USD">US Dollar</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Location<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                <select class="form-control col-md-7 col-xs-12"
+                                                        name="location" id="location">
+                                                    <option>Location</option>
+                                                    <option value="Outside Asia">Outside Asia</option>
+                                                    <option value="Within Asia">Within Asia</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Destination<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                <input class="form-control col-md-7 col-xs-12" name="destination"
+                                                       id="destination" placeholder="Destination"
+                                                       type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Pax<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                                <input class="form-control col-md-3 col-xs-12" name="pax" id="pax"
+                                                       onchange="computeFlight()" placeholder="Pax"
+                                                       type="number">
+                                            </div>
+                                        </div>
+                                        <!--
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Ticket Type<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                               <input type="radio" id="tickettype" name="tickettype" class="flat" id="onewayticket" checked="true" value="One-Way"> One-Way
+                                            </div>
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                               <input type="radio" id="tickettype" name="tickettype" class="flat" id="roundtripticket" value="Roundtrip"> Roundtrip
+                                            </div>
+                                        </div>-->
+                                        <div class="form-group input-group col-md-12">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="item-type">Ticket Type</label>
+                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                <select class="form-control" name="tickettype" id="tickettype"
+                                                        onchange="changeTicket()">
+                                                    <option value="0" selected="selected" disabled>Select Ticket
+                                                        Type
+                                                    </option>
+                                                    <option value="One-Way">One-Way</option>
+                                                    <option value="Roundtrip">Roundtrip</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Departure Date<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                <input class="form-control col-md-7 col-xs-12" name="departuredate"
+                                                       id="flightdeparturedate"
+                                                       type="date">
+                                            </div>
+                                        </div>
+                                        <div class="form-group" id="flightarrivaldate" style="display: none">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Arrival Date<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                <input class="form-control col-md-7 col-xs-12" name="arrivaldate"
+                                                       id="flightarrivaldate"
+                                                       type="date">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Amount<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                                <input class="form-control col-md-3 col-xs-12" name="price"
+                                                       id="price" onchange="computeFlight()" placeholder="Amount"
+                                                       type="number">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Subtotal<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                                <input class="form-control col-md-3 col-xs-12" name="subtotal"
+                                                       readonly id="subtotal"
+                                                       onchange="computeFlight(), changeCard()"
+                                                       placeholder="Subtotal"
+                                                       type="number">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Receipt<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                <input type="file" class="form-control col-md-2 col-xs-12"
+                                                       name="personnelReceipt" placeholder="Receipt"
+                                                       id="personnelReceipt" data-role="magic-overlay"
+                                                       data-target="#pictureBtn" data-edit="insertImage">
+                                            </div>
+                                        </div>
+                                        <div class="form-group input-group col-md-12">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="hotelBudget">Description</label>
+                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                    <textarea class="form-control" name="description"
+                                                              id="flightDescription"></textarea>
+                                            </div>
+                                        </div>
+
+
+                                        <input type="submit" onclick="return flightAlert()"
+                                               style="margin-top: 10px; margin-left: 400px;"
+                                               class="btn btn-primary">
+                                    </div>
+                                    <div id="noreceipt" style="display:none;">
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                                            <div class="animated flipInY col-lg-7 col-md-7 col-sm-7 col-xs-12">
+                                                <div class="tile-stats" style="padding: 10px;">
+                                                    <h3>Budget Left</h3>
+                                                    <h2 style="margin-left: 10px;" id="noreceiptbudgetleft">Lorem
+                                                        ipsum psdea itgum rixt.</h2>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                                        </div>
+                                        <div class="form-group input-group col-md-12">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="item-type">Currency</label>
+                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                <select class="form-control" name="currency"
+                                                        id="selectcurrency">
+                                                    <option value="0" selected="selected" disabled>Select Currency
+                                                    </option>
+                                                    <option value="PHP">Philippine Peso</option>
+                                                    <option value="USD">US Dollar</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Expense Name<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                <input class="form-control col-md-7 col-xs-12" name="expensename"
+                                                       placeholder="Expense Name" id="expensename"
+                                                       type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Expense Date<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                <input class="form-control col-md-7 col-xs-12" name="date"
+                                                       id="receiptdate"
+                                                       type="date">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Total<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                                <input class="form-control col-md-3 col-xs-12" name="total"
+                                                       placeholder="Total" id="total" onchange="changeCard()"
+                                                       type="number">
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Receipt<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                <input type="file" class="form-control col-md-2 col-xs-12"
+                                                       name="personnelReceipt" placeholder="Receipt" id="noReceipt"
+                                                       data-role="magic-overlay" data-target="#pictureBtn"
+                                                       data-edit="insertImage">
+                                            </div>
+                                        </div>
+                                        <div class="form-group input-group col-md-12">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="hotelBudget">Description</label>
+                                            <div class="col-md-7  col-sm-7  col-xs-12">
+                                                    <textarea class="form-control" name="description"
+                                                              id="noreceiptDescription"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <input type="submit" style="margin-top: 10px; margin-left: 400px;"
+                                               onclick="return repairAlert()" class="btn btn-primary">
+                                    </div>
+                                    <div id="repair" style="display: none;">
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                                            <div class="animated flipInY col-lg-7 col-md-7 col-sm-7 col-xs-12">
+                                                <div class="tile-stats" style="padding: 10px;">
+                                                    <h3>Budget Left</h3>
+                                                    <h2 style="margin-left: 10px;" id="repairbudgetleft">Lorem ipsum
+                                                        psdea itgum rixt.</h2>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                                        </div>
+                                        <div class="form-group input-group col-md-12">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="item-type">Currency</label>
+                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                <select class="form-control" name="currency"
+                                                        id="selectcurrency">
+                                                    <option value="0" selected="selected" disabled>Select Currency
+                                                    </option>
+                                                    <option value="PHP">Philippine Peso</option>
+                                                    <option value="USD">US Dollar</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Expense Name<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                <input class="form-control col-md-7 col-xs-12" name="expensename"
+                                                       placeholder="Expense Name" id="repairname"
+                                                       type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Expense Date<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                <input class="form-control col-md-7 col-xs-12" name="date"
+                                                       id="repairdate"
+                                                       type="date">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Quantity<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                                <input class="form-control col-md-3 col-xs-12" name="quantity"
+                                                       id="otherquantity" placeholder="Quantity"
+                                                       type="number">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Amount<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                                <input class="form-control col-md-3 col-xs-12" name="price"
+                                                       id="otherprice" placeholder="Amount"
+                                                       type="number">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Subtotal<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                                <input class="form-control col-md-3 col-xs-12" name="subtotal"
+                                                       id="othersubtotal" readonly onchange="changeCard()"
+                                                       placeholder="Subtotal"
+                                                       type="number">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="first-name">Receipt<span class="required"></span>
+                                            </label>
+                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                <input type="file" class="form-control col-md-2 col-xs-12"
+                                                       name="personnelReceipt" placeholder="Receipt"
+                                                       id="repairReceipt" data-role="magic-overlay"
+                                                       data-target="#pictureBtn" data-edit="insertImage">
+                                            </div>
+                                        </div>
+                                        <div class="form-group input-group col-md-12">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                   for="hotelBudget">Description</label>
+                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                    <textarea class="form-control" name="description"
+                                                              id="repairDescription"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <input type="submit" style="margin-top: 10px; margin-left: 400px;"
+                                               onclick="return equipmentAlert()" class="btn btn-primary">
+                                    </div>
+
+
+                                </form>
+                                <div class="modal fade" id="myModal" role="dialog">
+                                    <div class="modal-dialog">
+
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <form method="POST">
+                                                {% csrf_token %}
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">
+                                                        &times;
+                                                    </button>
+                                                    <h4 class="modal-title">You have exceeded the budget
+                                                        allocated</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <h4>The amount you are about to request is beyond the budget
+                                                        allocated for this item type.</h4>
+                                                    <h4>To make that request, you would need an additional amount
+                                                        of: <b><p id="additional"></p></b></h4>
+                                                    <h4>Would you like to <b>change the amount</b> or <b>request for
+                                                        budget extension</b>?</h4>
+                                                    <input id="category" name="category" style="display:none">
+                                                    <input id="amount" name="amount" style="display:none">
+                                                    <input id="expense" name="expense" style="display:none">
+                                                    <input id="description" name="description" style="display:none">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-primary"
+                                                            onclick="window.location={% url 'budgetextensionform' %}">
+                                                        Request for Budget Extension
+                                                    </button>
+                                                    <button type="button" class="btn btn-default"
+                                                            data-dismiss="modal">Close
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                </div>
+                                </div>
+                                </div>
+                                </div>
+                                </div>
+                            {% endif %}
+    {% else %}
+ {% if milestone %}
+                                <h4>Request for reimbursement will only be available once
+                                    milestone {{ milestone.milestoneName }} has been finished. Thank you.</h4>
+                            {% else %}
+        <div class="row">
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+
+
+                <!-- Closure -->
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Request for Reimbursement</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#">Settings 1</a>
+                                    </li>
+                                    <li><a href="#">Settings 2</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix">
+                        </div>
+
+                        <div class="x_content" style="margin-top: 20px;">
+                            {% if messages %}
+                                <div class="alert alert-danger alert-dismissible fade in" role="alert"
+                                     style="height: 50%;">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <ul class="messages">
+                                        {% for message in messages %}
+                                            <li class="{{ message.tags }}">{{ message }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+
+                            <!-- Smart Wizard -->
+                            <h5><b>Notes:</b>
+                                <br>The maximum allowable amount for the following item types are:
+                                <br>- Hotel Bookings (<b>8,000</b> per night for overseas hotels and
+                                <b>5,000</b> per night for local hotels)
+                                <br>- Flight Tickets (<b>80,000</b> for flights outside Asia and <b>30,000</b>
+                                for flights within Asia)
+                                <br>- Specialized Scientific/Laboratory Services (<b>80,000</b>)
+                                <br>- Scientific Equipment and Supplies (<b>80,000</b>)
+                                <br>- Purchase of Scientific Software and Databases (<b>80,000</b>)
+                                <br>- Scientific Literature (<b>20,000</b>)
+                                <br>- Research Dissemination Expenses (<b>40,000</b>)
+                                <br>- Field Expenses (No Official Receipt) (<b>10,000</b>)
+                                <p>- Field Expenses (Repair and Maintenance of Equipment (<b>15,000</b>)</h5>
+
+                            <form class="form-horizontal" id="reimbursement" method="POST"
+                                  action="/view_reimbursements/" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                           for="first-name">Item Type<span class="required"></span>
+                                    </label>
+                                    <div class="col-md-7 col-sm-7 col-xs-12">
+                                        <select class="form-control col-md-7 col-xs-12"
+                                                name="itemType" id="itemType" onchange='yesNoCheck()'>
+                                            <option>Select Item Type</option>
+                                            <option value="Hotel Booking">Hotel Booking</option>
+                                            <option value="Flight Tickets">Flight Tickets</option>
+                                            <option value="Field Expense (No Official Receipt)">Field Expense
+                                                (No Official Receipt)
+                                            </option>
+                                            <option value="Field Expense (Repair and Maintenance of Equipment)">
+                                                Field Expense (Repair and Maintenance of Equipment)
+                                            </option>
+                                            <option value="Scientific Equipment and Supplies">Off-the-shelf
+                                                Scientific Equipment and Supplies
+                                            </option>
+                                            <option value="Specialized Scientific/Laboratory Services">
+                                                Specialized Scientific/Laboratory Services
+                                            </option>
+                                            <option value="Scientific Software and Databases">Scientific
+                                                Software and Databases
+                                            </option>
+                                            <option value="Scientific Literature">Scientific Literature</option>
+                                            <option value="Research Dissemination Expenses">Research
+                                                Dissemination Expenses
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                                <div id="hotelbooking" style="display: none;">
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                                        <div class="animated flipInY col-lg-7 col-md-7 col-sm-7 col-xs-12">
+                                            <div class="tile-stats" style="padding: 10px;">
+                                                <h3>Budget Left</h3>
+                                                <h2 style="margin-left: 10px;" id="hotelbudgetleft">Lorem ipsum
+                                                    psdea itgum rixt.</h2>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                                    </div>
+                                    <div class="form-group input-group col-md-12" style="margin-top:7px">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="item-type">Currency</label>
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                            <select class="form-control" name="currency"
+                                                    id="selectcurrency">
+                                                <option value="0" selected="selected" disabled>Select Currency
+                                                </option>
+                                                <option value="PHP">Philippine Peso</option>
+                                                <option value="USD">US Dollar</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Location<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                            <select class="form-control col-md-7 col-xs-12"
+                                                    name="hotellocation" id="hotellocation">
+                                                <option>Location</option>
+                                                <option value="Local">Local</option>
+                                                <option value="Overseas">Overseas</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Hotel/Venue<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-5 col-sm-5 col-xs-12">
+                                            <input class="form-control col-md-5 col-xs-12" name="hotel"
+                                                   id="hotel" placeholder="Hotel/Venue"
+                                                   type="text">
+                                        </div>
+                                        <div class="col-md-2 col-sm-2 col-xs-12">
+                                            <input class="form-control col-md-2 col-xs-12" name="hotelpax"
+                                                   id="hotelpax" placeholder="Pax"
+                                                   type="number">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Check-in Date<span class="required"></span>
+                                        </label>
+
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                            <input class="form-control col-md-7 col-xs-12" name="hotelcheckin"
+                                                   id="hotelcheckin" onchange="cal()"
+                                                   type="date">
+                                        </div>
+
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Check-out Date<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                            <input class="form-control col-md-7 col-xs-12" name="hotelcheckout"
+                                                   id="hotelcheckout" onchange="cal()"
+                                                   type="date">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">No. of Nights<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-3 col-sm-3 col-xs-12">
+                                            <input class="form-control col-md-3 col-xs-12" name="hoteldays"
+                                                   id="hoteldays" readonly
+                                                   type="number">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Total Amount<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-3 col-sm-3 col-xs-12">
+                                            <input class="form-control col-md-3 col-xs-12" name="hotelamount"
+                                                   onchange="changeCard()" id="hotelamount"
+                                                   placeholder="Total Amount"
+                                                   type="number">
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Receipt<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                            <input type="file" class="form-control col-md-2 col-xs-12"
+                                                   name="hotelreceipt" placeholder="Receipt" id="hotelreceipt"
+                                                   data-role="magic-overlay" data-target="#pictureBtn"
+                                                   data-edit="insertImage">
+                                        </div>
+                                    </div>
+                                    <div class="form-group input-group col-md-12">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="hotelBudget">Description</label>
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                                    <textarea class="form-control" name="hoteldescription"
+                                                              id="hotelDescription"></textarea>
+                                        </div>
+                                    </div>
+
+
+                                    <input type="submit" style="margin-top: 10px; margin-left: 400px;"
+                                           id="submitBtn" onclick="return expenseAlert()"
+                                           class="btn btn-primary">
+                                </div>
+                                <div id="flightdetails" style="display: none;">
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                                        <div class="animated flipInY col-lg-7 col-md-7 col-sm-7 col-xs-12">
+                                            <div class="tile-stats" style="padding: 10px;">
+                                                <h3>Budget Left</h3>
+                                                <h2 style="margin-left: 10px;" id="flightbudgetleft">Lorem ipsum
+                                                    psdea itgum rixt.</h2>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                                    </div>
+                                    <div class="form-group input-group col-md-12">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="item-type">Currency</label>
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                            <select class="form-control" name="currency"
+                                                    id="selectcurrency">
+                                                <option value="0" selected="selected" disabled>Select Currency
+                                                </option>
+                                                <option value="PHP">Philippine Peso</option>
+                                                <option value="USD">US Dollar</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Location<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                            <select class="form-control col-md-7 col-xs-12"
+                                                    name="location" id="location">
+                                                <option>Location</option>
+                                                <option value="Outside Asia">Outside Asia</option>
+                                                <option value="Within Asia">Within Asia</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Destination<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                            <input class="form-control col-md-7 col-xs-12" name="destination"
+                                                   id="destination" placeholder="Destination"
+                                                   type="text">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Pax<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-3 col-sm-3 col-xs-12">
+                                            <input class="form-control col-md-3 col-xs-12" name="pax" id="pax"
+                                                   onchange="computeFlight()" placeholder="Pax"
+                                                   type="number">
+                                        </div>
+                                    </div>
+                                    <!--
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Ticket Type<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-3 col-sm-3 col-xs-12">
+                                           <input type="radio" id="tickettype" name="tickettype" class="flat" id="onewayticket" checked="true" value="One-Way"> One-Way
+                                        </div>
+                                        <div class="col-md-3 col-sm-3 col-xs-12">
+                                           <input type="radio" id="tickettype" name="tickettype" class="flat" id="roundtripticket" value="Roundtrip"> Roundtrip
+                                        </div>
+                                    </div>-->
+                                    <div class="form-group input-group col-md-12">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="item-type">Ticket Type</label>
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                            <select class="form-control" name="tickettype" id="tickettype"
+                                                    onchange="changeTicket()">
+                                                <option value="0" selected="selected" disabled>Select Ticket
+                                                    Type
+                                                </option>
+                                                <option value="One-Way">One-Way</option>
+                                                <option value="Roundtrip">Roundtrip</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Departure Date<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                            <input class="form-control col-md-7 col-xs-12" name="departuredate"
+                                                   id="flightdeparturedate"
+                                                   type="date">
+                                        </div>
+                                    </div>
+                                    <div class="form-group" id="flightarrivaldate" style="display: none">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Arrival Date<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                            <input class="form-control col-md-7 col-xs-12" name="arrivaldate"
+                                                   id="flightarrivaldate"
+                                                   type="date">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Amount<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-3 col-sm-3 col-xs-12">
+                                            <input class="form-control col-md-3 col-xs-12" name="price"
+                                                   id="price" onchange="computeFlight()" placeholder="Amount"
+                                                   type="number">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Subtotal<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-3 col-sm-3 col-xs-12">
+                                            <input class="form-control col-md-3 col-xs-12" name="subtotal"
+                                                   readonly id="subtotal"
+                                                   onchange="computeFlight(), changeCard()"
+                                                   placeholder="Subtotal"
+                                                   type="number">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Receipt<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                            <input type="file" class="form-control col-md-2 col-xs-12"
+                                                   name="personnelReceipt" placeholder="Receipt"
+                                                   id="personnelReceipt" data-role="magic-overlay"
+                                                   data-target="#pictureBtn" data-edit="insertImage">
+                                        </div>
+                                    </div>
+                                    <div class="form-group input-group col-md-12">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="hotelBudget">Description</label>
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                                    <textarea class="form-control" name="description"
+                                                              id="flightDescription"></textarea>
+                                        </div>
+                                    </div>
+
+
+                                    <input type="submit" onclick="return flightAlert()"
+                                           style="margin-top: 10px; margin-left: 400px;"
+                                           class="btn btn-primary">
+                                </div>
+                                <div id="noreceipt" style="display:none;">
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                                        <div class="animated flipInY col-lg-7 col-md-7 col-sm-7 col-xs-12">
+                                            <div class="tile-stats" style="padding: 10px;">
+                                                <h3>Budget Left</h3>
+                                                <h2 style="margin-left: 10px;" id="noreceiptbudgetleft">Lorem
+                                                    ipsum psdea itgum rixt.</h2>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                                    </div>
+                                    <div class="form-group input-group col-md-12">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="item-type">Currency</label>
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                            <select class="form-control" name="currency"
+                                                    id="selectcurrency">
+                                                <option value="0" selected="selected" disabled>Select Currency
+                                                </option>
+                                                <option value="PHP">Philippine Peso</option>
+                                                <option value="USD">US Dollar</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Expense Name<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                            <input class="form-control col-md-7 col-xs-12" name="expensename"
+                                                   placeholder="Expense Name" id="expensename"
+                                                   type="text">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Expense Date<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                            <input class="form-control col-md-7 col-xs-12" name="date"
+                                                   id="receiptdate"
+                                                   type="date">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Total<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-3 col-sm-3 col-xs-12">
+                                            <input class="form-control col-md-3 col-xs-12" name="total"
+                                                   placeholder="Total" id="total" onchange="changeCard()"
+                                                   type="number">
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Receipt<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                            <input type="file" class="form-control col-md-2 col-xs-12"
+                                                   name="personnelReceipt" placeholder="Receipt" id="noReceipt"
+                                                   data-role="magic-overlay" data-target="#pictureBtn"
+                                                   data-edit="insertImage">
+                                        </div>
+                                    </div>
+                                    <div class="form-group input-group col-md-12">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="hotelBudget">Description</label>
+                                        <div class="col-md-7  col-sm-7  col-xs-12">
+                                                    <textarea class="form-control" name="description"
+                                                              id="noreceiptDescription"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <input type="submit" style="margin-top: 10px; margin-left: 400px;"
+                                           onclick="return repairAlert()" class="btn btn-primary">
+                                </div>
+                                <div id="repair" style="display: none;">
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                                        <div class="animated flipInY col-lg-7 col-md-7 col-sm-7 col-xs-12">
+                                            <div class="tile-stats" style="padding: 10px;">
+                                                <h3>Budget Left</h3>
+                                                <h2 style="margin-left: 10px;" id="repairbudgetleft">Lorem ipsum
+                                                    psdea itgum rixt.</h2>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                                    </div>
+                                    <div class="form-group input-group col-md-12">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="item-type">Currency</label>
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                            <select class="form-control" name="currency"
+                                                    id="selectcurrency">
+                                                <option value="0" selected="selected" disabled>Select Currency
+                                                </option>
+                                                <option value="PHP">Philippine Peso</option>
+                                                <option value="USD">US Dollar</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Expense Name<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                            <input class="form-control col-md-7 col-xs-12" name="expensename"
+                                                   placeholder="Expense Name" id="repairname"
+                                                   type="text">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Expense Date<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                            <input class="form-control col-md-7 col-xs-12" name="date"
+                                                   id="repairdate"
+                                                   type="date">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Quantity<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-3 col-sm-3 col-xs-12">
+                                            <input class="form-control col-md-3 col-xs-12" name="quantity"
+                                                   id="otherquantity" placeholder="Quantity"
+                                                   type="number">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Amount<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-3 col-sm-3 col-xs-12">
+                                            <input class="form-control col-md-3 col-xs-12" name="price"
+                                                   id="otherprice" placeholder="Amount"
+                                                   type="number">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Subtotal<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-3 col-sm-3 col-xs-12">
+                                            <input class="form-control col-md-3 col-xs-12" name="subtotal"
+                                                   id="othersubtotal" readonly onchange="changeCard()"
+                                                   placeholder="Subtotal"
+                                                   type="number">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="first-name">Receipt<span class="required"></span>
+                                        </label>
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                            <input type="file" class="form-control col-md-2 col-xs-12"
+                                                   name="personnelReceipt" placeholder="Receipt"
+                                                   id="repairReceipt" data-role="magic-overlay"
+                                                   data-target="#pictureBtn" data-edit="insertImage">
+                                        </div>
+                                    </div>
+                                    <div class="form-group input-group col-md-12">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                               for="hotelBudget">Description</label>
+                                        <div class="col-md-7 col-sm-7 col-xs-12">
+                                                    <textarea class="form-control" name="description"
+                                                              id="repairDescription"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <input type="submit" style="margin-top: 10px; margin-left: 400px;"
+                                           onclick="return equipmentAlert()" class="btn btn-primary">
+                                </div>
+
+
+                            </form>
+                            <div class="modal fade" id="myModal" role="dialog">
+                                <div class="modal-dialog">
+
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <form method="POST">
+                                            {% csrf_token %}
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">
+                                                    &times;
+                                                </button>
+                                                <h4 class="modal-title">You have exceeded the budget
+                                                    allocated</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <h4>The amount you are about to request is beyond the budget
+                                                    allocated for this item type.</h4>
+                                                <h4>To make that request, you would need an additional amount
+                                                    of: <b><p id="additional"></p></b></h4>
+                                                <h4>Would you like to <b>change the amount</b> or <b>request for
+                                                    budget extension</b>?</h4>
+                                                <input id="category" name="category" style="display:none">
+                                                <input id="amount" name="amount" style="display:none">
+                                                <input id="expense" name="expense" style="display:none">
+                                                <input id="description" name="description" style="display:none">
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-primary"
+                                                        onclick="window.location={% url 'budgetextensionform' %}">
+                                                    Request for Budget Extension
+                                                </button>
+                                                <button type="button" class="btn btn-default"
+                                                        data-dismiss="modal">Close
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+{% endif %}
+    {% endif %}
+
+
+
+    <script>
+
+        $('#reimbursement').submit(function () {
+            if (document.getElementById('itemType').value == 'Hotel Booking') {
+                $.ajax({
+                    url: "/request_reimbursement/",
+                    type: "POST",
+                    data: {
+                        itemType: $('#itemType').val(),
+                        currency: $('#selectcurrency').val(),
+                        hotellocation: $('#hotellocation').val(),
+                        hotel: $('#hotel').val(),
+                        hotelpax: $('#hotelpax').val(),
+                        hotelcheckin: $('#hotelcheckin').val(),
+                        hotelcheckout: $('#hotelcheckout').val(),
+                        hotelamount: $('#hotelamount').val(),
+                        hoteldays: $('#hoteldays').val(),
+                        hotelreceipt: $('#hotelreceipt').val(),
+                        hoteldescription: $('#hotelDescription').val(),
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    }
+
+                });
+                return false;
+            } else if (document.getElementById('itemType').value == 'Flight Tickets') {
+                $.ajax({
+                    url: "/request_reimbursement/",
+                    type: "POST",
+                    data: {
+                        itemType: $('#itemType').val(),
+                        currency: $('#selectcurrency').val(),
+                        location: $('#location').val(),
+                        destination: $('#destination').val(),
+                        pax: $('#pax').val(),
+                        times: $('#times').val(),
+                        price: $('#price').val(),
+                        departure: $('#flightdeparturedate').val(),
+                        arrival: $('#flightdeparturedate').val(),
+                        amount: $('#subtotal').val(),
+                        receipt: $('#personnelReceipt').val(),
+                        description: $('#flightDescription').val(),
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    }
+
+                });
+                return false;
+            } else if (document.getElementById('itemType').value == 'Field Expense (No Official Receipt)') {
+                $.ajax({
+                    url: "/request_reimbursement/",
+                    type: "POST",
+                    data: {
+                        itemType: $('#itemType').val(),
+                        currency: $('#selectcurrency').val(),
+                        expensename: $('#expensename').val(),
+                        total: $('#total').val(),
+                        date: $('#receiptdate').val(),
+                        receipt: $('#noReceipt').val(),
+                        description: $('#noreceiptDescription').val(),
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    }
+
+                });
+                return false;
+            } else if (document.getElementById('itemType').value == 'Field Expense (Repair and Maintenance of Equipment)') {
+                $.ajax({
+                    url: "/request_reimbursement/",
+                    type: "POST",
+                    data: {
+                        itemType: $('#itemType').val(),
+                        currency: $('#selectcurrency').val(),
+                        expensename: $('#expensename').val(),
+                        total: $('#total').val(),
+                        date: $('#receiptdate').val(),
+                        receipt: $('#noReceipt').val(),
+                        description: $('#noreceiptDescription').val(),
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    }
+
+                });
+                return false;
+            } else if (document.getElementById('itemType').value == 'Scientific Equipment and Supplies') {
+                $.ajax({
+                    url: "/request_reimbursement/",
+                    type: "POST",
+                    data: {
+                        itemType: $('#itemType').val(),
+                        currency: $('#selectcurrency').val(),
+                        expenseName: $('#repairname').val(),
+                        location: $('#location').val(),
+                        quantity: $('#otherquantity').val(),
+                        price: $('#otherprice').val(),
+                        date: $('#repairdate').val(),
+                        amount: $('#othersubtotal').val(),
+                        receipt: $('#repairReceipt').val(),
+                        description: $('#repairDescription').val(),
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    }
+
+                });
+                return false;
+            } else if (document.getElementById('itemType').value == 'Scientific Software and Databases') {
+                $.ajax({
+                    url: "/request_reimbursement/",
+                    type: "POST",
+                    data: {
+                        itemType: $('#itemType').val(),
+                        currency: $('#selectcurrency').val(),
+                        expenseName: $('#repairname').val(),
+                        location: $('#location').val(),
+                        quantity: $('#otherquantity').val(),
+                        price: $('#otherprice').val(),
+                        date: $('#repairdate').val(),
+                        amount: $('#othersubtotal').val(),
+                        receipt: $('#repairReceipt').val(),
+                        description: $('#repairDescription').val(),
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    }
+
+                });
+                return false;
+            } else if (document.getElementById('itemType').value == 'Research Dissemination Expenses') {
+                $.ajax({
+                    url: "/request_reimbursement/",
+                    type: "POST",
+                    data: {
+                        itemType: $('#itemType').val(),
+                        currency: $('#selectcurrency').val(),
+                        expenseName: $('#repairname').val(),
+                        location: $('#location').val(),
+                        quantity: $('#otherquantity').val(),
+                        price: $('#otherprice').val(),
+                        date: $('#repairdate').val(),
+                        amount: $('#othersubtotal').val(),
+                        receipt: $('#repairReceipt').val(),
+                        description: $('#repairDescription').val(),
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    }
+
+                });
+                return false;
+            } else if (document.getElementById('itemType').value == 'Specialized Scientific/Laboratory Services') {
+                $.ajax({
+                    url: "/request_reimbursement/",
+                    type: "POST",
+                    data: {
+                        itemType: $('#itemType').val(),
+                        currency: $('#selectcurrency').val(),
+                        expenseName: $('#repairname').val(),
+                        location: $('#location').val(),
+                        quantity: $('#otherquantity').val(),
+                        price: $('#otherprice').val(),
+                        date: $('#repairdate').val(),
+                        amount: $('#othersubtotal').val(),
+                        receipt: $('#repairReceipt').val(),
+                        description: $('#repairDescription').val(),
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    }
+
+                });
+                return false;
+            } else if (document.getElementById('itemType').value == 'Scientific Literature') {
+                $.ajax({
+                    url: "/request_reimbursement/",
+                    type: "POST",
+                    data: {
+                        itemType: $('#itemType').val(),
+                        currency: $('#selectcurrency').val(),
+                        expenseName: $('#repairname').val(),
+                        location: $('#location').val(),
+                        quantity: $('#otherquantity').val(),
+                        price: $('#otherprice').val(),
+                        date: $('#repairdate').val(),
+                        amount: $('#othersubtotal').val(),
+                        receipt: $('#repairReceipt').val(),
+                        description: $('#repairDescription').val(),
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    }
+
+                });
+                return false;
+            }
+
+
+        });
+
+
+    </script>
+
+    <script>
+        //GET NUMBER OF NIGHTS AND DISPLAY
+        function GetDays() {
+            var checkin = new Date(document.getElementById("hotelcheckin").value);
+            var checkout = new Date(document.getElementById("hotelcheckout").value);
+            return parseInt((checkout - checkin) / (24 * 3600 * 1000));
+        }
+
+        function cal() {
+            if (document.getElementById("hotelcheckout")) {
+                document.getElementById("hoteldays").value = GetDays();
+            }
+        }
+    </script>
+    <script>
+        $("#hotelDescription").change(function () {
+            budgetleft =
+            {{ accomodations.subtotal|safe }}
+
+            if ($("#hotelamount").val() > budgetleft) {
+                $("#myModal").modal();
+                document.getElementById('additional').innerHTML = $("#hotelamount").val() - budgetleft
+                document.getElementById('category').value = 'Accomodations'
+                document.getElementById('amount').value = $("#hotelamount").val() - budgetleft
+                document.getElementById('expense').value = $("#itemType").val()
+                document.getElementById('description').value = $("#hotelDescription").val()
+            }
+        });
+        $("#flightDescription").change(function () {
+            budgetleft = {{ transportation.subtotal|safe }};
+
+            if ($("#subtotal").val() > budgetleft) {
+                $("#myModal").modal();
+                document.getElementById('additional').innerHTML = $("#subtotal").val() - budgetleft
+                document.getElementById('category').value = 'Transportation'
+                document.getElementById('amount').value = $("#subtotal").val() - budgetleft
+                document.getElementById('expense').value = $("#itemType").val()
+                document.getElementById('description').value = $("#flightDescription").val()
+            }
+        });
+        $("#noreceiptDescription").change(function () {
+            budgetleft = {{ others.subtotal|safe }};
+
+            if ($("#total").val() > budgetleft) {
+                $("#myModal").modal();
+                document.getElementById('additional').innerHTML = $("#total").val() - budgetleft
+                document.getElementById('category').value = 'Other Expense'
+                document.getElementById('amount').value = $("#total").val() - budgetleft
+                document.getElementById('expense').value = $("#itemType").val()
+                document.getElementById('description').value = $("#noreceiptDescription").val()
+            }
+        });
+        $("#repairDescription").change(function () {
+            equipment = {{ equipment.subtotal|safe }};
+            supplies = {{ supplies.subtotal|safe }};
+            training = {{ training.subtotal|safe }};
+            x = document.getElementById('otherquantity').value;
+            y = document.getElementById('otherprice').value;
+            document.getElementById('othersubtotal').value = x * y;
+
+
+            if ($("#itemType").val() == 'Scientific Equipment and Supplies' || $("#itemType").val() == 'Specialized Scientific/Laboratory Services') {
+                if ($("#othersubtotal").val() > equipment) {
+                    $("#myModal").modal();
+                    document.getElementById('additional').innerHTML = $("#othersubtotal").val() - equipment
+                    document.getElementById('category').value = 'Equipment'
+                    document.getElementById('amount').value = $("#othersubtotal").val() - equipment
+                    document.getElementById('expense').value = $("#itemType").val()
+                    document.getElementById('description').value = $("#repairDescription").val()
+                }
+            }
+            if ($("#itemType").val() == 'Scientific Software and Databases' || $("#itemType").val() == 'Scientific Literature') {
+                if ($("#othersubtotal").val() > supplies) {
+                    $("#myModal").modal();
+                    document.getElementById('additional').innerHTML = $("#othersubtotal").val() - supplies
+                    document.getElementById('category').value = 'Supplies and Materials'
+                    document.getElementById('amount').value = $("#othersubtotal").val() - supplies
+                    document.getElementById('expense').value = $("#itemType").val()
+                    document.getElementById('description').value = $("#repairDescription").val()
+                }
+            }
+            if ($("#itemType").val() == 'Research Dissemination Expenses') {
+                if ($("#othersubtotal").val() > training) {
+                    $("#myModal").modal();
+                    document.getElementById('additional').innerHTML = $("#othersubtotal").val() - training
+                    document.getElementById('category').value = 'Training'
+                    document.getElementById('amount').value = $("#othersubtotal").val() - training
+                    document.getElementById('expense').value = $("#itemType").val()
+                    document.getElementById('description').value = $("#repairDescription").val()
+                }
+            }
+
+        })
+
+        function expenseAlert() {
+            var amount = document.getElementById('hotelamount').value;
+            var days = document.getElementById('hoteldays').value;
+            var hotel = document.getElementById('hotellocation').value;
+            budgetleft =
+            {{ accomodations.subtotal|safe }}
+            if (amount > 8000 && hotel == 'Overseas') {
+                alert('You have exceeded the maximum allowable amount for this item type!');
+                return false;
+            } else if (amount > 5000 && hotel == 'Local') {
+                alert('You have exceeded the maximum allowable amount for this item type!');
+                return false;
+            } else {
+                alert('Request forwarded!')
+            }
+            if (amount > budgetleft) {
+                alert('You have exceeded the budget allocated for this item type')
+                return false;
+            } else {
+                alert('Request forwarded!')
+            }
+        }
+
+        function flightAlert() {
+            amount = document.getElementById('subtotal').value;
+            hotel = document.getElementById('location').value;
+            budgetleft =
+            {{ transportation.subtotal|safe }}
+            if (amount > 80000 && hotel == 'Within Asia') {
+                alert('You have exceeded the maximum allowable amount for this item type!');
+                return false;
+            } else if (amount > 30000 && hotel == 'Outside Asia') {
+                alert('You have exceeded the maximum allowable amount for this item type!');
+                return false;
+            } else {
+                alert('Request forwarded!')
+            }
+            if (amount > budgetleft) {
+                alert('You have exceeded the budget allocated for this item type')
+                return false;
+            } else {
+                alert('Request forwarded!')
+            }
+        }
+
+        function repairAlert() {
+            budgetleft = {{ others.subtotal|safe }}
+                itemtype = document.getElementById('itemType').value;
+            total = document.getElementById('total').value;
+
+            if (itemtype == 'Field Expense (Repair and Maintenance of Equipment)') {
+                if (total > 15000) {
+                    alert('You have exceeded the maximum allowable amount for this item type!');
+                    return false;
+                } else {
+                    alert('Request forwarded!')
+                }
+                if (total > budgetleft) {
+                    alert('You have exceeded the budget allocated for this item type')
+                    return false;
+                } else {
+                    alert('Request forwarded!')
+                }
+            } else if (itemtype == 'Field Expense (No Official Receipt)') {
+                if (total > 10000) {
+                    alert('You have exceeded the maximum allowable amount for this item type!');
+                    return false;
+                } else {
+                    alert('Request forwarded!')
+                }
+                if (total > budgetleft) {
+                    alert('You have exceeded the budget allocated for this item type')
+                    return false;
+                } else {
+                    alert('Request forwarded!')
+                }
+            }
+
+
+        }
+
+        function equipmentAlert() {
+            equipment = {{ equipment.subtotal|safe }}
+                supplies = {{ supplies.subtotal|safe }}
+                    training = {{ training.subtotal|safe }}
+                        total = document.getElementById('othersubtotal').value;
+            itemtype = document.getElementById('itemType').value;
+
+            if (itemtype == 'Scientific Equipment and Supplies' || itemtype == 'Specialized Scientific/Laboratory Services' || itemtype == 'Scientific Software and Databases') {
+                if (total > 80000) {
+                    alert('You have exceeded the maximum allowable amount for this item type!');
+                    return false;
+                } else {
+                    alert('Request forwarded!')
+                }
+            } else if (itemtype == 'Scientific Literature') {
+                if (total > 20000) {
+                    alert('You have exceeded the maximum allowable amount for this item type!');
+                    return false;
+                } else {
+                    alert('Request forwarded!')
+                }
+            } else if (itemtype == 'Research Dissemination Expenses') {
+                if (total > 40000) {
+                    alert('You have exceeded the maximum allowable amount for this item type!');
+                    return false;
+                } else {
+                    alert('Request forwarded!')
+                }
+            }
+
+            if (itemtype == 'Scientific Equipment and Supplies' || itemtype == 'Specialized Scientific/Laboratory Services') {
+                if (total > equipment) {
+                    alert('You have exceeded the budget allocated for this item type')
+                    return false;
+                } else {
+                    alert('Request forwarded!')
+                }
+            } else if (itemtype == 'Scientific Software and Databases' || itemtype == 'Scientific Literature') {
+                if (total > supplies) {
+                    alert('You have exceeded the budget allocated for this item type')
+                    return false;
+                } else {
+                    alert('Request forwarded!')
+                }
+            } else if (itemtype == 'Research Dissemination Expenses') {
+                if (total > training) {
+                    alert('You have exceeded the budget allocated for this item type')
+                    return false;
+                } else {
+                    alert('Request forwarded!')
+                }
+            }
+
+        }
+    </script>
+    <script>
+        $('#hotelcheckout').change(function () {
+            var formatstart = new Date("{{ project.startDate.isoformat }}");
+            var twostartMonth = ((formatstart.getMonth().length + 1) === 1) ? (formatstart.getMonth() + 1) : (formatstart.getMonth() + 1);
+
+            var formatend = new Date("{{ project.endDate.isoformat }}");
+            var twoendMonth = ((formatend.getMonth().length + 1) === 1) ? (formatend.getMonth() + 1) : (formatend.getMonth() + 1);
+
+            var fullDate = new Date();
+            var twoDigitMonth = ((fullDate.getMonth().length + 1) === 1) ? (fullDate.getMonth() + 1) : (fullDate.getMonth() + 1);
+
+            if (formatstart.getDate() > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+                if ($('#hotelcheckout').val() < startDate) {
+
+                }
+                if ($('#hotelcheckin').val() < startDate) {
+
+                }
+            } else if (twostartMonth > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#hotelcheckout').val() < startDate) {
+
+                }
+                if ($('#hotelcheckin').val() < startDate) {
+
+                }
+            } else if (formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + '0' + formatstart.getDate();
+
+                if ($('#hotelcheckout').val() < startDate) {
+
+                }
+                if ($('#hotelcheckin').val() < startDate) {
+
+                }
+            } else if (twostartMonth < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#hotelcheckout').val() < startDate) {
+
+                }
+                if ($('#hotelcheckin').val() < startDate) {
+
+                }
+            } else if (twostartMonth < 10 && formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + '0' + formatstart.getDate();
+
+
+                if ($('#hotelcheckout').val() < startDate) {
+
+                }
+                if ($('#hotelcheckin').val() < startDate) {
+
+                }
+            }
+
+            if (formatend.getDate() > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+                if ($('#hotelcheckout').val() > endDate) {
+
+                }
+
+
+                if ($('#hotelcheckin').val() > endDate) {
+
+                }
+            } else if (twoendMonth > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#hotelcheckout').val() > endDate) {
+
+                }
+
+
+                if ($('#hotelcheckin').val() > endDate) {
+
+                }
+            } else if (formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + '0' + formatend.getDate();
+
+                if ($('#hotelcheckout').val() > endDate) {
+
+                }
+
+
+                if ($('#hotelcheckin').val() > endDate) {
+
+                }
+            } else if (twoendMonth < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#hotelcheckout').val() > endDate) {
+
+                }
+
+
+                if ($('#hotelcheckin').val() > endDate) {
+
+                }
+            } else if (twoendMonth < 10 && formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + '0' + formatend.getDate();
+
+
+                if ($('#hotelcheckout').val() > endDate) {
+
+                }
+
+
+                if ($('#hotelcheckin').val() > endDate) {
+
+                }
+            }
+
+            if (fullDate.getDate() > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#hotelcheckout').val() > currentDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+                if ($('#hotelcheckin').val() > currentDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+            } else if (twoDigitMonth > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#hotelcheckout').val() > currentDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+                if ($('#hotelcheckin').val() > currentDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+            } else if (fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+                if ($('#hotelcheckout').val() > currentDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+                if ($('#hotelcheckin').val() > currentDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+            } else if (twoDigitMonth < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#hotelcheckout').val() > currentDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+                if ($('#hotelcheckin').val() > currentDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+            } else if (twoDigitMonth < 10 && fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+
+                if ($('#hotelcheckout').val() > currentDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+                if ($('#hotelcheckin').val() > currentDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+            }
+
+            if ($('#hotelcheckin').val() > $('#hotelcheckout').val()) {
+                alert('Check-in date cannot be later than the check-out date!')
+            }
+
+
+        });
+
+        $('#flightdeparturedate').change(function () {
+            var formatstart = new Date("{{ project.startDate.isoformat }}");
+            var twostartMonth = ((formatstart.getMonth().length + 1) === 1) ? (formatstart.getMonth() + 1) : (formatstart.getMonth() + 1);
+
+            var formatend = new Date("{{ project.endDate.isoformat }}");
+            var twoendMonth = ((formatend.getMonth().length + 1) === 1) ? (formatend.getMonth() + 1) : (formatend.getMonth() + 1);
+
+            var fullDate = new Date();
+            var twoDigitMonth = ((fullDate.getMonth().length + 1) === 1) ? (fullDate.getMonth() + 1) : (fullDate.getMonth() + 1);
+
+
+            if (formatstart.getDate() > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+                if ($('#flightdeparturedate').val() < startDate) {
+
+                }
+
+            } else if (twostartMonth > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#flightdeparturedate').val() < startDate) {
+
+                }
+
+            } else if (formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth  + "-" + '0' + formatstart.getDate();
+
+                if ($('#flightdeparturedate').val() < startDate) {
+
+                }
+
+            } else if (twostartMonth < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#flightdeparturedate').val() < startDate) {
+
+                }
+
+            } else if (twostartMonth < 10 && formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + '0' + formatstart.getDate();
+
+
+                if ($('#flightdeparturedate').val() < startDate) {
+
+                }
+
+            }
+            if (formatend.getDate() > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+                if ($('#flightdeparturedate').val() > endDate) {
+
+                }
+            } else if (twoendMonth > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#flightdeparturedate').val() > endDate) {
+
+                }
+            } else if (formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + '0' + formatend.getDate();
+
+                if ($('#flightdeparturedate').val() > endDate) {
+
+                }
+            } else if (twoendMonth < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#flightdeparturedate').val() > endDate) {
+
+                }
+            } else if (twoendMonth < 10 && formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + '0' + formatend.getDate();
+
+
+                if ($('#flightdeparturedate').val() > endDate) {
+
+                }
+            }
+
+            if (fullDate.getDate() > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#flightdeparturedate').val() > currentDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+
+            } else if (twoDigitMonth > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#flightdeparturedate').val() > currentDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+
+            } else if (fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+                if ($('#flightdeparturedate').val() > currentDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+
+            } else if (twoDigitMonth < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#flightdeparturedate').val() > currentDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+
+            } else if (twoDigitMonth < 10 && fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+
+                if ($('#flightdeparturedate').val() > currentDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+
+            }
+
+            if ($('#flightarrivaldate').val() < $('#flightdeparturedate').val()) {
+                alert('Arrival date cannot be later than the departure date.')
+            }
+
+
+
+        });
+        $('#flightarrivaldate').change(function () {
+            var formatstart = new Date("{{ project.startDate.isoformat }}");
+            var twostartMonth = ((formatstart.getMonth().length + 1) === 1) ? (formatstart.getMonth() + 1) : (formatstart.getMonth() + 1);
+
+            var formatend = new Date("{{ project.endDate.isoformat }}");
+            var twoendMonth = ((formatend.getMonth().length + 1) === 1) ? (formatend.getMonth() + 1) : (formatend.getMonth() + 1);
+
+            var fullDate = new Date();
+            var twoDigitMonth = ((fullDate.getMonth().length + 1) === 1) ? (fullDate.getMonth() + 1) : (fullDate.getMonth() + 1);
+
+
+            if (formatstart.getDate() > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+                if ($('#flightarrivaldate').val() < startDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+            } else if (twostartMonth > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#flightarrivaldate').val() < startDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+            } else if (formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + '0' + formatstart.getDate();
+
+                if ($('#flightarrivaldate').val() < startDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+            } else if (twostartMonth < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#flightarrivaldate').val() < startDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+            } else if (twostartMonth < 10 && formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + '0' + formatstart.getDate();
+
+
+                if ($('#flightarrivaldate').val() < startDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+            }
+
+            if (formatend.getDate() > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+                if ($('#flightarrivaldate').val() > endDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+            } else if (twoendMonth > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#flightarrivaldate').val() > endDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+            } else if (formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + '0' + formatend.getDate();
+
+                if ($('#flightarrivaldate').val() > endDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+            } else if (twoendMonth < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#flightarrivaldate').val() > endDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+            } else if (twoendMonth < 10 && formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + '0' + formatend.getDate();
+
+
+                if ($('#flightarrivaldate').val() > endDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+            }
+
+            if (fullDate.getDate() > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#flightarrivaldate').val() > currentDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+
+            } else if (twoDigitMonth > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#flightarrivaldate').val() > currentDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+
+            } else if (fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+                if ($('#flightarrivaldate').val() > currentDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+
+            } else if (twoDigitMonth < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#flightarrivaldate').val() > currentDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+
+            } else if (twoDigitMonth < 10 && fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+
+                if ($('#flightarrivaldate').val() > currentDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+
+            }
+
+        });
+        $('#receiptdate').change(function () {
+            var formatstart = new Date("{{ project.startDate.isoformat }}");
+            var twostartMonth = ((formatstart.getMonth().length + 1) === 1) ? (formatstart.getMonth() + 1) : (formatstart.getMonth() + 1);
+
+            var formatend = new Date("{{ project.endDate.isoformat }}");
+            var twoendMonth = ((formatend.getMonth().length + 1) === 1) ? (formatend.getMonth() + 1) : (formatend.getMonth() + 1);
+
+            var fullDate = new Date();
+            var twoDigitMonth = ((fullDate.getMonth().length + 1) === 1) ? (fullDate.getMonth() + 1) : (fullDate.getMonth() + 1);
+
+
+            if (formatstart.getDate() > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+                if ($('#receiptdate').val() < startDate) {
+
+                }
+            } else if (twostartMonth > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#receiptdate').val() < startDate) {
+
+                }
+            } else if (formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + '0' + formatstart.getDate();
+
+                if ($('#receiptdate').val() < startDate) {
+
+                }
+            } else if (twostartMonth < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#receiptdate').val() < startDate) {
+
+                }
+            } else if (twostartMonth < 10 && formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + '0' + formatstart.getDate();
+
+
+                if ($('#receiptdate').val() < startDate) {
+
+                }
+            }
+
+            if (formatend.getDate() > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+                if ($('#receiptdate').val() > endDate) {
+
+                }
+            } else if (twoendMonth > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#receiptdate').val() > endDate) {
+
+                }
+            } else if (formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + '0' + formatend.getDate();
+
+                if ($('#receiptdate').val() > endDate) {
+
+                }
+            } else if (twoendMonth < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#receiptdate').val() > endDate) {
+
+                }
+            } else if (twoendMonth < 10 && formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + '0' + formatend.getDate();
+
+
+                if ($('#receiptdate').val() > endDate) {
+
+
+                }
+            }
+
+            if (fullDate.getDate() > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#receiptdate').val() > currentDate) {
+
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+
+            } else if (twoDigitMonth > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#receiptdate').val() > currentDate) {
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+
+            } else if (fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+                if ($('#receiptdate').val() > currentDate) {
+
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+
+            } else if (twoDigitMonth < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#receiptdate').val() > currentDate) {
+
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+
+            } else if (twoDigitMonth < 10 && fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+
+                if ($('#receiptdate').val() > currentDate) {
+
+                    alert('Only purchases/transactions made today and before today can be reimbursed.')
+                }
+
+            }
+
+
+        });
+        $('#repairdate').change(function () {
+            var formatstart = new Date("{{ project.startDate.isoformat }}");
+            var twostartMonth = ((formatstart.getMonth().length + 1) === 1) ? (formatstart.getMonth() + 1): (formatstart.getMonth() + 1);
+
+            var formatend = new Date("{{ project.endDate.isoformat }}");
+            var twoendMonth = ((formatend.getMonth().length + 1) === 1) ? (formatend.getMonth() + 1) : (formatend.getMonth() + 1);
+
+            var fullDate = new Date();
+            var twoDigitMonth = ((fullDate.getMonth().length + 1) === 1) ? (fullDate.getMonth() + 1) : (fullDate.getMonth() + 1);
+
+
+            if (formatstart.getDate() > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+                if ($('#repairdate').val() < startDate) {
+
+            }
+            } else if (twostartMonth > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#repairdate').val() < startDate) {
+
+            }
+            } else if (formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + '0' + formatstart.getDate();
+
+                if ($('#repairdate').val() < startDate) {
+
+            }
+            } else if (twostartMonth < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#repairdate').val() < startDate) {
+
+            }
+            } else if (twostartMonth < 10 && formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' +  twostartMonth + "-" + '0' + formatstart.getDate();
+
+
+                if ($('#repairdate').val() < startDate) {
+
+            }
+            }
+
+            if (formatend.getDate() > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+
+                  if ($('#repairdate').val() > endDate) {
+
+            }
+            } else if (twoendMonth > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+
+                  if ($('#repairdate').val() > endDate) {
+
+            }
+            } else if (formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + '0' + formatend.getDate();
+
+                  if ($('#repairdate').val() > endDate) {
+
+            }
+            } else if (twoendMonth < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + formatend.getDate();
+
+
+                  if ($('#repairdate').val() > endDate) {
+
+            }
+            } else if (twoendMonth < 10 && formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + '0' + formatend.getDate();
+
+
+                  if ($('#repairdate').val() > endDate) {
+
+            }
+            }
+            if (fullDate.getDate() > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#repairdate').val() > currentDate) {
+                alert('Only purchases/transactions made today and before today can be reimbursed.')
+            }
+
+            } else if (twoDigitMonth > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#repairdate').val() > currentDate) {
+                alert('Only purchases/transactions made today and before today can be reimbursed.')
+            }
+
+            } else if (fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+                if ($('#repairdate').val() > currentDate) {
+                alert('Only purchases/transactions made today and before today can be reimbursed.')
+            }
+
+            } else if (twoDigitMonth < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#repairdate').val() > currentDate) {
+                alert('Only purchases/transactions made today and before today can be reimbursed.')
+            }
+
+            } else if (twoDigitMonth < 10 && fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+
+                if ($('#repairdate').val() > currentDate) {
+                alert('Only purchases/transactions made today and before today can be reimbursed.')
+            }
+
+            }
+        });
+    </script>
+    <script>
+        $('#hotelamount').keyup(function () {
+            amount = document.getElementById("hotelamount").value
+            document.getElementById("hotelbudgetleft").innerHTML = {{ accomodations.subtotal|safe }} -amount
+        });
+        $('#price').keyup(function () {
+            amount = document.getElementById("subtotal").value
+            document.getElementById("flightbudgetleft").innerHTML = {{ transportation.subtotal|safe }} -amount
+        });
+        $('#total').keyup(function () {
+            amount = document.getElementById("total").value
+            document.getElementById("noreceiptbudgetleft").innerHTML = {{ others.subtotal|safe }} -amount
+        });
+
+        if (document.getElementById('itemType').value == 'Equipment') {
+            $('#othersubtotal').change(function () {
+                amount = document.getElementById("othersubtotal").value
+                document.getElementById("repairbudgetleft").innerHTML = {{ equipment.subtotal|safe }} -amount
+            })
+        }
+
+    </script>
+
+    <script>
+        function changeCard() {
+            if (document.getElementById('itemType').value == 'Hotel Booking') {
+                amount = document.getElementById("hotelamount").value
+                document.getElementById("hotelbudgetleft").innerHTML = {{ accomodations.subtotal|safe }} -amount
+
+            }
+            if (document.getElementById('itemType').value == 'Flight Tickets') {
+                amount = document.getElementById("subtotal").value
+                document.getElementById("flightbudgetleft").innerHTML = {{ transportation.subtotal|safe }} -amount
+            }
+            if (document.getElementById('itemType').value == 'Field Expense (No Receipt)') {
+                amount = document.getElementById("total").value
+                document.getElementById("noreceiptbudgetleft").innerHTML = {{ others.subtotal|safe }} -amount
+            }
+            if (document.getElementById('itemType').value == 'Field Expense (Repair and Maintenance of Equipment)') {
+                amount = document.getElementById("total").value
+                document.getElementById("noreceiptbudgetleft").innerHTML = {{ others.subtotal|safe }} -amount
+            }
+            if (document.getElementById('itemType').value == 'Scientific Equipment and Supplies') {
+                amount = document.getElementById("othersubtotal").value
+                document.getElementById("repairbudgetleft").innerHTML = {{ equipment.subtotal|safe }} -amount
+            }
+            if (document.getElementById('itemType').value == 'Specialized Scientific/Laboratory Services') {
+                amount = document.getElementById("othersubtotal").value
+                document.getElementById("repairbudgetleft").innerHTML = {{ equipment.subtotal|safe }} -amount
+            }
+            if (document.getElementById('itemType').value == 'Scientific Software and Databases') {
+                amount = document.getElementById("othersubtotal").value
+                document.getElementById("repairbudgetleft").innerHTML = {{ supplies.subtotal|safe }} -amount
+            }
+            if (document.getElementById('itemType').value == 'Scientific Literature') {
+                amount = document.getElementById("othersubtotal").value
+                document.getElementById("repairbudgetleft").innerHTML = {{ supplies.subtotal|safe }} -amount
+            }
+            if (document.getElementById('itemType').value == 'Research Dissemination Expenses') {
+                amount = document.getElementById("othersubtotal").value
+                document.getElementById("repairbudgetleft").innerHTML = {{ training.subtotal|safe }} -amount
+            }
+
+
+        }
+    </script>
+
+    <script>
+        function yesNoCheck() {
+            if (document.getElementById('itemType').value == 'Hotel Booking') {
+                document.getElementById('hotelbooking').style.display = "block";
+                document.getElementById("flightdetails").style.display = "none";
+                document.getElementById("noreceipt").style.display = "none";
+                document.getElementById("repair").style.display = "none";
+                document.getElementById("hotelbudgetleft").innerHTML =
+                {{ accomodations.subtotal|safe }}
+
+            } else if (document.getElementById('itemType').value == 'Flight Tickets') {
+                document.getElementById('hotelbooking').style.display = "none";
+                document.getElementById("flightdetails").style.display = "block";
+                document.getElementById("noreceipt").style.display = "none";
+                document.getElementById("repair").style.display = "none";
+                document.getElementById("flightbudgetleft").innerHTML =
+                {{ transportation.subtotal|safe }}
+            } else if (document.getElementById('itemType').value == 'Field Expense (No Official Receipt)') {
+                document.getElementById('hotelbooking').style.display = "none";
+                document.getElementById("flightdetails").style.display = "none";
+                document.getElementById("noreceipt").style.display = "block";
+                document.getElementById("repair").style.display = "none";
+                document.getElementById("noreceiptbudgetleft").innerHTML =
+                {{ others.subtotal|safe }}
+            } else if (document.getElementById('itemType').value == 'Field Expense (Repair and Maintenance of Equipment)') {
+                document.getElementById('hotelbooking').style.display = "none";
+                document.getElementById("flightdetails").style.display = "none";
+                document.getElementById("noreceipt").style.display = "block";
+                document.getElementById("repair").style.display = "none";
+                document.getElementById("noreceiptbudgetleft").innerHTML =
+                {{ others.subtotal|safe }}
+            } else if (document.getElementById('itemType').value == 'Scientific Equipment and Supplies') {
+                document.getElementById('hotelbooking').style.display = "none";
+                document.getElementById("flightdetails").style.display = "none";
+                document.getElementById("noreceipt").style.display = "none";
+                document.getElementById("repair").style.display = "block";
+                document.getElementById("repairbudgetleft").innerHTML =
+                {{ equipment.subtotal|safe }}
+            } else if (document.getElementById('itemType').value == 'Specialized Scientific/Laboratory Services') {
+                document.getElementById('hotelbooking').style.display = "none";
+                document.getElementById("flightdetails").style.display = "none";
+                document.getElementById("noreceipt").style.display = "none";
+                document.getElementById("repair").style.display = "block";
+                document.getElementById("repairbudgetleft").innerHTML =
+                {{ equipment.subtotal|safe }}
+            } else if (document.getElementById('itemType').value == 'Scientific Software and Databases') {
+                document.getElementById('hotelbooking').style.display = "none";
+                document.getElementById("flightdetails").style.display = "none";
+                document.getElementById("noreceipt").style.display = "none";
+                document.getElementById("repair").style.display = "block";
+                document.getElementById("repairbudgetleft").innerHTML =
+                {{ supplies.subtotal|safe }}
+            } else if (document.getElementById('itemType').value == 'Scientific Literature') {
+                document.getElementById('hotelbooking').style.display = "none";
+                document.getElementById("flightdetails").style.display = "none";
+                document.getElementById("noreceipt").style.display = "none";
+                document.getElementById("repair").style.display = "block";
+                document.getElementById("repairbudgetleft").innerHTML =
+                {{ supplies.subtotal|safe }}
+            } else if (document.getElementById('itemType').value == 'Research Dissemination Expenses') {
+                document.getElementById('hotelbooking').style.display = "none";
+                document.getElementById("flightdetails").style.display = "none";
+                document.getElementById("noreceipt").style.display = "none";
+                document.getElementById("repair").style.display = "block";
+                document.getElementById("repairbudgetleft").innerHTML =
+                {{ training.subtotal|safe }}
+            }
+        }
+    </script>
+
+    <script>
+        function computeFlight() {
+            x = document.getElementById('pax').value;
+            y = document.getElementById('price').value;
+            document.getElementById('subtotal').value = x * y;
+        }
+
+    </script>
+    <script>
+
+    </script>
+
+    <script>
+        function changeTicket() {
+            if (document.getElementById('tickettype').value == 'One-Way') {
+                document.getElementById('flightarrivaldate').style.display = "none";
+            } else if (document.getElementById('tickettype').value == 'Roundtrip') {
+                document.getElementById('flightarrivaldate').style.display = "block";
+            }
+        }
+
+    </script>
+
+{% endblock %}

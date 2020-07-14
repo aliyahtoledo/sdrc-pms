@@ -1,0 +1,505 @@
+{% extends 'sdrc/base.html' %}
+
+{% block style %}
+    <style>
+        .modal-content {
+            width: 120%;
+
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="x_panel">
+        <div class="x_title">
+            <h2>Create Tasks</h2>
+
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i
+                            class="fa fa-wrench"></i></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Settings 1</a>
+                        </li>
+                        <li><a href="#">Settings 2</a>
+                        </li>
+                    </ul>
+                </li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+{% if messages %}
+    <div class="alert alert-danger alert-dismissible fade in" role="alert" style="height: 50%; width: 50%;">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+                    </button>
+                     <ul class="messages">
+    {% for message in messages %}
+      <li class="{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+                  </div>
+{% endif %}
+
+
+
+
+        <div class="x_content">
+            {% for ms in milestones %}
+                <!--first row-->
+
+
+                <div class="panel-group" >
+                <div class="panel panel-default" style="margin-bottom: 20px">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+
+
+                            <a data-toggle="collapse" href="#collapse1">
+                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
+                                        data-target="#milestonemodal-{{ ms.id }}"><span><i
+                                        class="fa fa-plus-circle"></i></span> {{ ms.milestoneName }}</button>
+                            </a><div style="float: right;  ">{{ ms.milestonestartDate }} - {{ ms.milestoneendDate }}</div>
+                            <!--MODAL-->
+                            <div class="modal fade bs-example-modal-lg" id="milestonemodal-{{ ms.id }}" tabindex="-1"
+                                 role="dialog" aria-hidden="true" style="display: none;">
+
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"><span
+                                                    aria-hidden="true">×</span>
+                                            </button>
+                                            <h4 class="modal-title" id="myModalLabel">Input Tasks
+                                                for {{ ms.milestoneName }} Milestone</h4>
+                                        </div>
+
+                                        <div class="modal-body">
+
+                                            <form class="form-horizontal form-label-left input_mask" id="taskform"
+                                                  onsubmit="return mySubmitFunction('{{ ms.milestonestartDate }}', '{{ ms.milestoneendDate }}')" method="POST">
+                                                {% csrf_token %}
+
+
+                                                <input class="form-control col-md-7 col-xs-12" name="milestoneID"
+                                                       type="text" value="{{ ms.id }}" style="display: none;">
+                                                <input class="form-control col-md-7 col-xs-12" id="milestonestartDate"
+                                                       type="text" value="{{ ms.milestonestartDate }}" style="display: none;"
+                                                       >
+                                                <input class="form-control col-md-7 col-xs-12" id="milestoneendDate"
+                                                       type="text" value="{{ ms.milestoneendDate }}" style="display: none;"
+                                                       >
+
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                           for="first-name">Task Name<span class="required"></span>
+                                                    </label>
+                                                    <div class="col-md-7 col-sm-7 col-xs-12">
+                                                        {{ form.taskName }}
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                           for="first-name">Assigned To<span class="required"></span>
+                                                    </label>
+                                                    <div class="col-md-7 col-sm-7 col-xs-12">
+                                                        <select class="form-control col-md-7 col-xs-12"
+                                                                name="assignedTo" id="assignedTo">
+                                                            {% for member in members %}
+                                                                <option value="{{ member.member.first_name }} {{ member.member.last_name }}">{{ member.member.first_name }} {{ member.member.last_name }} - {{ member.role }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                           for="first-name">Start Date<span class="required"></span>
+                                                    </label>
+                                                    <div class="col-md-7 col-sm-7 col-xs-12">
+                                                        {{ form.taskstartDate }}
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                           for="first-name">Due Date<span class="required"></span>
+                                                    </label>
+                                                    <div class="col-md-7 col-sm-7 col-xs-12">
+                                                        {{ form.taskendDate }}
+                                                    </div>
+                                                </div>
+
+
+                                                <!-- end of modal-body-->
+                                                <hr>
+                                                <div class="form-group" style="margin-left: 320px; margin-top: 20px;">
+                                                    <input type="submit" class="btn btn-primary">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                                                        Close
+                                                    </button>
+
+                                                </div>
+                                                <!-- end of  modal -->
+
+                                            </form>
+                                        </div>
+                        </h4>
+                    </div>
+
+                    <h3 id="personnelTitle"></h3>
+                    <table class="table table-striped" id="personnelTB">
+                        <thead>
+                        <tr>
+                            <th>Task Name</th>
+                            <th>Assigned To</th>
+                            <th>Start Date</th>
+                            <th>Due Date</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for task in ms.task_set.all %}
+                            <tr>
+
+                                <td class="col-md-2">{{ task.taskName }}</td>
+                                <td class="col-md-2">{{ task.assignedTo }}</td>
+                                <td class="col-md-2">{{ task.taskstartDate }}</td>
+                                <td class="col-md-2">{{ task.taskendDate }}</td>
+                                <td class="col-md-1">
+                                    <button type="button" class="btn btn-primary btn-sm"
+                                            style="margin-left: 15px; margin-right: -30px;"
+                                            data-toggle="modal" data-target="#edit-{{ task.pk }}">Edit
+                                    </button>
+                                </td>
+                                <td class="col-md-1">
+                                    <button type="button" class="btn btn-danger btn-sm"
+                                            style="margin-left: 15px; margin-right: -30px;"
+                                            data-toggle="modal" data-target="#delete-{{ task.pk }}">
+                                        Delete
+                                    </button>
+                                </td>
+
+
+                            </tr>
+                            <div class="modal fade bs-example-modal-sm-resolution"
+                                 style="width:600px; margin-left: 300px; margin-top: 20px;"
+                                 id="delete-{{ task.pk }}" tabindex="-1" role="dialog"
+                                 aria-hidden="true">
+
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close"><span aria-hidden="true">×</span>
+                                        </button>
+                                        <h4 class="modal-title" id="myModalLabel2">Delete Task</h4>
+
+                                    </div>
+                                    <form method="POST">
+                                        {% csrf_token %}
+                                        <div class="modal-body" style="height: 100px;">
+                                            <div class="form-group" style="display: none;">
+                                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                       for="first-name">Task Name<span
+                                                        class="required"></span>
+                                                </label>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <input type="text" name="taskID"
+                                                           value="{{ task.id }}"
+                                                           class="form-control col-md-7 col-xs-12">
+                                                </div>
+                                            </div>
+                                            <div class="form-group" style="display: none;">
+                                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                       for="first-name">Milestone Name<span
+                                                        class="required"></span>
+                                                </label>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <input type="text" name="taskUpdate" value="Delete"
+                                                           class="form-control col-md-7 col-xs-12">
+                                                </div>
+                                            </div>
+
+                                            <div style="font-size: 15px;"> Are you sure you want to delete
+                                                the task "{{ task.taskName }}"?
+                                            </div>
+
+                                        </div>
+                                        <div class="modal-footer" style="margin-right: 90px;">
+                                            <button type="submit" class="btn btn-primary">Yes</button>
+                                            <button type="button" class="btn btn-default"
+                                                    data-dismiss="modal">No
+                                            </button>
+
+                                        </div>
+
+                                    </form>
+
+                                </div>
+                            </div>
+                            <div class="modal fade bs-example-modal-lg"
+                                 style="height: auto; margin-left: 300px; margin-right: 300px;"
+                                 id="edit-{{ task.pk }}" tabindex="-1" role="dialog"
+                                 aria-hidden="true">
+
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close"><span aria-hidden="true">×</span>
+                                        </button>
+                                        <h4 class="modal-title" id="myModalLabel2">Update Task</h4>
+
+                                    </div>
+                                    <form method="POST">
+                                        {% csrf_token %}
+                                        <div class="modal-body" style="height: 150px;">
+                                            <div class="form-group" style="display: none;">
+                                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                       for="first-name">Milestone Name<span
+                                                        class="required"></span>
+                                                </label>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <input type="text" name="taskID"
+                                                           value="{{ task.id }}"
+                                                           class="form-control col-md-7 col-xs-12">
+                                                </div>
+                                            </div>
+                                            <div class="form-group" style="display: none;">
+                                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                       for="first-name">Milestone Name<span
+                                                        class="required"></span>
+                                                </label>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <input type="text" name="taskUpdate" value="Update"
+                                                           class="form-control col-md-7 col-xs-12">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                       for="first-name">Task Name<span
+                                                        class="required"></span>
+                                                </label>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <input type="text" name="oldtaskName"
+                                                           value="{{ task.taskName }}"
+                                                           class="form-control col-md-7 col-xs-12">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                       for="first-name" style="margin-top: 10px;">Resource Person<span
+                                                        class="required"></span>
+                                                </label>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <input type="text" name="oldtaskName"
+                                                           value="{{ task.assignedTo }}"
+                                                           class="form-control col-md-7 col-xs-12"
+                                                           style="margin-top: 10px;">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                       for="first-name" style="margin-top: 10px;">Start Date<span
+                                                        class="required"></span>
+                                                </label>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <input type="text" style="margin-top: 10px;" name="oldtaskstartDate"
+                                                           value="{{ task.taskstartDate }}"
+                                                           class="form-control col-md-7 col-xs-12">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                       for="first-name" style="margin-top: 10px;">End Date<span
+                                                        class="required"></span>
+                                                </label>
+                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                    <input type="text" style="margin-top: 10px;" name="oldtaskendDate"
+                                                           value="{{ task.taskendDate }}"
+                                                           class="form-control col-md-7 col-xs-12">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <div id="newmilestoneName">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                           style="margin-top: 30px;" for="first-name">New
+                                                        Task Name<span class="required"></span>
+                                                    </label>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12"
+                                                         style="margin-top: 30px;">
+                                                        {{ updateform.newtaskName }}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <div id="newmilestoneName">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                           style="margin-top: 10px;" for="first-name">New Resource
+                                                        Person
+                                                        <span class="required"></span>
+                                                    </label>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12"
+                                                         style="margin-top: 10px;">
+                                                        <select class="form-control col-md-7 col-xs-12"
+                                                                name="newassignedTo" id="assignedTo">
+                                                            {% for member in members %}
+                                                                <option value="{{ member.member.first_name }} {{ member.member.last_name }}">{{ member.member.first_name }} {{ member.member.last_name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div id="newmilestoneName">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                           style="margin-top: 10px;" for="first-name">New
+                                                        Start Date<span class="required"></span>
+                                                    </label>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12"
+                                                         style="margin-top: 10px;">
+                                                        {{ updateform.newtaskstartDate }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div id="newmilestoneName">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                           style="margin-top: 10px;" for="first-name">New
+                                                        End Date<span class="required"></span>
+                                                    </label>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12"
+                                                         style="margin-top: 10px;">
+                                                        {{ updateform.newtaskendDate }}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+                                            <button type="button" class="btn btn-default"
+                                                    data-dismiss="modal" style="margin-top: 20px; margin-bottom: 20px; margin-left: 520px;">Close
+                                            </button>
+                                            <input type="submit" class="btn btn-primary" style="margin-top: 20px; margin-bottom: 20px; margin-left: 00px;">
+
+
+
+                                    </form>
+
+                                </div>
+                            </div>
+                        {% endfor %}
+
+
+                        </tbody>
+                    </table>
+
+                </div>
+
+            {% endfor %}
+
+
+            <!--fifth row
+           <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+              <a data-toggle="collapse" href="#collapse5" ><button type="button" id="admin-refresh" class="btn btn-primary btn-sm"><span><i class="fa fa-refresh"></i></span></button></a>
+               <label class="success">Administrative Cost </label></a>
+          </h4>
+        </div>
+        <div id="collapse5" class="panel-collapse collapse">
+        <h3 id="personnelTitle"></h3>
+        <table class="table table-striped" id="adminTB">
+
+                        <tbody>
+                          <tr>
+                            <td id="#particularTb"></td>
+                            <td id = #paxTB></td>
+
+                          </tr>
+                          <tr>
+
+                        </tbody>
+                      </table>
+          <div class="panel-footer"></div>
+        </div>
+      </div>
+    </div>-->
+
+
+
+            </div>
+        </div>
+    </div>
+    <script>function redirect() {
+        window.location ={% url 'samplegantt' %};
+    }</script>
+     <script>function redirect2() {
+        window.location ={% url 'create-budget-plan' %};
+    }</script>
+    <!--
+       <script>function onClickFunction(e) {
+        var taskstartDate = document.getElementById("newtaskstartDate").value;
+        var taskendDate = document.getElementById("newtaskendDate").value;
+        var milestonestartDate = moment(document.getElementById("milestonestartDate").value).format('YYYY-MM-DD');
+        var milestoneendDate = moment(document.getElementById("milestoneendDate").value).format('YYYY-MM-DD');
+
+        if (taskstartDate && taskendDate) {
+            if (taskstartDate > taskendDate) {
+                e.preventDefault();
+                alert('Start date later than end date! Change the start date or end date of the task.');
+                return false;
+            } else if (taskstartDate <= milestonestartDate || taskstartDate >= milestoneendDate || taskendDate >= milestoneendDate
+                || taskendDate <= milestonestartDate) {
+                e.preventDefault();
+                alert('Not within the milestone\'s date range of ' + milestonestartDate + ' to ' + milestoneendDate + '. Please change the start date and/or end date of task.');
+            } else {
+                alert('Task successfully added!');
+                return true;
+            }
+        }
+        else {
+            if (taskstartDate <= milestonestartDate || taskstartDate >= milestoneendDate || taskendDate >= milestoneendDate
+                || taskendDate <= milestonestartDate) {
+                e.preventDefault();
+                alert('Not within the milestone\'s date range of ' + milestonestartDate + ' to ' + milestoneendDate + '. Please change the start date and/or end date of task.');
+            } else {
+                alert('Task successfully added!');
+                return true;
+            }
+        }
+    }</script>-->
+    <!--
+    <script>function mySubmitFunction(milestonestartDate, milestoneendDate) {
+
+        var taskstartDate = document.getElementById('taskstartDate').value;
+        var taskendDate = document.getElementById('taskendDate').value;
+        var startDate = moment(milestonestartDate).format('YYYY-MM-DD');
+        var endDate = moment(milestoneendDate).format('YYYY-MM-DD');
+
+
+        if (taskstartDate > taskendDate) {
+            e.preventDefault();
+            alert('Start date later than end date! Change the start date or end date of the task.');
+            return false;
+        } else if (taskstartDate <= startDate || taskstartDate >= endDate || taskendDate >= endDate
+            || taskendDate <= startDate) {
+            e.preventDefault();
+            alert('Not within the milestone\'s date range of ' + startDate + ' to ' + endDate + '. Please change the start date and/or end date of task.');
+        }
+        else {
+            alert('Task successfully added!');
+            return true;
+        }
+    }
+           </script>-->
+
+{% endblock %}

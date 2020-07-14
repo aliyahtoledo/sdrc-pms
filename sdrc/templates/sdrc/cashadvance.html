@@ -1,0 +1,2413 @@
+{% extends 'sdrc/base.html' %}
+
+{% block style %}
+
+{% endblock %}
+{% load humanize %}
+{% block content %}
+    <div class="x_panel">
+        <div class="x_title">
+            {% if messages %}
+                <div class="alert alert-danger alert-dismissible fade in" role="alert" style="height: 50%;">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">×</span>
+                    </button>
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            <h2>Cash Advance</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i
+                            class="fa fa-wrench"></i></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Settings 1</a></li>
+                        <li><a href="#">Settings 2</a></li>
+                    </ul>
+                </li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        {% if milestones %}
+            <h4>Request for cash advance will only be available once milestone {{ milestone.milestoneName }} has been
+                finished. Thank you.</h4>
+        {% else %}
+            {% if project.hasTranche == True %}
+
+                <h1>{{ milestone.milestoneName }}
+                    <small class="green">(Tranche Amount: {{ milestone.trancheAmount|intcomma }})</small>
+                </h1>
+                <hr>
+                <h5><b>Notes:</b>
+                    <br>The maximum allowable amount for the following item types are:
+                    <br>- Hotel Bookings (<b>8,000</b> per night for overseas hotels and <b>5,000</b> per night for
+                    local
+                    hotels)
+                    <br>- Flight Tickets (<b>80,000</b> for flights outside Asia and <b>30,000</b> for flights within
+                    Asia)
+                    <br>- Specialized Scientific/Laboratory Services (<b>80,000</b>)
+                    <br>- Scientific Equipment and Supplies (<b>80,000</b>)
+                    <br>- Purchase of Scientific Software and Databases (<b>80,000</b>)
+                    <br>- Scientific Literature (<b>20,000</b>)
+                    <br>- Research Dissemination Expenses (<b>40,000</b>)
+                    <br>- Field Expenses (No Official Receipt) (<b>10,000</b>)
+                    <p>- Field Expenses (Repair and Maintenance of Equipment (<b>15,000</b>)</h5>
+
+                <form class="form-horizontal" id="cashadvance" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row form-row spacer">
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="itemtype">Item Type<span
+                                    id="taskcounter"></span></label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <select class="form-control" name="itemType" id="itemType" onchange="showDiv(this)">
+                                    <option value="0" selected="selected" disabled>Select Item Type</option>
+                                    <option value="Hotel Booking">Hotel Booking</option>
+                                    <option value="Flight Tickets">Flight Tickets</option>
+                                    <option value="Field Expense (No Official Receipt)">Field Expense (No Official
+                                        Receipt)
+                                    </option>
+                                    <option value="Field Expense (Repair and Maintenance of Equipment)">Field Expense
+                                        (Repair and Maintenance of Equipment)
+                                    </option>
+                                    <option value="Scientific Equipment and Supplies">Off-the-shelf Scientific Equipment
+                                        and
+                                        Supplies
+                                    </option>
+                                    <option value="Specialized Scientific/Laboratory Services">Specialized
+                                        Scientific/Laboratory Services
+                                    </option>
+                                    <option value="Scientific Software and Databases">Scientific Software and Databases
+                                    </option>
+                                    <option value="Scientific Literature">Scientific Literature</option>
+                                    <option value="Research Dissemination Expenses">Research Dissemination Expenses
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!--FOR HOTEL-->
+                    <div id="forHotel" style="display:none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-7 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="margin-left: 10px;" id="hotelbudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelname">Hotel Name<span
+                                        id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="hotelname" id="hotelname"
+                                           placeholder="Hotel Name">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelplace">Hotel
+                                    Location<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <select class="form-control" name="hotelplace" id="hotelplace"
+                                            placeholder="Hotel Location">
+                                        <option value="0" selected="selected" disabled>Location</option>
+                                        <option value="Local">Local</option>
+                                        <option value="Overseas">Overseas</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="first-name">Target Check-in Date<span class="required"></span>
+                                </label>
+
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control col-md-6 col-xs-12" name="hotelcheckin" id="hotelcheckin"
+                                           type="date">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="noofnights">No. of
+                                    Nights<span
+                                            id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <input class="form-control" name="noofnights" id="noofnights"
+                                           placeholder="No. of Nights">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelpax">Pax<span
+                                        id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <input class="form-control" name="hotelpax" id="hotelpax" placeholder="Pax">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelestimatedamount">Estimated
+                                    Amount<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="hotelestimatedamount" id="hotelestimatedamount"
+                                           placeholder="Estimated Amount">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="hotelBudget">Description</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <textarea class="form-control" name="hoteldescription"
+                                              id="hotelDescription"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row spacer">
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-8">
+                                    <button type="submit" onclick="return expenseAlert()" class="btn btn-primary">Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--FLIGHT TICKETS -->
+                    <div id="forFlight" style="display:none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="margin-left: 10px;" id="flightbudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="flightlocation">Location<span
+                                        id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <select class="form-control" name="flightlocation" id="flightlocation"
+                                            placeholder="Location">
+                                        <option value="0" selected="selected" disabled>Location</option>
+                                        <option value="Within Asia">Within Asia</option>
+                                        <option value="Outside Asia">Outside Asia</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="destinationname">Destination<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="destinationname" id="destinationname"
+                                           placeholder="Destination">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="flightpax">Pax<span
+                                        id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <input class="form-control" name="flightpax" id="flightpax" placeholder="Pax">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="estimatedamount">Estimated
+                                    Amount<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="flightestimatedamount" id="flightestimatedamount"
+                                           placeholder="Estimated Amount">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="dateofflight">Target
+                                    Flight
+                                    Date<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="dateofflight" id="dateofflight" type="date">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="hotelBudget">Description</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea class="form-control" name="flightdescription"
+                                          id="flightDescription"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row spacer">
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-8">
+                                    <button type="submit" onclick="return flightAlert()" class="btn btn-primary">Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--SPECIALIZED SCIENTIFIC/LABORATORY SERVICES -->
+                    <div id="forLab Service" style="display:none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="margin-left: 10px;" id="servicebudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="nameofservice">Name of
+                                    Service<span
+                                            id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="nameofservice" id="nameofservice"
+                                           placeholder="Name of Service">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="servicequantity">Quantity<span
+                                        id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <input class="form-control" name="servicequantity" id="servicequantity"
+                                           placeholder="Quantity">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="estimatedamount">Estimated
+                                    Amount<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="labserviceestimatedamount"
+                                           id="labserviceestimatedamount" placeholder="Estimated Amount">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="hotelBudget">Description</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea class="form-control" name="servicedescription"
+                                          id="serviceDescription"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row spacer">
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-8">
+                                    <button type="submit" onclick="return labserviceAlert()" class="btn btn-primary">
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--SCIENTIFIC SOFTWARE AND DATABASES -->
+                    <div id="forSoftware" style="display:none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="margin-left: 10px;" id="softwarebudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="nameofsoftware">Name of
+                                    Software<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="nameofsoftware" id="nameofsoftware"
+                                           placeholder="Name of Software">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="softwarequantity">Quantity<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <input class="form-control" name="softwarequantity" id="softwarequantity"
+                                           placeholder="Quantity">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="estimatedamount">Estimated
+                                    Amount<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="softwareestimatedamount"
+                                           id="softwareestimatedamount"
+                                           placeholder="Estimated Amount">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="hotelBudget">Description</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea class="form-control" name="softwaredescription"
+                                          id="softwareDescription"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row spacer">
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-8">
+                                    <button type="submit" onclick="return softwareAlert()" class="btn btn-primary">Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--SCIENTIFIC LITERATURE -->
+                    <div id="forLiterature" style="display:none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="margin-left: 10px;" id="literaturebudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="nameofliterature">Name of
+                                    Literature<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="nameofliterature" id="nameofliterature"
+                                           placeholder="e.g. Journal articles">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="literaturequantity">Quantity<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <input class="form-control" name="literaturequantity" id="literaturequantity"
+                                           placeholder="Quantity">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="estimatedamount">Estimated
+                                    Amount<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="literatureestimatedamount"
+                                           id="literatureestimatedamount" placeholder="Estimated Amount">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="hotelBudget">Description</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea class="form-control" name="literaturedescription"
+                                          id="literatureDescription"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row spacer">
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-8">
+                                    <button type="submit" onclick="return literatureAlert()" class="btn btn-primary">
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--RESEARCH DISSEMINATION EXPENSES -->
+                    <div id="forDissemination" style="display:none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="margin-left: 10px;" id="disseminationbudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="typeofdissemination">Type
+                                    of
+                                    Dissemination<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="typeofdissemination" id="typeofdissemination"
+                                           placeholder="e.g. Conference Registration">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="disseminationquantity">Quantity<span
+                                        id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <input class="form-control" name="disseminationquantity" id="disseminationquantity"
+                                           placeholder="Quantity">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="estimatedamount">Estimated
+                                    Amount<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="disseminationestimatedamount"
+                                           id="disseminationestimatedamount" placeholder="Estimated Amount">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="hotelBudget">Description</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea class="form-control" name="disseminationdescription"
+                                          id="disseminationDescription"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row spacer">
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-8">
+                                    <button type="submit" onclick="return disseminationAlert()" class="btn btn-primary">
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--FIELD EXPENSES WITHOUT RECEIPT -->
+                    <div id="forField Expense No Receipt" style="display:none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="margin-left: 10px;" id="noreceiptbudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="receiptlocation">Location<span
+                                        id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <select class="form-control" name="receiptlocation" id="receiptlocation"
+                                            placeholder="Location">
+                                        <option value="0" selected="selected" disabled>Location</option>
+                                        <option value="Luzon">Luzon</option>
+                                        <option value="Visayas">Visayas</option>
+                                        <option value="Mindanao">Mindanao</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="typeOffieldexpense">Type
+                                    of
+                                    Field Expense<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="typeoffieldexpense" id="typeoffieldexpense"
+                                           placeholder="e.g. Food for Hosts">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="fieldexpensequantity">Quantity<span
+                                        id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <input class="form-control" name="fieldexpensequantity" id="fieldexpensequantity"
+                                           placeholder="Quantity">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="estimatedamount">Estimated
+                                    Amount<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="fieldexpenseestimatedamount"
+                                           id="fieldexpenseestimatedamount" placeholder="Estimated Amount">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="hotelBudget">Description</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea class="form-control" name="fieldexpensedescription"
+                                          id="fieldexpenseDescription"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row spacer">
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-8">
+                                    <button type="submit" onclick="return repairAlert()" class="btn btn-primary">Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--FIELD EXPENSES FOR REPAIR AND MAINTENANCE OF EQUIPMENT -->
+                    <div id="forRepair" style="display:none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="margin-left: 10px;" id="repairbudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="typeOfRepair">Equipment
+                                    for
+                                    Repair and Maintenance<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="typeofrepair" id="typeofrepair"
+                                           placeholder="e.g. Diving gear">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="repairquantity">Quantity<span
+                                        id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <input class="form-control" name="repairquantity" id="repairquantity"
+                                           placeholder="Quantity">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="estimatedamount">Estimated
+                                    Amount<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="repairestimatedamount" id="repairestimatedamount"
+                                           placeholder="Estimated Amount">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="hotelBudget">Description</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea class="form-control" name="repairdescription"
+                                          id="repairDescription"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row spacer">
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-8">
+                                    <button type="submit" onclick="return repairAlert()" class="btn btn-primary">Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--SCIENTIFIC EQUIPMENT AND SUPPLIES -->
+                    <div id="forEquipment" style="display:none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="margin-left: 10px;" id="equipmentbudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="typeofequipment">Name of
+                                    Equipment/Supplies<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="typeofequipment" id="typeofequipment"
+                                           placeholder="e.g. PC for simulations">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="equipmentquantity">Quantity<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <input class="form-control" name="equipmentquantity" id="equipmentquantity"
+                                           placeholder="Quantity">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="estimatedamount">Estimated
+                                    Amount<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="equipmentestimatedamount"
+                                           id="equipmentestimatedamount" placeholder="Estimated Amount">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="hotelBudget">Description</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea class="form-control" name="equipmentdescription"
+                                          id="equipmentDescription"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row spacer">
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-8">
+                                    <button type="submit" onclick="return equipmentAlert()" class="btn btn-primary">Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+
+            {% else %}
+				 {% if milestone %}
+                                <h4>Request for reimbursement will only be available once
+                                    milestone {{ milestone.milestoneName }} has been finished. Thank you.</h4>
+                            {% else %}
+                <h5><b>Notes:</b>
+                    <br>The maximum allowable amount for the following item types are:
+                    <br>- Hotel Bookings (<b>8,000</b> per night for overseas hotels and <b>5,000</b> per night for
+                    local
+                    hotels)
+                    <br>- Flight Tickets (<b>80,000</b> for flights outside Asia and <b>30,000</b> for flights within
+                    Asia)
+                    <br>- Specialized Scientific/Laboratory Services (<b>80,000</b>)
+                    <br>- Scientific Equipment and Supplies (<b>80,000</b>)
+                    <br>- Purchase of Scientific Software and Databases (<b>80,000</b>)
+                    <br>- Scientific Literature (<b>20,000</b>)
+                    <br>- Research Dissemination Expenses (<b>40,000</b>)
+                    <br>- Field Expenses (No Official Receipt) (<b>10,000</b>)
+                    <p>- Field Expenses (Repair and Maintenance of Equipment (<b>15,000</b>)</h5>
+
+                <form class="form-horizontal" id="cashadvance" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row form-row spacer">
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="itemtype">Item Type<span
+                                    id="taskcounter"></span></label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <select class="form-control" name="itemType" id="itemType" onchange="showDiv(this)">
+                                    <option value="0" selected="selected" disabled>Select Item Type</option>
+                                    <option value="Hotel Booking">Hotel Booking</option>
+                                    <option value="Flight Tickets">Flight Tickets</option>
+                                    <option value="Field Expense (No Official Receipt)">Field Expense (No Official
+                                        Receipt)
+                                    </option>
+                                    <option value="Field Expense (Repair and Maintenance of Equipment)">Field Expense
+                                        (Repair and Maintenance of Equipment)
+                                    </option>
+                                    <option value="Scientific Equipment and Supplies">Off-the-shelf Scientific Equipment
+                                        and
+                                        Supplies
+                                    </option>
+                                    <option value="Specialized Scientific/Laboratory Services">Specialized
+                                        Scientific/Laboratory Services
+                                    </option>
+                                    <option value="Scientific Software and Databases">Scientific Software and Databases
+                                    </option>
+                                    <option value="Scientific Literature">Scientific Literature</option>
+                                    <option value="Research Dissemination Expenses">Research Dissemination Expenses
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!--FOR HOTEL-->
+                    <div id="forHotel" style="display:none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-7 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="margin-left: 10px;" id="hotelbudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelname">Hotel Name<span
+                                        id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="hotelname" id="hotelname"
+                                           placeholder="Hotel Name">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelplace">Hotel
+                                    Location<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <select class="form-control" name="hotelplace" id="hotelplace"
+                                            placeholder="Hotel Location">
+                                        <option value="0" selected="selected" disabled>Location</option>
+                                        <option value="Local">Local</option>
+                                        <option value="Overseas">Overseas</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="first-name">Target Check-in Date<span class="required"></span>
+                                </label>
+
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control col-md-6 col-xs-12" name="hotelcheckin" id="hotelcheckin"
+                                           type="date">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="noofnights">No. of
+                                    Nights<span
+                                            id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <input class="form-control" name="noofnights" id="noofnights"
+                                           placeholder="No. of Nights">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelpax">Pax<span
+                                        id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <input class="form-control" name="hotelpax" id="hotelpax" placeholder="Pax">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelestimatedamount">Estimated
+                                    Amount<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="hotelestimatedamount" id="hotelestimatedamount"
+                                           placeholder="Estimated Amount">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="hotelBudget">Description</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <textarea class="form-control" name="hoteldescription"
+                                              id="hotelDescription"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row spacer">
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-8">
+                                    <button type="submit" onclick="return expenseAlert()" class="btn btn-primary">Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--FLIGHT TICKETS -->
+                    <div id="forFlight" style="display:none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="margin-left: 10px;" id="flightbudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="flightlocation">Location<span
+                                        id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <select class="form-control" name="flightlocation" id="flightlocation"
+                                            placeholder="Location">
+                                        <option value="0" selected="selected" disabled>Location</option>
+                                        <option value="Within Asia">Within Asia</option>
+                                        <option value="Outside Asia">Outside Asia</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="destinationname">Destination<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="destinationname" id="destinationname"
+                                           placeholder="Destination">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="flightpax">Pax<span
+                                        id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <input class="form-control" name="flightpax" id="flightpax" placeholder="Pax">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="estimatedamount">Estimated
+                                    Amount<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="flightestimatedamount" id="flightestimatedamount"
+                                           placeholder="Estimated Amount">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="dateofflight">Target
+                                    Flight
+                                    Date<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="dateofflight" id="dateofflight" type="date">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="hotelBudget">Description</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea class="form-control" name="flightdescription"
+                                          id="flightDescription"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row spacer">
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-8">
+                                    <button type="submit" onclick="return flightAlert()" class="btn btn-primary">Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--SPECIALIZED SCIENTIFIC/LABORATORY SERVICES -->
+                    <div id="forLab Service" style="display:none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="margin-left: 10px;" id="servicebudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="nameofservice">Name of
+                                    Service<span
+                                            id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="nameofservice" id="nameofservice"
+                                           placeholder="Name of Service">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="servicequantity">Quantity<span
+                                        id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <input class="form-control" name="servicequantity" id="servicequantity"
+                                           placeholder="Quantity">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="estimatedamount">Estimated
+                                    Amount<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="labserviceestimatedamount"
+                                           id="labserviceestimatedamount" placeholder="Estimated Amount">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="hotelBudget">Description</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea class="form-control" name="servicedescription"
+                                          id="serviceDescription"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row spacer">
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-8">
+                                    <button type="submit" onclick="return labserviceAlert()" class="btn btn-primary">
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--SCIENTIFIC SOFTWARE AND DATABASES -->
+                    <div id="forSoftware" style="display:none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="margin-left: 10px;" id="softwarebudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="nameofsoftware">Name of
+                                    Software<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="nameofsoftware" id="nameofsoftware"
+                                           placeholder="Name of Software">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="softwarequantity">Quantity<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <input class="form-control" name="softwarequantity" id="softwarequantity"
+                                           placeholder="Quantity">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="estimatedamount">Estimated
+                                    Amount<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="softwareestimatedamount"
+                                           id="softwareestimatedamount"
+                                           placeholder="Estimated Amount">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="hotelBudget">Description</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea class="form-control" name="softwaredescription"
+                                          id="softwareDescription"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row spacer">
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-8">
+                                    <button type="submit" onclick="return softwareAlert()" class="btn btn-primary">Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--SCIENTIFIC LITERATURE -->
+                    <div id="forLiterature" style="display:none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="margin-left: 10px;" id="literaturebudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="nameofliterature">Name of
+                                    Literature<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="nameofliterature" id="nameofliterature"
+                                           placeholder="e.g. Journal articles">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="literaturequantity">Quantity<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <input class="form-control" name="literaturequantity" id="literaturequantity"
+                                           placeholder="Quantity">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="estimatedamount">Estimated
+                                    Amount<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="literatureestimatedamount"
+                                           id="literatureestimatedamount" placeholder="Estimated Amount">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="hotelBudget">Description</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea class="form-control" name="literaturedescription"
+                                          id="literatureDescription"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row spacer">
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-8">
+                                    <button type="submit" onclick="return literatureAlert()" class="btn btn-primary">
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--RESEARCH DISSEMINATION EXPENSES -->
+                    <div id="forDissemination" style="display:none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="margin-left: 10px;" id="disseminationbudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="typeofdissemination">Type
+                                    of
+                                    Dissemination<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="typeofdissemination" id="typeofdissemination"
+                                           placeholder="e.g. Conference Registration">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="disseminationquantity">Quantity<span
+                                        id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <input class="form-control" name="disseminationquantity" id="disseminationquantity"
+                                           placeholder="Quantity">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="estimatedamount">Estimated
+                                    Amount<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="disseminationestimatedamount"
+                                           id="disseminationestimatedamount" placeholder="Estimated Amount">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="hotelBudget">Description</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea class="form-control" name="disseminationdescription"
+                                          id="disseminationDescription"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row spacer">
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-8">
+                                    <button type="submit" onclick="return disseminationAlert()" class="btn btn-primary">
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--FIELD EXPENSES WITHOUT RECEIPT -->
+                    <div id="forField Expense No Receipt" style="display:none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="margin-left: 10px;" id="noreceiptbudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="receiptlocation">Location<span
+                                        id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <select class="form-control" name="receiptlocation" id="receiptlocation"
+                                            placeholder="Location">
+                                        <option value="0" selected="selected" disabled>Location</option>
+                                        <option value="Luzon">Luzon</option>
+                                        <option value="Visayas">Visayas</option>
+                                        <option value="Mindanao">Mindanao</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="typeOffieldexpense">Type
+                                    of
+                                    Field Expense<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="typeoffieldexpense" id="typeoffieldexpense"
+                                           placeholder="e.g. Food for Hosts">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="fieldexpensequantity">Quantity<span
+                                        id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <input class="form-control" name="fieldexpensequantity" id="fieldexpensequantity"
+                                           placeholder="Quantity">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="estimatedamount">Estimated
+                                    Amount<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="fieldexpenseestimatedamount"
+                                           id="fieldexpenseestimatedamount" placeholder="Estimated Amount">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="hotelBudget">Description</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea class="form-control" name="fieldexpensedescription"
+                                          id="fieldexpenseDescription"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row spacer">
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-8">
+                                    <button type="submit" onclick="return repairAlert()" class="btn btn-primary">Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--FIELD EXPENSES FOR REPAIR AND MAINTENANCE OF EQUIPMENT -->
+                    <div id="forRepair" style="display:none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="margin-left: 10px;" id="repairbudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="typeOfRepair">Equipment
+                                    for
+                                    Repair and Maintenance<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="typeofrepair" id="typeofrepair"
+                                           placeholder="e.g. Diving gear">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="repairquantity">Quantity<span
+                                        id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <input class="form-control" name="repairquantity" id="repairquantity"
+                                           placeholder="Quantity">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="estimatedamount">Estimated
+                                    Amount<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="repairestimatedamount" id="repairestimatedamount"
+                                           placeholder="Estimated Amount">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="hotelBudget">Description</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea class="form-control" name="repairdescription"
+                                          id="repairDescription"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row spacer">
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-8">
+                                    <button type="submit" onclick="return repairAlert()" class="btn btn-primary">Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--SCIENTIFIC EQUIPMENT AND SUPPLIES -->
+                    <div id="forEquipment" style="display:none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="margin-left: 10px;" id="equipmentbudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="typeofequipment">Name of
+                                    Equipment/Supplies<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="typeofequipment" id="typeofequipment"
+                                           placeholder="e.g. PC for simulations">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="equipmentquantity">Quantity<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <input class="form-control" name="equipmentquantity" id="equipmentquantity"
+                                           placeholder="Quantity">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="estimatedamount">Estimated
+                                    Amount<span id="taskcounter"></span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" name="equipmentestimatedamount"
+                                           id="equipmentestimatedamount" placeholder="Estimated Amount">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="hotelBudget">Description</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea class="form-control" name="equipmentdescription"
+                                          id="equipmentDescription"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row spacer">
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-8">
+                                    <button type="submit" onclick="return equipmentAlert()" class="btn btn-primary">Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            {% endif %}
+				{% endif %}
+        {% endif %}
+    </div>
+
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">You have exceeded the budget allocated</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h4>The amount you are about to request is beyond the budget allocated for this item type.</h4>
+                        <h4>To make that request, you would need an additional amount of: <b><p id="additional"></p></b>
+                        </h4>
+                        <h4>Would you like to <b>change the amount</b> or <b>request for budget extension</b>?</h4>
+                        <input id="category" name="category" style="display:none">
+                        <input id="amount" name="amount" style="display:none">
+                        <input id="expense" name="expense" style="display:none">
+                        <input id="description" name="description" style="display:none">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary"
+                                onclick="window.location={% url 'budgetextensionform' %}">Request for Budget Extension
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block script %}
+
+    <script>
+        function expenseAlert() {
+            amount = document.getElementById('hotelestimatedamount').value();
+            noofnights = document.getElementById('noofnights').value();
+            hotel = document.getElementById('hotelplace').value();
+            budgetleft = {{ accomodations.subtotal|safe }}
+            if ((amount / noofnights) > 8000 && hotel == 'Overseas') {
+                alert('You have exceeded the maximum allowable amount for this item type!');
+                return false;
+            } else if ((amount / noofnights) > 5000 && hotel == 'Local') {
+                alert('You have exceeded the maximum allowable amount for this item type!');
+                return false;
+            } else {
+                alert('Request forwarded!')
+            }
+            if (amount > budgetleft) {
+                alert('You have exceeded the budget allocated for this item type')
+                return false;
+            }
+        }
+
+        function flightAlert() {
+            amount = document.getElementById('flightestimatedamount').value();
+            hotel = document.getElementById('flightlocation').value();
+            budgetleft =
+            {{ transportation.subtotal|safe }}
+            if (amount > 80000 && hotel == 'Within Asia') {
+                alert('You have exceeded the maximum allowable amount for this item type!');
+                return false;
+            } else if (amount > 30000 && hotel == 'Outside Asia') {
+                alert('You have exceeded the maximum allowable amount for this item type!');
+                return false;
+            } else {
+                alert('Request forwarded!')
+            }
+            if (amount > budgetleft) {
+                alert('You have exceeded the budget allocated for this item type')
+                return false;
+            } else {
+                alert('Request forwarded!')
+            }
+        }
+
+        function repairAlert() {
+            itemtype = document.getElementById('itemType').value();
+            total = document.getElementById('repairestimatedamount').value();
+            budgetleft =
+            {{ others.subtotal|safe }}
+            if (itemtype == 'Field Expense (Repair and Maintenance of Equipment)') {
+                if (total > 15000) {
+                    alert('You have exceeded the maximum allowable amount for this item type!');
+                    return false;
+                } else {
+                    alert('Request forwarded!')
+                }
+                if (amount > budgetleft) {
+                    alert('You have exceeded the budget allocated for this item type')
+                    return false;
+                } else {
+                    alert('Request forwarded!')
+                }
+            } else if (itemtype == 'Field Expense (No Official Receipt)') {
+                if (total > 10000) {
+                    alert('You have exceeded the maximum allowable amount for this item type!');
+                    return false;
+                } else {
+                    alert('Request forwarded!')
+                }
+                if (amount > budgetleft) {
+                    alert('You have exceeded the budget allocated for this item type')
+                    return false;
+                } else {
+                    alert('Request forwarded!')
+                }
+            }
+
+        }
+
+        function labserviceAlert() {
+            amount = document.getElementById('labserviceestimatedamount').value();
+            budgetleft = {{ equipment.subtotal|safe }}
+
+            if (amount < 80000) {
+                alert('You have exceeded the maximum allowable amount for this item type!');
+                return false;
+            } else {
+                alert('Request forwarded!')
+            }
+            if (amount > budgetleft) {
+                alert('You have exceeded the budget allocated for this item type')
+                return false;
+            } else {
+                alert('Request forwarded!')
+            }
+
+        }
+
+        function softwareAlert() {
+            amount = document.getElementById('softwareestimatedamount').value();
+            budgetleft = {{ supplies.subtotal|safe }};
+            if (amount < 80000) {
+                alert('You have exceeded the maximum allowable amount for this item type!');
+                return false;
+            } else {
+                alert('Request forwarded!')
+            }
+            if (amount > budgetleft) {
+                alert('You have exceeded the budget allocated for this item type')
+                return false;
+            } else {
+                alert('Request forwarded!')
+            }
+        }
+
+        function literatureAlert() {
+            amount = document.getElementById('literatureestimatedamount').value();
+            budgetleft =
+            {{ supplies.subtotal|safe }}
+            if (amount < 20000) {
+                alert('You have exceeded the maximum allowable amount for this item type!');
+                return false;
+            } else {
+                alert('Request forwarded!')
+            }
+            if (amount > budgetleft) {
+                alert('You have exceeded the budget allocated for this item type')
+                return false;
+            } else {
+                alert('Request forwarded!')
+            }
+        }
+
+        function disseminationAlert() {
+            amount = document.getElementById('disseminationestimatedamount').value();
+            budgetleft =
+            {{ training.subtotal|safe }}
+
+            if (amount < 40000) {
+                alert('You have exceeded the maximum allowable amount for this item type!');
+                return false;
+            } else {
+                alert('Request forwarded!')
+            }
+
+            if (amount > budgetleft) {
+                alert('You have exceeded the budget allocated for this item type')
+                return false;
+            }
+        }
+
+        function equipmentAlert() {
+            amount = document.getElementById('equipmentestimatedamount').value();
+            budgetleft =
+            {{ equipment.subtotal|safe }}
+            if (amount < 15000) {
+                alert('You have exceeded the maximum allowable amount for this item type!');
+                return false;
+            } else {
+                alert('Request forwarded!')
+            }
+
+            if (amount > budgetleft) {
+                alert('You have exceeded the budget allocated for this item type')
+                return false;
+            } else {
+                alert('Request forwarded!')
+            }
+
+        }
+    </script>
+    <script>
+        $("#hotelDescription").change(function () {
+            budgetleft =
+            {{ accomodations.subtotal|safe }}
+
+            if ($("#hotelestimatedamount").val() > budgetleft) {
+                $("#myModal").modal();
+                document.getElementById('additional').innerHTML = $("#hotelestimatedamount").val() - budgetleft
+                document.getElementById('category').value = 'Accomodations'
+                document.getElementById('amount').value = $("#hotelestimatedamount").val() - budgetleft
+                document.getElementById('expense').value = $("#itemType").val()
+                document.getElementById('description').value = $("#hotelDescription").val()
+            }
+        });
+        $("#flightDescription").change(function () {
+            budgetleft =
+            {{ transportation.subtotal|safe }}
+
+            if ($("#flightestimatedamount").val() > budgetleft) {
+                $("#myModal").modal();
+                document.getElementById('additional').innerHTML = $("#flightestimatedamount").val() - budgetleft
+                document.getElementById('category').value = 'Transportation'
+                document.getElementById('amount').value = $("#flightestimatedamount").val() - budgetleft
+                document.getElementById('expense').value = $("#itemType").val()
+                document.getElementById('description').value = $("#flightDescription").val()
+            }
+        });
+        $("#fieldexpenseDescription").change(function () {
+            budgetleft =
+            {{ others.subtotal|safe }}
+
+            if ($("#fieldexpenseestimatedamount").val() > budgetleft) {
+                $("#myModal").modal();
+                document.getElementById('additional').innerHTML = $("#fieldexpenseestimatedamount").val() - budgetleft
+                document.getElementById('category').value = 'Other Expense'
+                document.getElementById('amount').value = $("#fieldexpenseestimatedamount").val() - budgetleft
+                document.getElementById('expense').value = $("#itemType").val()
+                document.getElementById('description').value = $("#fieldexpenseDescription").val()
+            }
+        });
+        $("#repairDescription").change(function () {
+            budgetleft =
+            {{ others.subtotal|safe }}
+
+            if ($("#repairestimatedamount").val() > budgetleft) {
+                $("#myModal").modal();
+                document.getElementById('additional').innerHTML = $("#repairestimatedamount").val() - budgetleft
+                document.getElementById('category').value = 'Other Expense'
+                document.getElementById('amount').value = $("#repairestimatedamount").val() - budgetleft
+                document.getElementById('expense').value = $("#itemType").val()
+                document.getElementById('description').value = $("#repairDescription").val()
+            }
+        });
+        $("#equipmentDescription").change(function () {
+            budgetleft =
+            {{ equipment.subtotal|safe }}
+
+            if ($("#equipmentestimatedamount").val() > budgetleft) {
+                $("#myModal").modal();
+                document.getElementById('additional').innerHTML = $("#equipmentestimatedamount").val() - budgetleft
+                document.getElementById('category').value = 'Equipment'
+                document.getElementById('amount').value = $("#equipmentestimatedamount").val() - budgetleft
+                document.getElementById('expense').value = $("#itemType").val()
+                document.getElementById('description').value = $("#equipmentDescription").val()
+            }
+        });
+        $("#serviceDescription").change(function () {
+            budgetleft =
+            {{ equipment.subtotal|safe }}
+
+            if ($("#labserviceestimatedamount").val() > budgetleft) {
+                $("#myModal").modal();
+                document.getElementById('additional').innerHTML = $("#labserviceestimatedamount").val() - budgetleft
+                document.getElementById('category').value = 'Equipment'
+                document.getElementById('amount').value = $("#labserviceestimatedamount").val() - budgetleft
+                document.getElementById('expense').value = $("#itemType").val()
+                document.getElementById('description').value = $("#labserviceDescription").val()
+            }
+        });
+        $("#softwareDescription").change(function () {
+            budgetleft =
+            {{ supplies.subtotal|safe }}
+
+            if ($("#softwareestimatedamount").val() > budgetleft) {
+                $("#myModal").modal();
+                document.getElementById('additional').innerHTML = $("#softwareestimatedamount").val() - budgetleft
+                document.getElementById('category').value = 'Supplies and Materials'
+                document.getElementById('amount').value = $("#softwareestimatedamount").val() - budgetleft
+                document.getElementById('expense').value = $("#itemType").val()
+                document.getElementById('description').value = $("#softwareDescription").val()
+            }
+        });
+        $("#literatureDescription").change(function () {
+            budgetleft =
+            {{ equipment.subtotal|safe }}
+
+            if ($("#literatureestimatedamount").val() > budgetleft) {
+                $("#myModal").modal();
+                document.getElementById('additional').innerHTML = $("#literatureestimatedamount").val() - budgetleft
+                document.getElementById('category').value = 'Equipment'
+                document.getElementById('amount').value = $("#literatureestimatedamount").val() - budgetleft
+                document.getElementById('expense').value = $("#itemType").val()
+                document.getElementById('description').value = $("#literatureDescription").val()
+            }
+        });
+        $("#disseminationDescription").change(function () {
+            budgetleft =
+            {{ training.subtotal|safe }}
+
+            if ($("#disseminationestimatedamount").val() > budgetleft) {
+                $("#myModal").modal();
+                document.getElementById('additional').innerHTML = $("#disseminationestimatedamount").val() - budgetleft
+                document.getElementById('category').value = 'Training'
+                document.getElementById('amount').value = $("#disseminationestimatedamount").val() - budgetleft
+                document.getElementById('expense').value = $("#itemType").val()
+                document.getElementById('description').value = $("#disseminationDescription").val()
+            }
+        });
+    </script>
+
+    <script type="text/javascript">
+        function showDiv(select) {
+            if (select.value == 'Hotel Booking') {
+                document.getElementById('forHotel').style.display = "block";
+
+                document.getElementById('forFlight').style.display = "none";
+                document.getElementById('forLab Service').style.display = "none";
+                document.getElementById('forSoftware').style.display = "none";
+                document.getElementById('forLiterature').style.display = "none";
+                document.getElementById('forDissemination').style.display = "none";
+                document.getElementById('forField Expense No Receipt').style.display = "none";
+                document.getElementById('forRepair').style.display = "none";
+                document.getElementById('forEquipment').style.display = "none";
+                document.getElementById("hotelbudgetleft").innerHTML =
+                {{ accomodations.subtotal|safe }}
+            }
+            if (select.value == 'Flight Tickets') {
+                document.getElementById('forFlight').style.display = "block";
+
+                document.getElementById('forHotel').style.display = "none";
+                document.getElementById('forLab Service').style.display = "none";
+                document.getElementById('forSoftware').style.display = "none";
+                document.getElementById('forLiterature').style.display = "none";
+                document.getElementById('forDissemination').style.display = "none";
+                document.getElementById('forField Expense No Receipt').style.display = "none";
+                document.getElementById('forRepair').style.display = "none";
+                document.getElementById('forEquipment').style.display = "none";
+                document.getElementById("flightbudgetleft").innerHTML =
+                {{ transportation.subtotal|safe }}
+            }
+            if (select.value == 'Specialized Scientific/Laboratory Services') {
+                document.getElementById('forLab Service').style.display = "block";
+
+                document.getElementById('forHotel').style.display = "none";
+                document.getElementById('forFlight').style.display = "none";
+                document.getElementById('forSoftware').style.display = "none";
+                document.getElementById('forLiterature').style.display = "none";
+                document.getElementById('forDissemination').style.display = "none";
+                document.getElementById('forField Expense No Receipt').style.display = "none";
+                document.getElementById('forRepair').style.display = "none";
+                document.getElementById('forEquipment').style.display = "none";
+                document.getElementById("servicebudgetleft").innerHTML =
+                {{ equipment.subtotal|safe }}
+            }
+            if (select.value == 'Scientific Software and Databases') {
+                document.getElementById('forSoftware').style.display = "block";
+
+                document.getElementById('forHotel').style.display = "none";
+                document.getElementById('forFlight').style.display = "none";
+                document.getElementById('forLab Service').style.display = "none";
+                document.getElementById('forLiterature').style.display = "none";
+                document.getElementById('forDissemination').style.display = "none";
+                document.getElementById('forField Expense No Receipt').style.display = "none";
+                document.getElementById('forRepair').style.display = "none";
+                document.getElementById('forEquipment').style.display = "none";
+                document.getElementById("softwarebudgetleft").innerHTML =
+                {{ supplies.subtotal|safe }}
+            }
+            if (select.value == 'Scientific Literature') {
+                document.getElementById('forLiterature').style.display = "block";
+
+                document.getElementById('forHotel').style.display = "none";
+                document.getElementById('forFlight').style.display = "none";
+                document.getElementById('forLab Service').style.display = "none";
+                document.getElementById('forSoftware').style.display = "none";
+                document.getElementById('forDissemination').style.display = "none";
+                document.getElementById('forField Expense No Receipt').style.display = "none";
+                document.getElementById('forRepair').style.display = "none";
+                document.getElementById('forEquipment').style.display = "none";
+                document.getElementById("literaturebudgetleft").innerHTML =
+                {{ supplies.subtotal|safe }}
+            }
+            if (select.value == 'Research Dissemination Expenses') {
+                document.getElementById('forDissemination').style.display = "block";
+
+                document.getElementById('forHotel').style.display = "none";
+                document.getElementById('forFlight').style.display = "none";
+                document.getElementById('forLab Service').style.display = "none";
+                document.getElementById('forSoftware').style.display = "none";
+                document.getElementById('forLiterature').style.display = "none";
+                document.getElementById('forField Expense No Receipt').style.display = "none";
+                document.getElementById('forRepair').style.display = "none";
+                document.getElementById('forEquipment').style.display = "none";
+                document.getElementById("disseminationbudgetleft").innerHTML =
+                {{ training.subtotal|safe }}
+            }
+            if (select.value == 'Field Expense (No Official Receipt)') {
+                document.getElementById('forField Expense No Receipt').style.display = "block";
+
+                document.getElementById('forHotel').style.display = "none";
+                document.getElementById('forFlight').style.display = "none";
+                document.getElementById('forLab Service').style.display = "none";
+                document.getElementById('forSoftware').style.display = "none";
+                document.getElementById('forLiterature').style.display = "none";
+                document.getElementById('forDissemination').style.display = "none";
+                document.getElementById('forRepair').style.display = "none";
+                document.getElementById('forEquipment').style.display = "none";
+                document.getElementById("noreceiptbudgetleft").innerHTML =
+                {{ others.subtotal|safe }}
+            }
+            if (select.value == 'Field Expense (Repair and Maintenance of Equipment)') {
+                document.getElementById('forRepair').style.display = "block";
+
+                document.getElementById('forHotel').style.display = "none";
+                document.getElementById('forFlight').style.display = "none";
+                document.getElementById('forLab Service').style.display = "none";
+                document.getElementById('forSoftware').style.display = "none";
+                document.getElementById('forLiterature').style.display = "none";
+                document.getElementById('forDissemination').style.display = "none";
+                document.getElementById('forField Expense No Receipt').style.display = "none";
+                document.getElementById('forEquipment').style.display = "none";
+                document.getElementById("repairbudgetleft").innerHTML =
+                {{ others.subtotal|safe }}
+            }
+            if (select.value == 'Scientific Equipment and Supplies') {
+                document.getElementById('forEquipment').style.display = "block";
+
+                document.getElementById('forHotel').style.display = "none";
+                document.getElementById('forFlight').style.display = "none";
+                document.getElementById('forLab Service').style.display = "none";
+                document.getElementById('forSoftware').style.display = "none";
+                document.getElementById('forLiterature').style.display = "none";
+                document.getElementById('forDissemination').style.display = "none";
+                document.getElementById('forField Expense No Receipt').style.display = "none";
+                document.getElementById('forRepair').style.display = "none";
+                document.getElementById("equipmentbudgetleft").innerHTML =
+                {{ equipment.subtotal|safe }}
+            }
+        }
+
+        {# $('#cashadvance').submit(function(){#}
+        {#    if(document.getElementById('itemType').value=='Hotel'){#}
+        {#        $.ajax({#}
+        {#            url: "/cashadvance/",#}
+        {#            type: "POST",#}
+        {#            data: {#}
+        {#                itemType: $('itemType').val(),#}
+        {#                hotelname: $('#hotelname').val(),#}
+        {#                hotelpax: $('#hotelpax').val(),#}
+        {#                estimatedamount: $('#hotelestimatedamount').val(),#}
+        {#                hoteldate: $('#hoteldate').val(),#}
+        {#                hotelnoofnights: $('#noofnights').val(),#}
+        {#                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()#}
+        {#            }#}
+        {#        });#}
+        {#        return false;#}
+        {#    }#}
+        {##}
+        {#    if (document.getElementById('itemType').value=='Flight'){#}
+        {#        $.ajax({#}
+        {#            url: '/cashadvance/',#}
+        {#            type: 'POST',#}
+        {#            data: {#}
+        {#                itemType: $('itemType').val(),#}
+        {#                location: $('#destinationname').val(),#}
+        {#                flightpax: $('#flightpax').val(),#}
+        {#                times: $('#nooftimes').val(),#}
+        {#                estimatedamount: $('#flightestimatedamount').val(),#}
+        {#                dateofflight: $('#dateofflight').val(),#}
+        {#                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()#}
+        {#            }#}
+        {#        });#}
+        {#        return false;#}
+        {#    }#}
+        {##}
+        {#    else if (document.getElementById('itemType').value=='Lab Service'){#}
+        {#        $.ajax({#}
+        {#            url: '/cashadvance/',#}
+        {#            type: 'POST',#}
+        {#            data: {#}
+        {#                itemType: $('itemType').val(),#}
+        {#                expensename: $('#nameofservice').val(),#}
+        {#                quantity: $('#servicequantity').val(),#}
+        {#                estimatedamount: $('#labserviceestimatedamount').val(),#}
+        {#                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()#}
+        {#            }#}
+        {#        });#}
+        {#        return false;#}
+        {#    }#}
+        {##}
+        {#    else if (document.getElementById('itemType').value=='Software'){#}
+        {#        $.ajax({#}
+        {#            url: '/cashadvance/',#}
+        {#            type: 'POST',#}
+        {#            data: {#}
+        {#                itemType: $('itemType').val(),#}
+        {#                expensename: $('nameofsoftware').val(),#}
+        {#                quantity: $('softwrequantity').val(),#}
+        {#                estimatedamount: $('softwareestimatedamount').val(),#}
+        {#                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()#}
+        {#            }#}
+        {#        });#}
+        {#        return false;#}
+        {#    }#}
+        {##}
+        {#    else if (document.getElementById('itemType').value=='Literature'){#}
+        {#        $.ajax({#}
+        {#            url: '/cashadvance/',#}
+        {#            type: 'POST',#}
+        {#            data: {#}
+        {#                itemType: $('itemType').val(),#}
+        {#                expensename: $('nameofliterature').val(),#}
+        {#                quantity: $('literaturequantity').val(),#}
+        {#                estimatedamount: $('literatureestimatedamount').val(),#}
+        {#                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()#}
+        {#            }#}
+        {#        });#}
+        {#        return false;#}
+        {#    }#}
+        {##}
+        {#    else if (document.getElementById('itemType').value=='Dissemination'){#}
+        {#        $.ajax({#}
+        {#            url: '/cashadvance/',#}
+        {#            type: 'POST',#}
+        {#            data: {#}
+        {#                itemType: $('itemType').val(),#}
+        {#                expensename: $('typeofdissemination').val(),#}
+        {#                quantity: $('disseminationquantity').val(),#}
+        {#                estimatedamount: $('disseminationestimatedamount').val(),#}
+        {#                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()#}
+        {#            }#}
+        {#        });#}
+        {#        return false;#}
+        {#    }#}
+        {##}
+        {#    else if (document.getElementById('itemType').value=='FieldExpenseNoReceipt'){#}
+        {#        $.ajax({#}
+        {#            url: '/cashadvance/',#}
+        {#            type: 'POST',#}
+        {#            data: {#}
+        {#                itemType: $('itemType').val(),#}
+        {#                expensename: $('typeoffieldexpense').val(),#}
+        {#                quantity: $('fieldexpensequantity').val(),#}
+        {#                estimatedamount: $('fieldexpenseestimatedamount').val(),#}
+        {#                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()#}
+        {#            }#}
+        {#        });#}
+        {#        return false;#}
+        {#    }#}
+        {##}
+        {#    else if (document.getElementById('itemType').value=='Repair'){#}
+        {#        $.ajax({#}
+        {#            url: '/cashadvance/',#}
+        {#            type: 'POST',#}
+        {#            data: {#}
+        {#                itemType: $('itemType').val(),#}
+        {#                expensename: $('typeofrepair').val(),#}
+        {#                quantity: $('repairquantity').val(),#}
+        {#                estimatedamount: $('repairestimatedamount').val(),#}
+        {#                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()#}
+        {#            }#}
+        {#        });#}
+        {#        return false;#}
+        {#    }#}
+        {##}
+        {#    else if (document.getElementById('itemType').value=='Equipment'){#}
+        {#        $.ajax({#}
+        {#            url: '/cashadvance/',#}
+        {#            type: 'POST',#}
+        {#            data: {#}
+        {#                itemType: $('itemType').val(),#}
+        {#                expensename: $('typeofequipment').val(),#}
+        {#                quantity: $('equipmentquantity').val(),#}
+        {#                estimatedamount: $('equipmentestimatedamount').val(),#}
+        {#                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()#}
+        {#            }#}
+        {#        });#}
+        {#        return false;#}
+        {#    }#}
+
+    </script>
+    <script>
+        $('#hotelcheckin').change(function () {
+            var formatstart = new Date("{{ project.startDate.isoformat }}");
+            var twostartMonth = ((formatstart.getMonth().length + 1) === 1) ? (formatstart.getMonth() + 1) : (formatstart.getMonth() + 1);
+
+            var formatend = new Date("{{ project.endDate.isoformat }}");
+            var twoendMonth = ((formatend.getMonth().length + 1) === 1) ? (formatend.getMonth() + 1) : (formatend.getMonth() + 1);
+
+            var fullDate = new Date();
+            var twoDigitMonth = ((fullDate.getMonth().length + 1) === 1) ? (fullDate.getMonth() + 1) : (fullDate.getMonth() + 1);
+
+            if (formatstart.getDate() > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+                if ($('#hotelcheckin').val() < startDate) {
+
+                }
+            } else if (twostartMonth > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#hotelcheckin').val() < startDate) {
+
+                }
+            } else if (formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + '0' + formatstart.getDate();
+
+                if ($('#hotelcheckin').val() < startDate) {
+
+                }
+            } else if (twostartMonth < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#hotelcheckin').val() < startDate) {
+
+                }
+            } else if (twostartMonth < 10 && formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + '0' + formatstart.getDate();
+
+
+                if ($('#hotelcheckin').val() < startDate) {
+
+                }
+            }
+
+            if (formatend.getDate() > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+                if ($('#hotelcheckin').val() > endDate) {
+
+                }
+            } else if (twoendMonth > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#hotelcheckin').val() > endDate) {
+
+                }
+            } else if (formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + '0' + formatend.getDate();
+
+                if ($('#hotelcheckin').val() > endDate) {
+
+                }
+            } else if (twoendMonth < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#hotelcheckin').val() > endDate) {
+
+                }
+            } else if (twoendMonth < 10 && formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + '0' + formatend.getDate();
+
+
+                if ($('#hotelcheckin').val() > endDate) {
+
+                }
+            }
+
+            if (fullDate.getDate() > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#hotelcheckin').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (twoDigitMonth > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#hotelcheckin').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+                if ($('#hotelcheckin').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (twoDigitMonth < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#hotelcheckin').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (twoDigitMonth < 10 && fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+
+                if ($('#hotelcheckin').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            }
+
+
+        });
+        $('#dateofflight').change(function () {
+            var formatstart = new Date("{{ project.startDate.isoformat }}");
+            var twostartMonth = ((formatstart.getMonth().length + 1) === 1) ? (formatstart.getMonth() + 1) : (formatstart.getMonth() + 1);
+
+            var formatend = new Date("{{ project.endDate.isoformat }}");
+            var twoendMonth = ((formatend.getMonth().length + 1) === 1) ? (formatend.getMonth() + 1) : (formatend.getMonth() + 1);
+
+            var fullDate = new Date();
+            var twoDigitMonth = ((fullDate.getMonth().length + 1) === 1) ? (fullDate.getMonth() + 1) : (fullDate.getMonth() + 1);
+
+            if (formatstart.getDate() > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+                if ($('#dateofflight').val() < startDate) {
+
+                }
+            } else if (twostartMonth > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#dateofflight').val() < startDate) {
+
+                }
+            } else if (formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + '0' + formatstart.getDate();
+
+                if ($('#dateofflight').val() < startDate) {
+
+                }
+            } else if (twostartMonth < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#dateofflight').val() < startDate) {
+
+                }
+            } else if (twostartMonth < 10 && formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + '0' + formatstart.getDate();
+
+
+                if ($('#dateofflight').val() < startDate) {
+
+                }
+            }
+
+            if (formatend.getDate() > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+                if ($('#dateofflight').val() > endDate) {
+
+                }
+            } else if (twoendMonth > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#dateofflight').val() > endDate) {
+
+                }
+            } else if (formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + '0' + formatend.getDate();
+
+                if ($('#dateofflight').val() > endDate) {
+
+                }
+            } else if (twoendMonth < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#dateofflight').val() > endDate) {
+
+                }
+            } else if (twoendMonth < 10 && formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + '0' + formatend.getDate();
+
+
+                if ($('#dateofflight').val() > endDate) {
+
+                }
+
+            }
+                if (fullDate.getDate() > 10) {
+                    var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                    if ($('#dateofflight').val() < currentDate) {
+                        alert('Only requests for future dates can be accepted.')
+                    }
+                } else if (twoDigitMonth > 10) {
+                    var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                    if ($('#dateofflight').val() < currentDate) {
+                        alert('Only requests for future dates can be accepted.')
+                    }
+                } else if (fullDate.getDate() < 10) {
+                    var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+                    if ($('#dateofflight').val() < currentDate) {
+                        alert('Only requests for future dates can be accepted.')
+                    }
+                } else if (twoDigitMonth < 10) {
+                    var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                    if ($('#dateofflight').val() < currentDate) {
+                        alert('Only requests for future dates can be accepted.')
+                    }
+                } else if (twoDigitMonth < 10 && fullDate.getDate() < 10) {
+                    var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+
+                    if ($('#dateofflight').val() < currentDate) {
+                        alert('Only requests for future dates can be accepted.')
+                    }
+                }
+
+
+        })
+        ;
+    </script>
+{% endblock %}

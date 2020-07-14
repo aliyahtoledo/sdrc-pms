@@ -1,0 +1,284 @@
+{% extends 'sdrc/base.html' %}
+{% block content %}
+    {% load mytags %}
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <div class="">
+
+
+        <div class="row">
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+
+
+
+                <!-- Closure -->
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Add Project Members</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#">Settings 1</a>
+                                    </li>
+                                    <li><a href="#">Settings 2</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        {% if not members %}
+                            <form class="form-horizontal" method="POST" action="">
+                                {% csrf_token %}
+                                {% for member in projectmembers %}
+                                    <div class="panel-group">
+                                        <div class="panel panel-default" style="margin-bottom: 20px">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">
+
+
+
+                                                    <button type="button" class="btn btn-success btn-sm"  data-toggle="collapse" href="#collapse-{{ member.id }}" id="showButton-{{ member.id }}"><span><i
+                                                            class="fa fa-plus-circle"></i></span> {{ member.title }}</button>
+
+                                                </h4>
+                                            </div>
+
+                                            <div id="collapse-{{ member.id }}" class="collapse" data-toggle="false" style="margin-top: 20px;">
+
+                                                {% for i in member.quantity|times %}
+                                                    <h4 style="margin-left: 190px;"><b>Member {{ forloop.counter }}</b></h4>
+                                                    <hr>
+                                                    <div id="idk" style="margin-bottom: 30px;">
+                                                        <input value="{{ member.amount }}" id="amount-{{ member.id }}" name="amount" style="display: none;">
+{% if member.title == 'Project Director' %}
+     <div class="form-group input-group col-md-12">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Member<span id="taskcounter"></span>
+                                                            </label>
+                                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                        <input class="form-control col-md-6 col-xs-12"
+                                                                name="director" readonly disabled id="director" value="{{ project.principalInvestigator.first_name }} {{ project.principalInvestigator.last_name }}">
+
+                                                        </select>
+                                                    </div>
+
+                                                    {% else %}
+
+                                                        <input class="form-control" type="text" name="role" value="{{ member.title }}" style="display: none;">
+                                                        <div class="form-group input-group col-md-12">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Member<span id="taskcounter"></span>
+                                                            </label>
+                                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                        <select class="form-control col-md-6 col-xs-12"
+                                                                name="assignedTo" id="assignedTo">
+                                                            {% for member in users %}
+                                                                <option value="{{ member.id }}">{{ member.first_name }} {{ member.last_name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                        {% endif %}
+
+                                                        </div>
+                                                      <!--  <div class="form-group input-group col-md-12">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">First Name <span id="taskcounter"></span>
+                                                            </label>
+                                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                                <input class="form-control" type="text" name="first_name" required>
+
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group input-group col-md-12">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Last Name
+                                                            </label>
+                                                            <div class="col-md-6 col-sm-6 col-xs-12">
+
+                                                                <input class="form-control" type="text" name="last_name" required>
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group input-group col-md-12">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Email
+                                                            </label>
+                                                            <div class="col-md-6 col-sm-6 col-xs-12">
+
+                                                                <input class="form-control" type="text" name="email" required>
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group input-group col-md-12">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Username
+                                                            </label>
+                                                            <div class="col-md-6 col-sm-6 col-xs-12">
+
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group input-group col-md-12">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Temporary Password
+                                                            </label>
+                                                            <div class="col-md-6 col-sm-6 col-xs-12">
+
+                                                            </div>
+                                                        </div>
+                                                    <div class="form-group input-group col-md-12">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Temporary Password
+                                                            </label>
+                                                            <div class="col-md-6 col-sm-6 col-xs-12">
+
+                                                            </div>
+                                                        </div>-->
+
+                                                    </div>
+                                                {% endfor %}
+
+
+
+                                                <div class="ln_solid"></div>
+
+
+
+                                            </div></div>
+                                    </div>
+                                {% endfor %}
+                                <div class="form-group">
+                                    <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                        <input type="submit" onclick="addMembers()" value="Add Member" class="btn btn-success">
+
+
+                                    </div>
+                                </div>
+                            </form>
+
+                        {% else %}
+
+
+
+                            {% for member in projectmembers %}
+                                <div class="panel-group">
+                                    <div class="panel panel-default" style="margin-bottom: 20px">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                              <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
+                                        data-target="#membermodal-{{ member.id }}"><span><i
+                                        class="fa fa-plus-circle"></i></span> Edit Member</button> {{ member.title }} </h4>
+                                        </div>
+
+
+                                        <table class="table table-striped table-bordered">
+                                            <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Role</th>
+
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for m in members %}
+                                                {% if member.title == m.role %}
+                                                    <tr>
+
+                                                        <td>{{ m.member.first_name }} {{ m.member.last_name }}</td>
+                                                        <td>{{ m.email }}</td>
+                                                        <td>{{ m.role }}</td>
+
+                                                    </tr>
+                                                {% endif %}
+                                            {% endfor %}
+
+                                            </tbody></table>
+{% for m in members %}
+    {% if member.title == m.role %}
+<div class="modal fade bs-example-modal-issue" id="membermodal-{{ member.id }}"
+                                                                 tabindex="-1" role="dialog" aria-hidden="true">
+                                                                <div class="modal-dialog modal-lg">
+                                                                    <div class="modal-content">
+
+                                                                        <div class="modal-header">
+                                                                            <button type="button" class="close"
+                                                                                    data-dismiss="modal"
+                                                                                    aria-label="Close"><span
+                                                                                    aria-hidden="true">×</span>
+                                                                            </button>
+                                                                            <h4 class="modal-title" id="myModalLabel2">
+                                                                                Edit Member ({{ member.title }})</h4>
+                                                                        </div>
+                                                                        <form method="POST">
+                                                                            {% csrf_token %}
+                                                                            <div class="modal-body">
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Member Name</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input name="memberid"
+                                                                                               value="{{ m.id }}"
+                                                                                               class="form-control col-md-7 col-xs-12"
+                                                                                               readonly/>
+                                                                                    </div>
+                                                                                </div>
+<input name="oldmemberid" value="{{ m.member.id }}" style="display: none;">
+                                                                               <div class="form-group">
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Member Name</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <select class="form-control"
+                                                                                                name="membername">{% for user in users %}
+                                                                                            <option value="{{ user.id }}">{{ user.first_name }} {{ user.last_name }}
+                                                                                            </option>
+                                                                                            {% endfor %}
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+
+
+                                                                            </div>
+
+                                                                            <div class="modal-footer"
+                                                                                 style="margin-top: 40px;">
+
+                                                                                <input type="submit"
+                                                                                       class="btn btn-primary"
+                                                                                       onclick="return compareDate({{ task.id }})">
+                                                                            </div>
+
+                                                                        </form>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+{% endif %}
+{% endfor %}
+
+
+
+
+                                    </div></div>
+
+
+                            {% endfor %}
+
+
+<form method="POST">
+                                     {% csrf_token %} <input style="display: none;" name="projectID" value={{ pid }}>
+                                     <button class="btn btn-primary" type="submit" style="margin-left: 450px;">Create Tasks</button>
+                                    </form>
+
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function redirect() {
+            window.location ={% url 'createtask' %};
+        }
+    </script>
+{% endblock %}

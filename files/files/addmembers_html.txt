@@ -1,0 +1,113 @@
+{% extends 'sdrc/base.html' %}
+{% block content %}
+    {% load mytags %}
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+          <div class="">
+
+
+            <div class="row">
+
+              <div class="col-md-12 col-sm-12 col-xs-12">
+
+
+
+              <!-- Closure -->
+                 <div class="x_panel">
+                  <div class="x_title">
+                      <h2>Add Project Members</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+                     <form class="form-horizontal" method="POST" action="">
+                    {% csrf_token %}
+{% for member in projectmembers %}
+                      <div class="panel-group">
+                <div class="panel panel-default" style="margin-bottom: 20px">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+
+
+                            <a data-toggle="collapse" href="#collapse1">
+                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
+                                        data-target="#milestonemodal-{{ member.id }}"><span><i
+                                        class="fa fa-plus-circle"></i></span> {{ member.title }}</button>
+
+                            </a></h4>
+                    </div>
+
+
+                            <div id="form-row spacer">
+                    {% for i in member.quantity|times %}
+
+
+<input class="form-control" type="text" name="role" value="{{ member.title }}" style="display: none;">
+                            <div class="form-group input-group col-md-12">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">First Name <span id="taskcounter"></span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input class="form-control" type="text" name="first_name">
+
+                        </div>
+                      </div>
+
+                            <div class="form-group input-group col-md-12">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Last Name
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+
+                          <input class="form-control" type="text" name="last_name">
+
+                        </div>
+                      </div>
+                              <div class="form-group input-group col-md-12">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Email
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+
+                           <input class="form-control" type="text" name="email">
+
+                        </div>
+                      </div>
+
+
+                        {% endfor %}
+                             </div>
+
+
+          <div class="ln_solid"></div>
+
+
+
+                </div></div>
+
+                      {% endfor %}
+                   <div class="form-group">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                        <input type="submit" onclick="addMembers()" value="Add Member" class="btn btn-success">
+                            <button class="btn btn-primary" onclick="redirect()" type="button">Create Milestones</button>
+
+                        </div>
+                      </div>
+                  </form>
+                  </div>
+                 </div>
+              </div>
+            </div>
+          </div>
+
+{% endblock %}

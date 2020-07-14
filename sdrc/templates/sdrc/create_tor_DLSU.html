@@ -1,0 +1,160 @@
+{% extends "sdrc/base.html" %}
+{% block style %}
+{% endblock %}
+
+{% block content %}
+        <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+                  <div class="x_title">
+                    <h2>Term of Reference <small>for DLSU Faculty Members only</small></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+                    <br>
+                    <form class="form-horizontal form-label-left input_mask" method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">TOR No.<span class="requird red">*</span>
+                        </label>
+                        <div class="col-md-9 col-sm-9 col-md-2">
+                          <input class="date-picker form-control col-md-7 col-xs-12" name= "torNumber" required="required" type="text">
+                        </div>
+                      </div>
+                         <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Account No.<span class="requird red">*</span>
+                        </label>
+                        <div class="col-md-9 col-sm-9 col-md-2">
+                          <input class="date-picker form-control col-md-7 col-xs-12" name= "accountNumber" type="text" value="{{ project.accountNumber }}"disabled="disabled">
+                        </div>
+                      </div>
+
+                       <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Name <span class="requird red">*</span>
+                        </label>
+                        <div class="col-md-9 col-sm-9 col-md-6">
+                          <input class="date-picker form-control col-md-7 col-xs-12" name= "name" required="required" type="text">
+                        </div>
+                      </div>
+
+                        <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Project Role / Position <span class="requird red"></span>
+                        </label>
+                        <div class="col-md-9 col-sm-9 col-md-6">
+                          <input class="date-picker form-control col-md-7 col-xs-12" value="Admin Staff" readonly name= "role" type="text">
+                        </div>
+                      </div>
+
+                         <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Amount of Honorarium <span class="requird red">*</span>
+                        </label>
+                        <div class="col-md-9 col-sm-9 col-md-2">
+                          <input class="date-picker form-control col-md-7 col-xs-12" name ="amount" type="text">
+                        </div>
+
+                              <label class="control-label col-md-1">Project Duration <span class="requird red">*</span>
+                        </label>
+                              <div class="col-md-5">
+                            <div class="col-md-4">
+                          <fieldset>
+                            <div class="control-group">
+                              <div class="controls">
+                                <div class="input-prepend input-group">
+                                  <span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+                                  <input type="text" required="required"style="width: 200px"  class="form-control" disabled= disabled value="{{ project.startDate }} - {{ project.endDate }}">
+                                </div>
+                              </div>
+                            </div>
+                          </fieldset>
+                      </div>
+                        </div>
+                      </div>
+
+                        <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Project Title<span class="requird red">*</span>
+                        </label>
+                        <div class="col-md-9 col-sm-9 col-md-6">
+                          <input class="date-picker form-control col-md-7 col-xs-12" name = "title" type="text" type="text" value="{{ project.projectTitle }}" disabled="disabled">
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Project Leader Name <span class="requird red">*</span>
+                        </label>
+                        <div class="col-md-9 col-sm-9 col-md-6">
+                          <input class="date-picker form-control col-md-7 col-xs-12" name ="leadName" type="text"  value="{{ user.first_name }} {{ user.last_name }}" disabled="disabled">
+                        </div>
+                      </div>
+
+                         <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Project Objectives<span class="required red">*</span>
+                        </label>
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                          <textarea class="form-control" rows="3" name="objectives"  required=required></textarea>
+                        </div>
+                      </div>
+
+                         <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Responsibilities of:<span class="required red">*</span>
+
+                            <label>
+                              <input type="checkbox" value="" required="required"> Project Member
+                            </label>
+
+                            <label>
+                              <input type="checkbox" value="" required="required"> Project Leader
+                            </label>
+
+                             <label>
+                              <input type="checkbox" value="" required="required"> Consultant
+                            </label>
+
+
+                        </label>
+
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                          <textarea class="form-control" rows="3" required= required name= "responsibleParty" placeholder=""></textarea>
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Implementing Center/Institution/Unit </label>
+                        <div class="col-md-9 col-sm-9 col-xs-12" id="create-forms">
+                          <input type="text" class="form-control" disabled="disabled" placeholder="University Research Coordination Office">
+                        </div>
+                      </div>
+
+
+                      <div class="ln_solid"></div>
+                      <div class="form-group">
+                        <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
+                          <button type="button" class="btn btn-primary">Cancel</button>
+                          <button type="submit" class="btn btn-success">Submit</button>
+                        </div>
+                      </div>
+
+                    </form>
+                  </div>
+                </div>
+        </div>
+     </div>
+
+
+{% endblock %}
+
+{% block script %}
+{% endblock %}

@@ -1,0 +1,334 @@
+{% extends 'sdrc/base.html' %}
+
+{% block style %}
+    <style>
+        .table-row{
+            cursor:pointer;
+        }
+
+    </style>
+{% endblock %}
+{% block content %}
+    {% if request.user.is_staff %}
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        {% load humanize %}
+        <div class="x_panel">
+            <!--DIV TITLE-->
+            <div class="x_title">
+                <h2>View Reallocation Requests</h2>
+                <div class="clearfix"></div>
+            </div>
+            <!--END DIV TITLE-->
+            <div class="x_content">
+                <!--TABLE FOR PROCUREMENT REQUESTS-->
+                <table id="datatable-fixed-header" class="table table-striped table-bordered dataTable no-footer" role="grid" aria-describedby="datatable-fixed-header_info">
+                    <!--SETTING COLUMN WIDTH-->
+                    <col width="1"> <!--FIRST COLUMN-->
+                    <col width="350"> <!--SECOND COLUMN-->
+                    <col width="150">
+                    <col width="150">
+                    <col width="100">
+                    <!--END SETTING COLUMN WIDTH-->
+                    <thead>
+                    <tr>
+                        <th>Account Number</th>
+                        <th>Project Name</th>
+                        <th>Assigned To:</th>
+                        <th>Funding Agency's Name</th>
+                        <th>Amount Requested:</th>
+                        <th>Date Requested</th>
+                        <th>Status</th>
+                        <th>Action</th>
+
+                    </tr>
+                    </thead>
+
+                    {% for p in projects %}
+                        {% if p.reallocation_set.all %}
+                            <tbody>
+
+                            {% for c in categories %}
+                                {% if c.project == p %}
+                                    {% for r in reallocations %}
+                                        {% if r.project == p %}
+                                            {% if r.category_requested == c.title %}
+                                                <tr>
+                                                    <td>{{ p.accountNumber }}</td>
+                                                    <td>{{ p.projectTitle }}</td>
+                                                    <td>{{ p.principalInvestigator }}</td>
+                                                    <td>{{ p.fundingAgency }}</td>
+                                                    <td><b>{{ r.amountReallocated|intcomma }}</b> to be reallocated for <b>{{ r.category_requested }}</b> coming from <b>{{ r.category_selected_for_reallocation }}</b></td>
+                                                    <td>{{ r.dateRequested }}</td>
+                                                    <td>{% if r.status == 'For Review' %}
+                                                        <label class="label  label-warning">{{ r.status }}</label>
+                                                    {% elif r.status == 'Approve' %}
+                                                        <label class="label label-success">{{ r.status }}</label>
+                                                    {% elif r.status == 'Disapprove' %}
+                                                        <label class="label label-danger">{{ r.status }}</label>
+                                                    {% endif %}</td>
+                                                    {% if not r.status == 'Approve' %}
+                                                        <td><button onclick="computeAmount({{ r.id }})" id="view_btn" type="button" data-toggle="modal" data-target=".modal_details{{ r.id }}" class="btn btn-primary btn-xs view_btn">View Details</button></td>
+                                                        </tr>
+                                                    {% else %}
+                                                        <td><label>Reallocated</label></td>
+                                                    {% endif %}
+                                            {% endif %}
+
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+
+
+                            </tbody>
+
+                        {% endif %}
+
+
+                    {% endfor %}
+
+
+                </table>
+
+
+
+
+            </div>
+            <!--END X_CONTENT-->
+        </div>
+        <!--END X_PANEL-->
+        <!--MODAL -->
+        <form class="form-horizontal form-label-left input_mask" method="POST">
+            {% csrf_token %}
+            {% for p in projects %}
+                {% if p.reallocation_set.all %}
+                    {% for c in categories %}
+                        {% if c.project == p %}
+                            {% for r in reallocations %}
+                                {% if r.project == p %}
+                                    {% if  r.category_requested == c.title %}
+                                        <!--VIEW DETAILS MODAL-->
+                                        <div class="modal fade modal_details{{ r.id }}" role="dialog">
+                                            <div class="modal-dialog">
+                                                <!-- Modal content-->
+                                                <div class="modal-content">
+                                                    <!-- header -->
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal"></button>
+                                                        <h4>Project Name: {{ p.projectTitle }}</h4>
+                                                        <h4>Date Requested: {{ r.dateRequested }}</h4>
+                                                        <input id="r{{ r.id }}" value="{{ r.id }}" style="display: none">
+                                                    </div>
+                                                    <!-- body -->
+                                                    <div class="modal-body">
+                                                        <p><b>{{ r.category_requested }} (Remaining Budget: {{ c.subtotal|intcomma }})</b></p>
+                                                        <input style="display: none" id="category_requested{{r.id }}" value="{{ r.category_requested }}">
+                                                        <p>Amount to be reallocated: {{ r.amountReallocated|intcomma }}</p>
+                                                        <label class="green">New Amount (if approved):</label>
+                                                        <input disabled id="requested{{ r.id }}">
+                                                        <input disabled value="{{ c.subtotal }}"id="new_amount_request{{ r.id }}" style="display: none">
+                                                        <input disabled value="{{ r.amountReallocated }}"id="amount_request{{ r.id }}" style="display: none">
+                                                        <hr>
+                                                        {% for cat in categories %}
+                                                            {% if r.category_selected_for_reallocation == cat.title and cat.project == p %}
+                                                                <input style="display: none" id="category_to_be_reallocated{{r.id }}" value="{{ r.category_selected_for_reallocation }}">
+                                                                <p><b>{{ r.category_selected_for_reallocation }}</b> <b>(Remaining Budget: {{ cat.subtotal|intcomma }})</b></p>
+                                                                <p>Amount to be reallocated: {{ r.amountReallocated|intcomma }}</p>
+                                                                <label class="red">New Amount (if approved):</label>
+                                                                <input disabled id="selected{{ r.id }}">
+                                                                <input disabled value="{{ cat.subtotal }}"id="new_amount_selected{{ r.id }}"  style="display: none">
+
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </div>
+                                                    <hr>
+                                                    <label style="margin-left: 2%">Select Status: </label>
+                                                    <span><select class="select2_group form-control" style="width: 40%; margin-left: 17%; margin-top: -5%" id="statusSelect{{ r.id }}" onchange="getStatus({{ r.id }})">
+                            <option selected="selected" disabled >{{ r.status }}</option>
+                            <option value="Approve">Approve</option>
+                            <option value="Disapprove">Disapprove</option>
+                        </select></span>
+                                                    <br>
+
+                                                    <div style="margin-left: 2%; display: none;" id="remarks{{ r.id }}">
+                                                        <label>Remarks </label> <textarea style="margin-left: 2%; width: 50%" id="remarks_text{{ r.id }}" ></textarea>
+                                                    </div>
+                                                    <!-- footer -->
+                                                    <div class="modal-footer">
+                                                        <button class="btn btn-primary" id="submitBtn{{ r.id }}" onclick="submitRealloc({{ r.id }})">Submit</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--END VIEW DETAILS MODAL-->
+
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+
+
+                {% endif %}
+            {% endfor %}
+        </form>
+
+
+        <script>
+            function computeAmount(id) {
+                var selected = document.getElementById("new_amount_selected"+id).value
+                var requested =  document.getElementById("new_amount_request"+id).value
+                var amount =   document.getElementById("amount_request"+id).value
+
+                document.getElementById("selected"+id).value = selected-amount
+                document.getElementById("requested"+id).value = (1*requested)+(1*amount)
+
+
+            }
+
+            function getStatus(id){
+
+                var status = document.getElementById("statusSelect"+id).value
+                if(status == 'Approve'){
+                    $("#approveDate"+id).show()
+                    $("#remarks"+id).hide()
+                }
+                else{
+                    $("#remarks"+id).show()
+                    $("#approveDate"+id).hide()
+                }
+            }
+
+            function submitRealloc(id){
+                var status = document.getElementById("statusSelect"+id).value
+
+                if(status == 'Approve'){
+
+                    $.ajax({
+                        url: "/view_reallocation/",
+                        type: "POST",
+                        async: false,
+                        data:{
+                            request_id: JSON.stringify(document.getElementById("r"+id).value),
+                            new_request_amount:document.getElementById("requested"+id).value,
+                            new_reallocated_amount:document.getElementById("selected"+id).value,
+                            category_requested:document.getElementById("category_requested"+id).value,
+                            category_reallocated:document.getElementById("category_to_be_reallocated"+id).value,
+                            amount_reallocated:document.getElementById("amount_request"+id).value,
+                            status:status,
+                            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                        },
+
+                        success:function (response) {
+
+                        }
+
+                    })
+                    alert("Successfully Reallocated")
+                    alert(document.getElementById("r"+id).value)
+
+
+                }
+                else{
+                    $.ajax({
+                        url: "/view_reallocation/",
+                        type: "POST",
+                        async: false,
+                        data:{
+                            request_id: JSON.stringify(document.getElementById("r"+id).value),
+                            remarks:document.getElementById("remarks_text"+id).value,
+                            status:document.getElementById("statusSelect"+id).value,
+                            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                        },
+
+                        success:function (response) {
+
+                        }
+
+                    })
+                    alert("Remarks is sent!")
+                }
+
+            }
+
+        </script>
+    {% else %}
+        <div class="x_panel">
+            <!--DIV TITLE-->
+            <div class="x_title">
+                <h2>View Reallocation Requests</h2>
+                <div class="clearfix"></div>
+            </div>
+            <!--END DIV TITLE-->
+            <div class="x_content">
+                <table id="datatable-fixed-header" class="table table-striped table-bordered dataTable no-footer" role="grid" aria-describedby="datatable-fixed-header_info">
+                    <!--SETTING COLUMN WIDTH-->
+                    <col width="1"> <!--FIRST COLUMN-->
+                    <col width="350"> <!--SECOND COLUMN-->
+                    <col width="150">
+                    <col width="150">
+                    <col width="100">
+                    <!--END SETTING COLUMN WIDTH-->
+                    <thead>
+                    <tr>
+
+                        <th>Amount Requested:</th>
+                        <th>Date Requested</th>
+                        <th>Status</th>
+                        <th>Action</th>
+
+                    </tr>
+                    </thead>
+
+                    {% for p in projects %}
+
+                        {% if p.reallocation_set.all %}
+                            <tbody>
+
+
+
+                            {% for r in p.reallocation_set.all %}
+                                {% if r.project == p %}
+                                    <tr>
+
+                                        <td><b>{{ r.amountReallocated|intcomma }}</b> to be reallocated for <b>{{ r.category_requested }}</b> coming from <b>{{ r.category_selected_for_reallocation }}</b></td>
+                                        <td>{{ r.dateRequested }}</td>
+                                        <td>{% if r.status == 'For Review' %}
+                                            <label class="label  label-warning">{{ r.status }}</label>
+                                        {% elif r.status == 'Approve' %}
+                                            <label class="label label-success">{{ r.status }}</label>
+                                        {% elif r.status == 'Disapprove' %}
+                                            <label class="label label-danger">{{ r.status }}</label>
+                                        {% endif %}</td>
+                                        {% if not r.status == 'Approve' %}
+                                            <td><button onclick="computeAmount({{ r.id }})" id="view_btn" type="button" data-toggle="modal" data-target=".modal_details{{ r.id }}" class="btn btn-primary btn-xs view_btn">View Details</button></td>
+                                            </tr>
+                                        {% else %}
+                                            <td><label>Reallocated</label></td>
+                                        {% endif %}
+
+
+                                {% endif %}
+                            {% endfor %}
+
+
+
+                            </tbody>
+
+                        {% endif %}
+
+
+                    {% endfor %}
+
+
+                </table>
+            </div>
+        </div>
+
+
+    {% endif %}
+
+{% endblock %}
+

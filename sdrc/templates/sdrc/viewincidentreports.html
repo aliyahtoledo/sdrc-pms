@@ -1,0 +1,742 @@
+{% extends 'sdrc/base.html' %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="">
+
+        <div class="clearfix"></div>
+
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>View Incident Reports</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#">Settings 1</a>
+                                    </li>
+                                    <li><a href="#">Settings 2</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <!--
+                          <p class="text-muted font-13 m-b-30">
+
+                    </p>
+ <div id="datatable-fixed-header_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                </div>
+                        </div><div class="row"><div class="col-sm-12">
+                        <table id="datatable-fixed-header" class="table table-striped table-bordered dataTable no-footer" role="grid" aria-describedby="datatable-fixed-header_info">
+
+
+
+
+
+
+
+
+
+                            {% if request.user.is_staff %}
+                            <tbody>
+                                {% for incident in all_incident_report %}
+
+                                    <tr role="row" class="odd">
+                                          <td class="sorting_1">{{ incident.project }}</td>
+                                          <td class="sorting_1">{{ incident.project.get_name }}</td>
+                                          <td class="sorting_1" tabindex="0">{{ incident.issueEncountered }}  </td>
+                                          <td class="sorting_1" tabindex="0">{{ incident.issueDescription }}</td>
+                                        {% if incident.issuePriority == "High" %}
+                                          <td class="sorting_1" tabindex="0"><button class="btn btn-xs btn-danger">
+                            {{ incident.issuePriority }}</button></td>
+                                        {% elif incident.issuePriority == "Medium" %}
+                                          <td class="sorting_1" tabindex="0"><button class="btn btn-xs btn-warning">
+                            {{ incident.issuePriority }}</button></td>
+                                        {% elif incident.issuePriority == "Low" %}
+                                          <td class="sorting_1" tabindex="0"><button class="btn btn-xs btn-info">
+                            {{ incident.issuePriority }}</button></td>
+                                        {% endif %}
+                                          <td class="sorting_1" tabindex="0">{{ incident.dateEncountered }}</td>
+                                          <td class="sorting_1" tabindex="0">{{ incident.issueResolution }}
+                                        </td>
+                                    </tr>
+
+                                {% endfor %}
+</tbody>
+                            {% else %} <tbody>
+                                {% for ms in milestone %}
+                                    {% for task in ms.task_set.all %}
+                                        {% for issue in task.incidentreport_set.all %}
+
+                                            <tr role="row" class="odd">
+                                                  <td class="sorting_1">{{ ms.milestoneName }}</td>
+                                                <td class="sorting_1">{{ task.taskName }}</td>
+                                                <td class="sorting_1" tabindex="0">{{ task.assignedTo }}</td>
+                                                <td class="sorting_1" tabindex="0">{{ issue.issueEncountered }}  </td>
+                                                <td class="sorting_1" tabindex="0">{{ issue.issueDescription }}</td>
+                                                <td class="sorting_1" tabindex="0">{{ issue.issuePriority }}</td>
+                                                <td class="sorting_1" tabindex="0">{{ issue.dateEncountered }}</td>
+                                                <td class="sorting_1" tabindex="0">{% if issue.issueStatus == True %}
+                                                     <button type="button" class="btn btn-success btn-xs">Resolved</button>
+                                                {% else %}
+                                                    <button type="button" class="btn btn-danger btn-xs">Unresolved</button>
+                                                {% endif %}</td>
+                                                <td class="sorting_1" tabindex="0">{{ issue.issueResolution }}
+
+                                                </td>
+                                                <td class="sorting_1" tabindex="0">
+                                                    {% if issue.issueResolution == 'N/A' %}
+                                                        <button type="button" class="btn btn-primary btn-sm"
+                                                                data-toggle="modal"
+                                                                data-target="#{{ issue.pk }}">Add Resolution
+                                                        </button>
+                                                    {% else %}
+                                                        <button type="button" class="btn btn-primary btn-sm"
+                                                                data-toggle="modal"
+                                                                data-target="#update-{{ issue.pk }}">Update
+                                                        </button>
+                                                    {% endif %}</td>
+                                            </tr>
+
+
+
+
+                                            <div class="modal fade bs-example-modal-sm-resolution"
+                                                 style="width:600px; margin-left: 300px; margin-top: 20px;"
+                                                 id="update-{{ issue.pk }}"
+                                                 tabindex="-1" role="dialog" aria-hidden="true">
+
+                                                <div class="modal-content">
+
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                        <h4 class="modal-title" id="myModalLabel2">Update Issue</h4>
+
+                                                    </div>
+                                                    <form method="POST">
+                                                        {% csrf_token %}
+                                                        <div class="modal-body" style="height: 200px;">
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                                       for="first-name">Incident Name<span
+                                                                        class="required"></span>
+                                                                </label>
+                                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                    <input type="text" name="issueEncountered"
+                                                                           value="{{ issue.issueEncountered }}"
+                                                                           class="form-control col-md-7 col-xs-12">
+                                                                </div>
+                                                            </div>
+                                                            <input type="text" name="issueID"
+                                                                   value="{{ issue.id }}"
+                                                                   class="form-control col-md-7 col-xs-12" style="display: none">
+
+                                                        <div class="form-group">
+
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                                   style="margin-top: 10px;">Old Resolution</label>
+                                                            <div class="col-md-9 col-sm-9 col-xs-12"
+                                                                 style="margin-top: 10px;">
+                                                    <input class="form-control" rows="3" id="comment"
+                                                              name="oldissueResolution"
+                                                              value="{{ issue.issueResolution }}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                                   style="margin-top: 10px;">New Resolution</label>
+                                                            <div class="col-md-9 col-sm-9 col-xs-12"
+                                                                 style="margin-top: 10px;">
+                                                    <textarea class="form-control" rows="3" id="comment"
+                                                              name="newissueResolution"></textarea>
+                                                            </div>
+                                                        </div>
+
+
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                                                        Close
+                                                    </button>
+                                                    <input type="submit" class="btn btn-primary">
+                                                </div>
+                                                        </div>
+                                                </form>
+
+                                            </div>
+                                            </div>
+
+                                            <div class="modal fade bs-example-modal-sm-resolution"
+                                                 style="width:600px; margin-left: 300px; margin-top: 20px;"
+                                                 id="{{ issue.pk }}"
+                                                 tabindex="-1" role="dialog" aria-hidden="true">
+
+                                                <div class="modal-content">
+
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                        <h4 class="modal-title" id="myModalLabel2">Enter Resolution</h4>
+
+                                                    </div>
+                                                    <form method="POST">
+                                                        {% csrf_token %}
+                                                        <div class="modal-body" style="height: 200px;">
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                                       for="first-name">Incident Name<span
+                                                                        class="required"></span>
+                                                                </label>
+                                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                    <input type="text" name="issueEncountered"
+                                                                           value="{{ issue.issueEncountered }}"
+                                                                           class="form-control col-md-7 col-xs-12">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+
+                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                                       style="margin-top: 10px;">Resolution</label>
+                                                                <div class="col-md-9 col-sm-9 col-xs-12"
+                                                                     style="margin-top: 10px;">
+                                                    <textarea class="form-control" rows="3" id="comment"
+                                                              name="issueResolution"
+                                                              placeholder="What resolution has been made for this issue?"></textarea>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-default"
+                                                                    data-dismiss="modal">Close
+                                                            </button>
+                                                            <input type="submit" class="btn btn-primary">
+                                                        </div>
+                                                    </form>
+
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    {% endfor %}
+                                      </tbody>
+                                {% endfor %}
+                            {% endif %}
+                    </table> -->
+
+                        <p class="text-muted font-13 m-b-30">
+
+                        </p>
+                        <div id="datatable-fixed-header_wrapper"
+                             class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <table id="datatable-fixed-header"
+                                           class="table table-striped table-bordered dataTable no-footer" role="grid"
+                                           aria-describedby="datatable-fixed-header_info">
+                                        <thead>
+                                        {% if request.user.is_staff %}
+                                            <tr role="row">
+                                                <th class="sorting_asc" tabindex="0"
+                                                    aria-controls="datatable-fixed-header"
+                                                    rowspan="1" colspan="1" aria-sort="ascending"
+                                                    aria-label="Name: activate to sort column descending"
+                                                    style="width: 95px;">
+                                                    Project
+                                                </th>
+                                                <th class="sorting_asc" tabindex="0"
+                                                    aria-controls="datatable-fixed-header"
+                                                    rowspan="1" colspan="1" aria-sort="ascending"
+                                                    aria-label="Name: activate to sort column descending"
+                                                    style="width: 95px;">
+                                                    Principal Investigator
+                                                </th> <th class="sorting_asc" tabindex="0"
+                                                    aria-controls="datatable-fixed-header"
+                                                    rowspan="1" colspan="1" aria-sort="ascending"
+                                                    aria-label="Name: activate to sort column descending"
+                                                    style="width: 95px;">
+                                                   Category
+                                                </th>
+                                                <th class="sorting" tabindex="0" aria-controls="datatable-fixed-header"
+                                                    rowspan="1"
+                                                    colspan="1" aria-label="Position: activate to sort column ascending"
+                                                    style="width: 139px;">Issue Encountered
+                                                </th>
+                                                <th class="sorting" tabindex="0" aria-controls="datatable-fixed-header"
+                                                    rowspan="1"
+                                                    colspan="1" aria-label="Position: activate to sort column ascending"
+                                                    style="width: 139px;">Description
+                                                </th>
+                                                <th class="sorting_asc" tabindex="0"
+                                                    aria-controls="datatable-fixed-header"
+                                                    rowspan="1" colspan="1" aria-sort="ascending"
+                                                    aria-label="Name: activate to sort column descending"
+                                                    style="width: 95px;">
+                                                    Priority Level
+                                                </th>
+                                                <th class="sorting_asc" tabindex="0"
+                                                    aria-controls="datatable-fixed-header"
+                                                    rowspan="1" colspan="1" aria-sort="ascending"
+                                                    aria-label="Name: activate to sort column descending"
+                                                    style="width: 95px;">
+                                                    Date Encountered
+                                                </th>
+                                                <th class="sorting" tabindex="0" aria-controls="datatable-fixed-header"
+                                                    rowspan="1" colspan="1" aria-sort="ascending"
+                                                    aria-label="Name: activate to sort column descending"
+                                                    style="width: 95px;">
+                                                    Status
+                                                </th>
+                                               <th class="sorting" tabindex="0" aria-controls="datatable-fixed-header"
+                                                    rowspan="1" colspan="1" aria-sort="ascending"
+                                                    aria-label="Name: activate to sort column descending"
+                                                    style="width: 95px;">
+                                                   Resolution
+                                                </th>
+                                                <th class="sorting" tabindex="0" aria-controls="datatable-fixed-header"
+                                                    rowspan="1" colspan="1" aria-sort="ascending"
+                                                    aria-label="Name: activate to sort column descending"
+                                                    style="width: 95px;">
+                                                   Resolved by
+                                                </th>
+                                               <th class="sorting" tabindex="0" aria-controls="datatable-fixed-header"
+                                                    rowspan="1" colspan="1" aria-sort="ascending"
+                                                    aria-label="Name: activate to sort column descending"
+                                                    style="width: 95px;">
+                                                  File Uploaded
+                                                </th>
+
+                                            </tr>
+                                        {% else %}
+                                            <tr role="row">
+                                                <th class="sorting_asc" tabindex="0"
+                                                    aria-controls="datatable-fixed-header"
+                                                    rowspan="1" colspan="1" aria-sort="ascending"
+                                                    aria-label="Name: activate to sort column descending"
+                                                    style="width: 95px;">
+                                                    Project
+                                                </th>
+                                                <th class="sorting_asc" tabindex="0"
+                                                    aria-controls="datatable-fixed-header"
+                                                    rowspan="1" colspan="1" aria-sort="ascending"
+                                                    aria-label="Name: activate to sort column descending"
+                                                    style="width: 95px;">
+                                                    Task Name
+                                                </th>
+                                                <th class="sorting" tabindex="0" aria-controls="datatable-fixed-header"
+                                                    rowspan="1"
+                                                    colspan="1" aria-label="Position: activate to sort column ascending"
+                                                    style="width: 139px;">Resource Person
+                                                </th>
+                                                 <th class="sorting_asc" tabindex="0"
+                                                    aria-controls="datatable-fixed-header"
+                                                    rowspan="1" colspan="1" aria-sort="ascending"
+                                                    aria-label="Name: activate to sort column descending"
+                                                    style="width: 95px;">
+                                                  Category
+                                                </th>
+                                                <th class="sorting" tabindex="0" aria-controls="datatable-fixed-header"
+                                                    rowspan="1"
+                                                    colspan="1" aria-label="Position: activate to sort column ascending"
+                                                    style="width: 139px;">Issue Encountered
+                                                </th>
+                                                <th class="sorting_asc" tabindex="0"
+                                                    aria-controls="datatable-fixed-header" rowspan="1"
+                                                    colspan="1" aria-label="Position: activate to sort column ascending"
+                                                    style="width: 139px;">Description
+                                                </th>
+                                                <th class="sorting_asc" tabindex="0"
+                                                    aria-controls="datatable-fixed-header"
+                                                    rowspan="1" colspan="1" aria-sort="ascending"
+                                                    aria-label="Name: activate to sort column descending"
+                                                    style="width: 95px;">
+                                                    Priority Level
+                                                </th>
+                                                <th class="sorting" tabindex="0" aria-controls="datatable-fixed-header"
+                                                    rowspan="1" colspan="1" aria-sort="ascending"
+                                                    aria-label="Name: activate to sort column descending"
+                                                    style="width: 95px;">
+                                                    Date Encountered
+                                                </th>
+                                                <th class="sorting" tabindex="0" aria-controls="datatable-fixed-header"
+                                                    rowspan="1" colspan="1" aria-sort="ascending"
+                                                    aria-label="Name: activate to sort column descending"
+                                                    style="width: 95px;">
+                                                    Status
+                                                </th>
+                                                <th class="sorting_asc" tabindex="0"
+                                                    aria-controls="datatable-fixed-header" rowspan="1"
+                                                    colspan="1" aria-label="Office: activate to sort column ascending"
+                                                    style="width: 94px;">Resolution
+                                                </th>
+                                                <th class="sorting_asc" tabindex="0"
+                                                    aria-controls="datatable-fixed-header" rowspan="1"
+                                                    colspan="1" aria-label="Office: activate to sort column ascending"
+                                                    style="width: 94px;">Resolved by
+                                                </th>
+                                                <th class="sorting_asc" tabindex="0"
+                                                    aria-controls="datatable-fixed-header" rowspan="1"
+                                                    colspan="1" aria-label="Office: activate to sort column ascending"
+                                                    style="width: 94px;">File
+                                                </th>
+                                                <th class="sorting_asc" tabindex="0"
+                                                    aria-controls="datatable-fixed-header" rowspan="1"
+                                                    colspan="1" aria-label="Office: activate to sort column ascending"
+                                                    style="width: 94px;">
+                                                </th>
+                                            </tr>
+                                        {% endif %}
+                                        </thead>
+                                        {% if request.user.is_staff %}
+                                            <tbody>
+                                            {% for incident in all_incident_report %}
+
+                                                <tr role="row" class="odd">
+                                                    <td class="sorting_1">{{ incident.project }}</td>
+                                                    <td class="sorting_1">{{ incident.project.get_name }}</td>
+                                                <td class="sorting_1"
+                                                        tabindex="0">{{ incident.category }}  </td>
+                                                    <td class="sorting_1"
+                                                        tabindex="0">{{ incident.issueEncountered }}  </td>
+                                                    <td class="sorting_1"
+                                                        tabindex="0">{{ incident.issueDescription }}</td>
+                                                    {% if incident.issuePriority == "High" %}
+                                                        <td class="sorting_1" tabindex="0">
+                                                            <button class="btn btn-xs btn-danger">{{ incident.issuePriority }}</button>
+                                                        </td>
+                                                    {% elif incident.issuePriority == "Medium" %}
+                                                        <td class="sorting_1" tabindex="0">
+                                                            <button class="btn btn-xs btn-warning">{{ incident.issuePriority }}</button>
+                                                        </td>
+                                                    {% elif incident.issuePriority == "Low" %}
+                                                        <td class="sorting_1" tabindex="0">
+                                                            <button class="btn btn-xs btn-info">{{ incident.issuePriority }}</button>
+                                                        </td>
+                                                    {% endif %}
+                                                    <td class="sorting_1"
+                                                        tabindex="0">{{ incident.dateEncountered }}</td>
+                                                  <td class="sorting_1"
+                                                        tabindex="0">{% if incident.issueStatus == 'True' %}   <button class="btn btn-xs btn-info">Resolved</button> {% else %}   <button class="btn btn-xs btn-danger">Unresolved</button>{% endif %}</td>
+                                                    <td class="sorting_1" tabindex="0">{{ incident.issueResolution }}
+                                                    </td>
+                                                <td class="sorting_1" tabindex="0">{% if incident.resolvedBy %}N/A {% else %}
+                                                    {% for u in users %}
+                                                        {% if u == incident.resolvedBy %}
+                                                        {{ u.first_name }} {{ u.last_name }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                 {% endif %}
+                                                    </td>
+                                                    <td class="sorting_1" tabindex="0">
+                                                        {% if incident.file %}{{ incident.file }}
+                                                        {% else %}
+                                                            N/A
+                                                        {% endif %}
+                                                    </td>
+
+                                                </tr>
+
+                                            {% endfor %}
+                                            </tbody>
+                                        {% else %}
+                                            <tbody>
+                                            {% for ms in milestone %}
+                                                {% for task in ms.task_set.all %}
+                                                    {% for incident in task.incidentreport_set.all %}
+                                                        <tr role="row" class="odd">
+
+
+                                                            <td class="sorting_1">{{ ms.milestoneName }}</td>
+                                                            <td class="sorting_1">{{ task.taskName }}</td>
+                                                            <td class="sorting_1"
+                                                                tabindex="0">{{ task.assignedTo }}</td>
+                                                        <td class="sorting_1"
+                                                        tabindex="0">{{ incident.category }}  </td>
+                                                            <td tabindex="0" class="sorting_1"
+                                                                style="">{{ incident.issueEncountered }}</td>
+
+                                                            <td>{{ incident.issueDescription }}
+                                                            </td>
+                                                            {% if incident.issuePriority == "High" %}
+                                                                <td class="sorting_1" tabindex="0">
+                                                                    <button class="btn btn-xs btn-danger">{{ incident.issuePriority }}</button>
+                                                                </td>
+                                                            {% elif incident.issuePriority == "Medium" %}
+                                                                <td class="sorting_1" tabindex="0">
+                                                                    <button class="btn btn-xs btn-warning">{{ incident.issuePriority }}</button>
+                                                                </td>
+                                                            {% elif incident.issuePriority == "Low" %}
+                                                                <td class="sorting_1" tabindex="0">
+                                                                    <button class="btn btn-xs btn-info">{{ incident.issuePriority }}</button>
+                                                                </td>
+                                                            {% endif %}
+                                                            <td tabindex="0" class="sorting_1"
+                                                                style="">{{ incident.dateEncountered }}</td>
+                                                            <td tabindex="0" class="sorting_1" style="">
+                                                                {% if incident.issueStatus == True %}
+                                                                    <button type="button"
+                                                                            class="btn btn-success btn-xs">Resolved
+                                                                    </button>
+                                                                {% else %}
+                                                                    <button type="button" class="btn btn-danger btn-xs">
+                                                                        Unresolved
+                                                                    </button>
+                                                                {% endif %}</td>
+                                                            <td tabindex="0" class="sorting_1"
+                                                                style="">{{ incident.issueResolution }}</td>
+                                                            <td tabindex="0" class="sorting_1"
+                                                                style="">{% if not incident.resolvedBy %}N/A {% else %}
+
+                                                    {% for u in users %}
+
+                                                        {% if incident.resolvedBy == u %}
+
+                                                        {{ u.first_name }} {{ u.last_name }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                        {% endif %}</td>
+                                                            <td class="sorting_1">{{ incident.file }}</td>
+                                                            <td class="sorting_1" tabindex="0">
+                                                                {% if incident.issueResolution == 'N/A' %}
+                                                                    <button type="button" class="btn btn-primary btn-sm"
+                                                                            data-toggle="modal"
+                                                                            data-target="#{{ incident.pk }}">Add
+                                                                        Resolution
+                                                                    </button>
+                                                                {% else %}
+                                                                    <button type="button" class="btn btn-primary btn-sm"
+                                                                            data-toggle="modal"
+                                                                            data-target="#update-{{ incident.pk }}">
+                                                                        Update
+                                                                    </button>
+                                                                {% endif %}</td>
+
+
+                                                        </tr>
+                                                        <div class="modal fade bs-example-modal-sm-resolution"
+                                                             style="width:600px; margin-left: 300px; margin-top: 20px;"
+                                                             id="update-{{ incident.pk }}"
+                                                             tabindex="-1" role="dialog" aria-hidden="true">
+
+                                                            <div class="modal-content">
+
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close"
+                                                                            data-dismiss="modal"
+                                                                            aria-label="Close">
+                                                                        <span aria-hidden="true">×</span>
+                                                                    </button>
+                                                                    <h4 class="modal-title" id="myModalLabel2">Update
+                                                                        Issue</h4>
+
+                                                                </div>
+                                                                <form method="POST">
+                                                                    {% csrf_token %}
+                                                                    <div class="modal-body" style="height: 250px;">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                                                   for="first-name">Incident Name<span
+                                                                                    class="required"></span>
+                                                                            </label>
+                                                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                <input type="text"
+                                                                                       name="issueEncountered"
+                                                                                       value="{{ incident.issueEncountered }}"
+                                                                                       class="form-control col-md-7 col-xs-12"
+                                                                                       style="width: 400px;">
+                                                                            </div>
+                                                                        </div>
+                                                                        <input type="text" name="issueID"
+                                                                               value="{{ incident.id }}"
+                                                                               class="form-control col-md-7 col-xs-12"
+                                                                               style="display: none">
+
+                                                                        <div class="form-group">
+
+                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                                                   style="margin-top: 10px;">Old
+                                                                                Resolution</label>
+                                                                            <div class="col-md-9 col-sm-9 col-xs-12"
+                                                                                 style="margin-top: 10px;">
+                                                                                <input class="form-control" rows="3"
+                                                                                       id="comment"
+                                                                                       name="oldissueResolution"
+                                                                                       value="{{ incident.issueResolution }}"
+                                                                                       style="width: 400px;">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+
+                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                                                   style="margin-top: 10px;">New
+                                                                                Resolution</label>
+                                                                            <div class="col-md-9 col-sm-9 col-xs-12"
+                                                                                 style="margin-top: 10px;">
+                                                    <textarea class="form-control" rows="3" id="comment"
+                                                              name="newissueResolution"
+                                                              style="width: 400px;"></textarea>
+                                                                            </div>
+                                                                        </div>
+
+
+                                                                        <div class="modal-footer">
+                                                                            <button type="button"
+                                                                                    class="btn btn-default"
+                                                                                    data-dismiss="modal">
+                                                                                Close
+                                                                            </button>
+                                                                            <input type="submit"
+                                                                                   class="btn btn-primary">
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="modal fade bs-example-modal-sm-resolution"
+                                                             style="width:600px; margin-left: 300px; margin-top: 20px;"
+                                                             id="{{ incident.pk }}"
+                                                             tabindex="-1" role="dialog" aria-hidden="true">
+
+                                                            <div class="modal-content">
+
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close"
+                                                                            data-dismiss="modal"
+                                                                            aria-label="Close">
+                                                                        <span aria-hidden="true">×</span>
+                                                                    </button>
+                                                                    <h4 class="modal-title" id="myModalLabel2">Enter
+                                                                        Resolution</h4>
+
+                                                                </div>
+                                                                <form method="POST" enctype="multipart/form-data">
+                                                                    {% csrf_token %}
+                                                                    <div class="modal-body" style="height: auto;">
+                                                                        <input type="text" name="issueID"
+                                                                               value="{{ incident.id }}"
+                                                                               class="form-control col-md-7 col-xs-12"
+                                                                               style="display: none;">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                                                   for="first-name">Incident Name<span
+                                                                                    class="required"></span>
+                                                                            </label>
+                                                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                <input type="text"
+                                                                                       name="issueEncountered"
+                                                                                       value="{{ incident.issueEncountered }}"
+                                                                                       class="form-control col-md-7 col-xs-12"
+                                                                                       style="margin-left: -5px; width: 400px;">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+
+                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                                                   style="margin-top: 10px;">Resolution</label>
+                                                                            <div class="col-md-9 col-sm-9 col-xs-12"
+                                                                                 style="margin-top: 10px;">
+                                                    <textarea rows="3" id="comment"
+                                                              name="issueResolution"
+                                                              placeholder="What resolution has been made for this issue?"
+                                                              class="form-control col-md-7 col-xs-12"
+                                                              style="width: 400px;"></textarea>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="form-group">
+                                                                            <label class="control-label col-md-4 col-sm-4 col-xs-12"
+                                                                                   style="margin-top: 10px; margin-bottom: 10px;">File</label>
+                                                                            <div class="col-md-8 col-sm-8 col-xs-12"
+                                                                                 style="margin-top: 10px; margin-bottom: 10px;">
+                                                                                <input type="file" name="files"
+                                                                                       data-role="magic-overlay"
+                                                                                       class="form-control col-md-3 col-xs-12"
+                                                                                       data-target="#pictureBtn"
+                                                                                       data-edit="insertImage"></div>
+                                                                        </div>
+
+
+                                                                        <div class="modal-footer">
+                                                                            <button type="button"
+                                                                                    class="btn btn-default"
+                                                                                    data-dismiss="modal">Close
+                                                                            </button>
+                                                                            <input type="submit"
+                                                                                   class="btn btn-primary">
+                                                                        </div>
+
+                                                                    </div>
+                                                                </form>
+
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                {% endfor %}
+                                            {% endfor %}
+
+
+
+                                            <!--<td>
+                                                <a href="#" id="hover" title="View Expense Summary" class="btn btn-primary btn-xs" data-toggle="modal" data-target=".bs-example-modal-sm" id="budget-breakdown"><i class="fa fa-eye"></i> </a>
+                                            <a href="#"id="hover" title="Update" class="btn btn-warning btn-xs" data-toggle="modal" data-target=".bs-example-modal-sm" id="budget-breakdown"><i class="fa fa-pencil"></i></a>
+                                                <a href="#" id="hover" title="Delete"class="btn btn-danger btn-xs" data-toggle="modal" data-target=".bs-example-modal-sm" id="budget-breakdown"><i class="fa fa-trash"></i></a>
+                                                <a href="#" id="hover" title="Print" class="btn btn-default btn-xs" data-toggle="modal" data-target=".bs-example-modal-sm" id="budget-breakdown"><i class="fa fa-print"></i></a>
+                                            </td>-->
+
+
+                                            </tbody>
+                                        {% endif %}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    </div>
+    </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $(".form-control input-sm").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#datatable-fixed-header tr td").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+
+{% endblock %}

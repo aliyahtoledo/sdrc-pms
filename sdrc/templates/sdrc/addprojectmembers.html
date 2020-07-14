@@ -1,0 +1,331 @@
+{% extends 'sdrc/base.html' %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+    {% load mytags %}
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+          <div class="">
+
+
+            <div class="row">
+
+              <div class="col-md-12 col-sm-12 col-xs-12">
+
+
+
+              <!-- Closure -->
+                 <div class="x_panel">
+                  <div class="x_title">
+                      <h2>Add Project Members</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+
+
+                    <!-- Smart Wizard -->
+
+                    <form class="form-horizontal" method="POST" action="">
+                    {% csrf_token %}
+
+                            <div id="form-row spacer">
+                             <div class="form-group input-group col-md-12">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Role
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                             <select class="select2_group form-control" name="role" id="personnelSelect">
+                     <option value="">Choose a role</option>
+{% for member in projectmembers %}
+    <option value="{{ member.title }} - {{ member.quantity }}">{{ member.title }} - {{ member.quantity }}</option>
+
+                                 {% endfor %}
+                 </select>
+                        </div>
+                      </div>
+                            <div id="memberAppend" style="display: none;">
+                            <div class="form-group input-group col-md-12">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">First Name <span id="taskcounter"></span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input class="form-control" type="text" name="first_name">
+
+                        </div>
+                      </div>
+                            <div class="form-group input-group col-md-12">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Last Name
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+
+                          <input class="form-control" type="text" name="last_name">
+
+                        </div>
+                      </div>
+                              <div class="form-group input-group col-md-12">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Email
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+
+                           <input class="form-control" type="text" name="email">
+
+                        </div>
+                      </div>
+
+                            </div>
+                            </div>
+
+          <div class="ln_solid"></div>
+                      <div class="form-group">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                        <input type="submit" onclick="addMembers()" value="Add Member" class="btn btn-success">
+                            <button class="btn btn-primary" onclick="redirect()" type="button">Create Milestones</button>
+
+                        </div>
+                      </div>
+
+</form>
+                        <div class="ln_solid"></div>
+                    {% if members %}
+
+                    <table id="datatable" class="table table-striped table-bordered">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th></th>
+                            <th></th>
+
+                        </tr>
+                      </thead>
+                          {% for member in members %}
+                        <tbody>
+                        <tr>
+                            <td>{{ member.first_name }} {{ member.last_name }}</td>
+                            <td>{{ member.email }}</td>
+                            <td>{{ member.role }}</td>
+                            <td><button type="button" class="btn btn-primary btn-sm" style="" data-toggle="modal" data-target="#edit-{{ member.id }}">Edit</button></td>
+                            <td><button type="button" class="btn btn-danger btn-sm" style="" data-toggle="modal" data-target="#delete-{{ member.id }}">Delete</button></td>
+                        </tr>
+                        </tbody>
+                               <div class="modal fade bs-example-modal-sm-resolution" style="width:600px; margin-left: 300px; margin-top: 20px;" id="delete-{{ member.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+
+                      <div class="modal-content">
+
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                          </button>
+                          <h4 class="modal-title" id="myModalLabel2">Delete Member</h4>
+
+                        </div>
+                           <form method="POST">
+                               {% csrf_token %}
+                        <div class="modal-body" style="height: 100px;">
+                            <div class="form-group" style="display: none;">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Member Name<span class="required"></span>
+                                </label>
+                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                  <input type="text" name="memberID" value="{{ member.id }}" class="form-control col-md-7 col-xs-12">
+                                </div>
+                             </div>
+                            <div class="form-group" style="display: none;">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Milestone Name<span class="required"></span>
+                                </label>
+                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                  <input type="text" name="memberUpdate" value="Delete" class="form-control col-md-7 col-xs-12">
+                                </div>
+                             </div>
+
+                            <div style="font-size: 15px;"> Are you sure you want to delete {{ member.first_name }} {{ member.last_name }} as a project member?</div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <input type="submit" class="btn btn-primary">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+                        </div>
+
+                        </form>
+
+                      </div>
+                    </div>
+                              <div class="modal fade bs-example-modal-sm-resolution" style="width:600px; margin-left: 300px; margin-top: 20px;" id="edit-{{ member.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+
+                      <div class="modal-content">
+
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                          </button>
+                          <h4 class="modal-title" id="myModalLabel2">Update Member Details</h4>
+
+                        </div>
+                           <form method="POST">
+                               {% csrf_token %}
+                        <div class="modal-body" style="height: 150px;">
+                            <div class="form-group" style="display: none;">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Member Name<span class="required"></span>
+                                </label>
+                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                  <input type="text" name="memberID" value="{{ member.id }}" class="form-control col-md-7 col-xs-12">
+                                </div>
+                             </div>
+                            <div class="form-group" style="display: none;">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Milestone Name<span class="required"></span>
+                                </label>
+                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                  <input type="text" name="memberUpdate" value="Update" class="form-control col-md-7 col-xs-12">
+                                </div>
+                             </div>
+                             <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">First Name<span class="required"></span>
+                                </label>
+                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                  <input type="text" name="oldmemberfirstName" value="{{ member.first_name }}" class="form-control col-md-7 col-xs-12">
+                                </div>
+                             </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Last Name<span class="required"></span>
+                                </label>
+                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                  <input type="text" name="oldmemberlastName" value="{{ member.last_name }}" class="form-control col-md-7 col-xs-12">
+                                </div>
+                             </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Email<span class="required"></span>
+                                </label>
+                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                  <input type="text" name="oldemail" value="{{ member.email }}" class="form-control col-md-7 col-xs-12">
+                                </div>
+                             </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Role<span class="required"></span>
+                                </label>
+                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                  <input type="text" name="oldrole" value="{{ member.role }}" class="form-control col-md-7 col-xs-12">
+                                </div>
+                             </div>
+
+                             <div class="form-group">
+                             <div id="newmilestoneName">
+                                 <label class="control-label col-md-3 col-sm-3 col-xs-12" style="margin-top: 15px;" for="first-name">New First Name<span class="required"></span>
+                                </label>
+                                 <div class="col-md-9 col-sm-9 col-xs-12" style="margin-top: 15px;">
+                                  <input type="text" name="new_first_name" class="form-control col-md-7 col-xs-12">
+                                </div>
+                         </div>
+                             </div>
+                            <div class="form-group">
+                             <div id="newmilestoneName">
+                                 <label class="control-label col-md-3 col-sm-3 col-xs-12" style="margin-top: 15px;" for="first-name">New Last Name<span class="required"></span>
+                                </label>
+                                 <div class="col-md-9 col-sm-9 col-xs-12" style="margin-top: 15px;">
+                                  <input type="text" name="new_last_name" class="form-control col-md-7 col-xs-12">
+                                </div>
+                         </div>
+                             </div>
+                            <div class="form-group">
+                             <div id="newmilestoneName">
+                                 <label class="control-label col-md-3 col-sm-3 col-xs-12" style="margin-top: 15px;" for="first-name">New Email<span class="required"></span>
+                                </label>
+                                 <div class="col-md-9 col-sm-9 col-xs-12" style="margin-top: 15px;">
+                                  <input type="text" name="new_email" class="form-control col-md-7 col-xs-12">
+                                </div>
+                         </div>
+                             </div>
+                            <div class="form-group">
+                             <div id="newmilestoneName">
+                                 <label class="control-label col-md-3 col-sm-3 col-xs-12" style="margin-top: 15px;" for="first-name">New Role<span class="required"></span>
+                                </label>
+                                 <div class="col-md-9 col-sm-9 col-xs-12" style="margin-top: 15px;">
+                                  <input type="text" name="new_role" class="form-control col-md-7 col-xs-12">
+                                </div>
+                         </div>
+                             </div>
+
+
+
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          <input type="submit" class="btn btn-primary">
+                        </div>
+
+                        </form>
+
+                      </div>
+                    </div>
+                     {% endfor %}
+                    </table>
+
+                    {% endif %}
+
+
+</form>
+                  </div>
+                  </div>
+
+                  </div>
+                </div>
+                  </div>
+
+<script>
+$('#personnelSelect').change(function(){
+    var quantity = document.getElementById("personnelSelect").value;
+    var number = quantity.split(" - ");
+    var loopno = number[1];
+    alert(loopno);
+    for (var i=0; i<loopno; i++) {
+        $('#memberAppend').after("<div class=\"form-group input-group col-md-12\">\n" +
+            "                        <label class=\"control-label col-md-3 col-sm-3 col-xs-12\" for=\"first-name\">First Name <span id=\"taskcounter\"></span>\n" +
+            "                        </label>\n" +
+            "                        <div class=\"col-md-6 col-sm-6 col-xs-12\">  \n" +
+            "                        <input class=\"form-control\" type=\"text\" name=\"first_name\">\n" +
+            "\n" +
+            "                        </div>\n" +
+            "                      </div>\n" +
+            "                            <div class=\"form-group input-group col-md-12\">\n" +
+            "                        <label class=\"control-label col-md-3 col-sm-3 col-xs-12\" for=\"first-name\">Last Name\n" +
+            "                        </label>\n" +
+            "                        <div class=\"col-md-6 col-sm-6 col-xs-12\">\n" +
+            "\n" +
+            "                          <input class=\"form-control\" type=\"text\" name=\"last_name\">\n" +
+            "\n" +
+            "                        </div>\n" +
+            "                      </div>\n" +
+            "                              <div class=\"form-group input-group col-md-12\">\n" +
+            "                        <label class=\"control-label col-md-3 col-sm-3 col-xs-12\" for=\"first-name\">Email\n" +
+            "                        </label>\n" +
+            "                        <div class=\"col-md-6 col-sm-6 col-xs-12\">\n" +
+            "\n" +
+            "                           <input class=\"form-control\" type=\"text\" name=\"email\">\n" +
+            "\n" +
+            "                        </div>\n" +
+            "                      </div>");
+    }
+});
+</script>
+{% endblock %}
+{% block script %}
+    <script>function redirect() {
+        window.location ={% url 'createmilestone' %};
+    }</script>
+    <script>function addMembers() {
+        alert("Project member has been added!");
+    }</script>
+
+{% endblock %}

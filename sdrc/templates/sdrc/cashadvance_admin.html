@@ -1,0 +1,684 @@
+
+
+
+{% extends 'sdrc/base.html' %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+    {% load humanize %}
+    {% load mytags %}
+    {% if request.user.is_staff %}
+        <div id="pagecontent" style="height: auto;">
+
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>View Requests for Cash Advance</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Settings 1</a>
+                                </li>
+                                <li><a href="#">Settings 2</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content" style="height: auto;">
+                    <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                        <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                            {% for project in budgetextension %}
+                                <li role="presentation" class="" style="margin-bottom: 10px;"><a href="#tab_content-{{ forloop.counter }}" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">{{ project.projectTitle }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+
+                        <div id="myTabContent" class="tab-content">
+                           {% for project in budgetextension %}
+                            {% if project.hasTranche == True %}
+                                 {% for project in budgetextension %}
+                                <div role="tabpanel" class="tab-pane fade" id="tab_content-{{ forloop.counter }}" aria-labelledby="home-tab">
+                                    <table id="datatable-fixed-header" class="table table-striped table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>Account Number</th>
+                                            <th>Project Name</th>
+                                            <th>Milestone Name</th>
+                                            <th>Principal Investigator</th>
+                                            <th>Funding Agency</th>
+                                            <th>Date Requested</th>
+                                            <th>Budget Category</th>
+                                            <th>Expense Name</th>
+                                            <th>Status</th>
+                                            <th>Remarks</th>
+                                            <th>Approved Amount</th>
+                                            <th>Tranche Amount </th>
+                                            <th>Amount Spent</th>
+                                            <th>Excess Amount</th>
+                                            <th>Details</th>
+                                            <th>Edit Status</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for budget in project.projectexpense_set.all %}
+                                            {% if budget.expenseType == 'Cash Advance' %}
+                                                <tr>
+                                                    <td>{{ budget.project.accountNumber }}</td>
+                                                    <td>{{ budget.project.projectTitle }} </td>
+                                                <td>{{ budget.milestone.milestoneName }} </td>
+                                                    <td>{{ budget.project.get_name }}</td>
+                                                    <td>{{ budget.project.fundingAgency }}</td>
+                                                    <td>{{ budget.nowDate }}</td>
+                                                    <td>{{ budget.category.title }}</td>
+                                                    <td>{{ budget.expenseName }}</td>
+                                                    <td>{{ budget.status }}</td>
+                                                    <td>{{ budget.remarks }}</td>
+                                                    <td>{{ budget.expenseAmount|intcomma }}</td>
+                                                <td class="green"><strong>{{ budget.milestone.trancheAmount|intcomma }}</strong></td>
+                                                {% if budget.expenseTotal %}
+                                                <td>{{ budget.expenseTotal|intcomma }}</td>
+
+                                                 <td>{{ budget.expenseAmount|subtract:budget.expenseTotal }}</td>
+                                                    {% else %}<td>N/A</td>
+                                                 <td>N/A</td>{% endif %}
+
+                                                    <!--<td><ul class="list-unstyled project_files">
+
+                                                     <li><a href=""><i class="fa fa-file-word-o"></i> Contract-10_12_2014.docx</a>
+                                                     </li>
+                                                   </ul></td>-->
+                                                    <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".bs-details-modal-sm-{{ budget.id }}">Details</button>
+                                                        <div class="modal fade bs-details-modal-sm-{{ budget.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                                            <div class="modal-dialog modal-sm">
+                                                                <div class="modal-content" style="width: 500px; height: 300px;">
+
+
+                                                                    <div class="modal-header">
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">?</span>
+                                                                        </button>
+                                                                        <h4 class="modal-title" id="myModalLabel2">Details of Request</h4>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        {% if budget.itemType == 'Hotel Booking' %}
+                                                                            <b>Budget Category:</b> {{ budget.category.title }}<br>
+                                                                            <b>Expense Name: </b>{{ budget.itemType }}<br>
+                                                                            <b>Location: </b>{{ budget.expenseLocation }}<br>
+                                                                            <b>Hotel/Venue: </b>{{ budget.expenseName }}<br>
+                                                                            <b>Number of Days: </b>{{ budget.days }}<br>
+                                                                            <b>Pax: </b>{{ budget.expenseQuantity }}<br>
+                                                                            <b>Target Check-in Date: </b>{{ budget.fromDate }}<br>
+                                                                            <b>Cash Advance Amount: </b>P {{ budget.amountRequested|intcomma }}<br>
+
+                                                                        {% endif %}
+
+                                                                        {% if budget.itemType == 'Flight Tickets' %}
+                                                                            <b>Budget Category:</b> {{ budget.category.title }}<br>
+                                                                            <b>Expense Name: </b>{{ budget.expenseName }}<br>
+                                                                            <b>Location: </b>{{ budget.expenseLocation }}<br>
+                                                                            <b>Destination: </b>{{ budget.destination }}<br>
+                                                                            <b>Pax: </b>{{ budget.expenseQuantity }}<br>
+                                                                            <b>Target Departure Date: </b>{{ budget.fromDate }}<br>
+                                                                            <b>Cash Advance Amount: </b>P {{ budget.amountRequested|intcomma }}<br>
+
+
+                                                                        {% endif %}
+
+                                                                        {% if budget.itemType == 'Field Expense (No Official Receipt)' or budget.itemType == 'Field Expense (Repair and Maintenance of Equipment)' %}
+                                                                            <b>Budget Category:</b> {{ budget.category.title }}<br>
+                                                                            <b>Expense Name: </b>{{ budget.expenseName }}<br>
+                                                                            <b>Cash Advance Amount: </b>P {{ budget.amountRequested|intcomma }}<br>
+
+                                                                        {% endif %}
+
+                                                                        {% if budget.itemType == 'Scientific Equipment and Supplies' or budget.itemType == 'Specialized Scientific/Laboratory Services' or budget.itemType == 'Scientific Software and Databases' or budget.itemType == 'Scientific Literature' or budget.itemType == 'Research Dissemination Expenses'  %}
+                                                                            <b>Budget Category:</b> {{ budget.category.title }}<br>
+                                                                            <b>Expense Name: </b>{{ budget.expenseName }}<br>
+                                                                            <b>Quantity: </b>{{ budget.expenseQuantity }}<br>
+                                                                            <b>Cash Advance Amount: </b>P {{ budget.amountRequested|intcomma }}<br>
+
+                                                                        {% endif %}
+
+                                                                    </div>
+
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div></td>
+                                                    <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".bs-example-modal-sm-{{ budget.id }}">Edit Status</button></td>
+
+                                                    <div class="modal fade bs-example-modal-sm-{{ budget.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                                        <div class="modal-dialog modal-sm">
+                                                            <div class="modal-content" style="width: 500px; height: auto;">
+                                                                <form method="POST">
+                                                                    {% csrf_token %}
+
+
+                                                                    <div class="modal-header">
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">x</span>
+                                                                        </button>
+                                                                        <h4 class="modal-title" id="myModalLabel2">Edit Status</h4>
+                                                                    </div>
+                                                                    <div class="modal-body" style="height: auto;">
+                                                                        <input value="{{ budget.id }}" name="budgetID" style="display: none;">
+                                                                        <input value="{{budget.project.id }}" name="projectID" style="display: none;">
+                                                                        <div class="form-group" id="project" style="margin-bottom: 20px;">
+                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"  style="margin-bottom: 20px;">Project Name</label>
+                                                                            <div class="col-md-9 col-sm-9 col-xs-12"  style="margin-bottom: 20px;">
+                                                                                <input type="text" name="project" value="{{ budget.project.projectTitle }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                            </div>
+                                                                        </div>
+                                                                        <input type="text" name="itemType" value="{{ budget.itemType }}" class="form-control col-md-9 col-sm-9 col-xs-12" style="display: none;">
+                                                                        <div class="form-group" id="selectstatus" style="margin-bottom: 20px;">
+                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" style="margin-bottom: 20px;">Select Status</label>
+                                                                            <div class="col-md-9 col-sm-9 col-xs-12" style="margin-bottom: 20px;">
+                                                                                <select class="form-control col-md-9 col-sm-9 col-xs-12" name="status" id="budgetstatus-{{ budget.id }}" onchange="yesNoCheck({{ budget.id }})">
+                                                                                    <option value="For Revisions">For Revisions</option>
+                                                                                    <option value="Approved">Approved</option>
+                                                                                    <option value="Disapproved">Disapproved</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group" id="budgetleft-{{ budget.id }}" style="margin-bottom: 20px; display: none;">
+                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" style="margin-bottom: 20px;">Budget Left</label>
+                                                                            <div class="col-md-9 col-sm-9 col-xs-12" style="margin-bottom: 20px;">
+
+                                                                                <input type="number" name="allocated" id="budgetallocated-{{ budget.id }}" value="{{ budget.category.subtotal }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group" id="remarks-{{ budget.id }}" style="margin-bottom: 20px;">
+                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" style="margin-bottom: 20px;">Remarks</label>
+                                                                            <div class="col-md-9 col-sm-9 col-xs-12" style="margin-bottom: 20px;">
+                                                                                <input type="text" name="remarks" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group" id="approvedamount-{{ budget.id }}" style="margin-bottom: 20px; display: none;">
+                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" style="margin-bottom: 20px;">Approved Amount</label>
+                                                                            <div class="col-md-9 col-sm-9 col-xs-12" style="margin-bottom: 20px;">
+                                                                                <input type="number" name="approvedAmount" id="approved-{{ budget.id }}" value="{{ budget.amountRequested }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                            </div>
+                                                                        </div>
+
+
+                                                                    </div>
+                                                                    <div class="modal-footer" style="margin-top: 180px; "><input type="submit" class="btn btn-primary"></div>
+
+                                                                </form>
+                                                            </div>
+
+                                                        </div>
+                                                    </div></td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            {% endfor %}
+                            {% else %}
+                                 {% for project in budgetextension %}
+                                <div role="tabpanel" class="tab-pane fade" id="tab_content-{{ forloop.counter }}" aria-labelledby="home-tab">
+                                    <table id="datatable-fixed-header" class="table table-striped table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>Account Number</th>
+                                            <th>Project Name</th>
+                                            <th>Principal Investigator</th>
+                                            <th>Funding Agency</th>
+                                            <th>Date Requested</th>
+                                            <th>Budget Category</th>
+                                            <th>Expense Name</th>
+                                            <th>Status</th>
+                                            <th>Remarks</th>
+                                            <th>Approved Amount</th>
+                                            <th>Amount Spent</th>
+                                            <th>Excess Amount</th>
+                                            <th>Details</th>
+                                            <th>Edit Status</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for budget in project.projectexpense_set.all %}
+                                            {% if budget.expenseType == 'Cash Advance' %}
+                                                <tr>
+                                                    <td>{{ budget.project.accountNumber }}</td>
+                                                    <td>{{ budget.project.projectTitle }} </td>
+                                                    <td>{{ budget.project.get_name }}</td>
+                                                    <td>{{ budget.project.fundingAgency }}</td>
+                                                    <td>{{ budget.nowDate }}</td>
+                                                    <td>{{ budget.category.title }}</td>
+                                                    <td>{{ budget.expenseName }}</td>
+                                                    <td>{{ budget.status }}</td>
+                                                    <td>{{ budget.remarks }}</td>
+                                                    <td>{{ budget.expenseAmount|intcomma }}</td>
+                                                {% if budget.expenseTotal %}
+                                                <td>{{ budget.expenseTotal|intcomma }}</td>
+
+                                                 <td>{{ budget.expenseAmount|subtract:budget.expenseTotal }}</td>
+                                                    {% else %}<td>N/A</td>
+                                                 <td>N/A</td>{% endif %}
+
+                                                    <!--<td><ul class="list-unstyled project_files">
+
+                                                     <li><a href=""><i class="fa fa-file-word-o"></i> Contract-10_12_2014.docx</a>
+                                                     </li>
+                                                   </ul></td>-->
+                                                    <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".bs-details-modal-sm-{{ budget.id }}">Details</button>
+                                                        <div class="modal fade bs-details-modal-sm-{{ budget.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                                            <div class="modal-dialog modal-sm">
+                                                                <div class="modal-content" style="width: 500px; height: 300px;">
+
+
+                                                                    <div class="modal-header">
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">?</span>
+                                                                        </button>
+                                                                        <h4 class="modal-title" id="myModalLabel2">Details of Request</h4>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        {% if budget.itemType == 'Hotel Booking' %}
+                                                                            <b>Budget Category:</b> {{ budget.category.title }}<br>
+                                                                            <b>Expense Name: </b>{{ budget.itemType }}<br>
+                                                                            <b>Location: </b>{{ budget.expenseLocation }}<br>
+                                                                            <b>Hotel/Venue: </b>{{ budget.expenseName }}<br>
+                                                                            <b>Number of Days: </b>{{ budget.days }}<br>
+                                                                            <b>Pax: </b>{{ budget.expenseQuantity }}<br>
+                                                                            <b>Target Check-in Date: </b>{{ budget.fromDate }}<br>
+                                                                            <b>Cash Advance Amount: </b>P {{ budget.amountRequested|intcomma }}<br>
+
+                                                                        {% endif %}
+
+                                                                        {% if budget.itemType == 'Flight Tickets' %}
+                                                                            <b>Budget Category:</b> {{ budget.category.title }}<br>
+                                                                            <b>Expense Name: </b>{{ budget.expenseName }}<br>
+                                                                            <b>Location: </b>{{ budget.expenseLocation }}<br>
+                                                                            <b>Destination: </b>{{ budget.destination }}<br>
+                                                                            <b>Pax: </b>{{ budget.expenseQuantity }}<br>
+                                                                            <b>Target Departure Date: </b>{{ budget.fromDate }}<br>
+                                                                            <b>Cash Advance Amount: </b>P {{ budget.amountRequested|intcomma }}<br>
+
+
+                                                                        {% endif %}
+
+                                                                        {% if budget.itemType == 'Field Expense (No Official Receipt)' or budget.itemType == 'Field Expense (Repair and Maintenance of Equipment)' %}
+                                                                            <b>Budget Category:</b> {{ budget.category.title }}<br>
+                                                                            <b>Expense Name: </b>{{ budget.expenseName }}<br>
+                                                                            <b>Cash Advance Amount: </b>P {{ budget.amountRequested|intcomma }}<br>
+
+                                                                        {% endif %}
+
+                                                                        {% if budget.itemType == 'Scientific Equipment and Supplies' or budget.itemType == 'Specialized Scientific/Laboratory Services' or budget.itemType == 'Scientific Software and Databases' or budget.itemType == 'Scientific Literature' or budget.itemType == 'Research Dissemination Expenses'  %}
+                                                                            <b>Budget Category:</b> {{ budget.category.title }}<br>
+                                                                            <b>Expense Name: </b>{{ budget.expenseName }}<br>
+                                                                            <b>Quantity: </b>{{ budget.expenseQuantity }}<br>
+                                                                            <b>Cash Advance Amount: </b>P {{ budget.amountRequested|intcomma }}<br>
+
+                                                                        {% endif %}
+
+                                                                    </div>
+
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div></td>
+                                                    <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".bs-example-modal-sm-{{ budget.id }}">Edit Status</button></td>
+
+                                                    <div class="modal fade bs-example-modal-sm-{{ budget.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                                        <div class="modal-dialog modal-sm">
+                                                            <div class="modal-content" style="width: 500px; height: auto;">
+                                                                <form method="POST">
+                                                                    {% csrf_token %}
+
+
+                                                                    <div class="modal-header">
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">x</span>
+                                                                        </button>
+                                                                        <h4 class="modal-title" id="myModalLabel2">Edit Status</h4>
+                                                                    </div>
+                                                                    <div class="modal-body" style="height: auto;">
+                                                                        <input value="{{ budget.id }}" name="budgetID" style="display: none;">
+                                                                        <input value="{{budget.project.id }}" name="projectID" style="display: none;">
+                                                                        <div class="form-group" id="project" style="margin-bottom: 20px;">
+                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"  style="margin-bottom: 20px;">Project Name</label>
+                                                                            <div class="col-md-9 col-sm-9 col-xs-12"  style="margin-bottom: 20px;">
+                                                                                <input type="text" name="project" value="{{ budget.project.projectTitle }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                            </div>
+                                                                        </div>
+                                                                        <input type="text" name="itemType" value="{{ budget.itemType }}" class="form-control col-md-9 col-sm-9 col-xs-12" style="display: none;">
+                                                                        <div class="form-group" id="selectstatus" style="margin-bottom: 20px;">
+                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" style="margin-bottom: 20px;">Select Status</label>
+                                                                            <div class="col-md-9 col-sm-9 col-xs-12" style="margin-bottom: 20px;">
+                                                                                <select class="form-control col-md-9 col-sm-9 col-xs-12" name="status" id="budgetstatus-{{ budget.id }}" onchange="yesNoCheck({{ budget.id }})">
+                                                                                    <option value="For Revisions">For Revisions</option>
+                                                                                    <option value="Approved">Approved</option>
+                                                                                    <option value="Disapproved">Disapproved</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group" id="budgetleft-{{ budget.id }}" style="margin-bottom: 20px; display: none;">
+                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" style="margin-bottom: 20px;">Budget Left</label>
+                                                                            <div class="col-md-9 col-sm-9 col-xs-12" style="margin-bottom: 20px;">
+
+                                                                                <input type="number" name="allocated" id="budgetallocated-{{ budget.id }}" value="{{ budget.category.subtotal }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group" id="remarks-{{ budget.id }}" style="margin-bottom: 20px;">
+                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" style="margin-bottom: 20px;">Remarks</label>
+                                                                            <div class="col-md-9 col-sm-9 col-xs-12" style="margin-bottom: 20px;">
+                                                                                <input type="text" name="remarks" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group" id="approvedamount-{{ budget.id }}" style="margin-bottom: 20px; display: none;">
+                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" style="margin-bottom: 20px;">Approved Amount</label>
+                                                                            <div class="col-md-9 col-sm-9 col-xs-12" style="margin-bottom: 20px;">
+                                                                                <input type="number" name="approvedAmount" id="approved-{{ budget.id }}" value="{{ budget.amountRequested }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                            </div>
+                                                                        </div>
+
+
+                                                                    </div>
+                                                                    <div class="modal-footer" style="margin-top: 180px; "><input type="submit" class="btn btn-primary"></div>
+
+                                                                </form>
+                                                            </div>
+
+                                                        </div>
+                                                    </div></td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            {% endfor %}
+                            {% endif %}
+                           {% endfor %}
+
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+
+
+    {% else %}
+        <div id="pagecontent" style="height: auto;">
+
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>View Requests for Cash Advance</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Settings 1</a>
+                                </li>
+                                <li><a href="#">Settings 2</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content" style="height: auto;">
+                <h4>Note:</h4>
+                <h4>Excess budget from cash advance should be returned to SDRC within 10 days after the expense date.</h4>
+                    <table id="datatable-fixed-header" class="table table-striped table-bordered">
+                        <thead>
+                        <tr>
+
+                            <th>Budget Category</th>
+                            <th>Expense Name</th>
+                            <th>Date Requested</th>
+                            <th>Amount Requested</th>
+                            <th>Status</th>
+                            <th>Approved Amount</th>
+                            <th>Amount Spent</th>
+                            <th>Excess Amount</th>
+                            <th>Remarks</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for budget in budgetextension %}
+                            <tr>
+
+
+                                <td>{{ budget.category.title }}</td>
+                                <td>{{ budget.expenseName }}</td>
+                                <td>{{ budget.nowDate }}</td>
+                                <td>{{ budget.amountRequested|intcomma }}</td>
+                                <td>{{ budget.status }}</td>
+                                <td>{{ budget.expenseAmount|intcomma }}</td>
+                            {% if budget.expenseTotal %}
+                            <td>{{ budget.expenseTotal|intcomma }}</td>
+
+                            <td>{{ budget.expenseAmount|subtract:budget.expenseTotal }}</td>
+                            {% else %}
+                            <td>N/A</td>
+                            <td>N/A</td>
+                            {% endif %}
+                                <td>{{ budget.remarks }}</td>
+
+
+                                <!--<td><ul class="list-unstyled project_files">
+
+                                 <li><a href=""><i class="fa fa-file-word-o"></i> Contract-10_12_2014.docx</a>
+                                 </li>
+                               </ul></td>-->
+                                <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".bs-details-modal-sm-{{ budget.id }}">Details</button>
+                                    {% if budget.status == 'Approved' and not budget.expenseReceipt %} <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".bs-receipt-modal-sm-{{ budget.id }}">Upload Receipt</button>
+                                    {% endif %} <div class="modal fade bs-details-modal-sm-{{ budget.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-sm">
+                                            <div class="modal-content" style="width: 500px; height: 300px;">
+
+
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">?</span>
+                                                    </button>
+                                                    <h4 class="modal-title" id="myModalLabel2">Details of Request</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    {% if budget.itemType == 'Hotel Booking' %}
+                                                        <b>Budget Category:</b> {{ budget.category.title }}<br>
+                                                        <b>Expense Name: </b>{{ budget.itemType }}<br>
+                                                        <b>Location: </b>{{ budget.expenseLocation }}<br>
+                                                        <b>Hotel/Venue: </b>{{ budget.expenseName }}<br>
+                                                        <b>Target Check-in Date: </b>{{ budget.fromDate }}<br>
+                                                        <b>Number of Days: </b>{{ budget.days }}<br>
+                                                        <b>Pax: </b>{{ budget.expenseQuantity }}<br>
+                                                        <b>Cash Advance Amount: </b>P {{ budget.amountRequested|intcomma }}<br>
+
+                                                    {% endif %}
+
+                                                    {% if budget.itemType == 'Flight Tickets' %}
+                                                        <b>Budget Category:</b> {{ budget.category.title }}<br>
+                                                        <b>Expense Name: </b>{{ budget.expenseName }}<br>
+                                                        <b>Location: </b>{{ budget.expenseLocation }}<br>
+                                                        <b>Destination: </b>{{ budget.destination }}<br>
+                                                        <b>Pax: </b>{{ budget.expenseQuantity }}<br>
+                                                        <b>Target Departure Date: </b>{{ budget.fromDate }}<br>
+                                                        <b>Cash Advance Amount: </b>P {{ budget.amountRequested|intcomma }}<br>
+                                                        <b>Date: </b>{{ budget.expenseDate }}<br>
+
+                                                    {% endif %}
+
+                                                    {% if budget.itemType == 'Field Expense (No Official Receipt)' or budget.itemType == 'Field Expense (Repair and Maintenance of Equipment)' %}
+                                                        <b>Budget Category:</b> {{ budget.category.title }}<br>
+                                                        <b>Expense Name: </b>{{ budget.expenseName }}<br>
+                                                        <b>Location: </b>{{ budget.expenseLocation }}<br>
+                                                        <b>Cash Advance Amount: </b>P {{ budget.amountRequested|intcomma }}<br>
+
+                                                    {% endif %}
+
+                                                    {% if budget.itemType == 'Scientific Equipment and Supplies' or budget.itemType == 'Specialized Scientific/Laboratory Services' or budget.itemType == 'Scientific Software and Databases' or budget.itemType == 'Scientific Literature' or budget.itemType == 'Research Dissemination Expenses'  %}
+                                                        <b>Budget Category:</b> {{ budget.category.title }}<br>
+                                                        <b>Expense Name: </b>{{ budget.expenseName }}<br>
+                                                        <b>Quantity: </b>{{ budget.expenseQuantity }}<br>
+                                                        <b>Cash Advance Amount: </b>P {{ budget.amountRequested|intcomma }}<br>
+
+                                                    {% endif %}
+
+                                                </div>
+
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="modal fade bs-receipt-modal-sm-{{ budget.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-sm">
+                                            <div class="modal-content" style="width: 600px; height: auto;">
+
+
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">?</span>
+                                                    </button>
+                                                    <h4 class="modal-title" id="myModalLabel2">Upload Receipt</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form method="POST" enctype="multipart/form-data">
+                                                        {% csrf_token %}
+                                                        <input name="expenseID" value="{{ budget.id }}" style="display: none;">
+                                                        <div class="form-group input-group col-md-12 col-sm-12" style="margin-bottom: 10px;">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                                   for="first-name">Receipt<span class="required"></span>
+                                                            </label>
+                                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                                <input type="file" class="form-control col-md-7 col-sm-7 col-xs-12" name="expenseReceipt" placeholder="Receipt" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group input-group col-md-12 col-sm-12" style="margin-bottom: 10px;">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                                   for="first-name">Expense Date<span class="required"></span>
+                                                            </label>
+
+                                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                                <input class="form-control col-md-7 col-sm-7 col-xs-12" name="date"
+                                                                       type="date">
+                                                            </div>
+
+
+                                                        </div>
+                                                        <div class="form-group input-group col-md-12 col-sm-12" style="margin-bottom: 10px;">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                                   for="first-name">Total Amount Spent<span class="required"></span>
+                                                            </label>
+
+                                                            <div class="col-md-7 col-sm-7 col-xs-12">
+                                                                <input class="form-control col-md-7 col-sm-7 col-xs-12" placeholder="{{ budget.expenseAmount }}" id="expenseTotal-{{ budget.id }}" name="expenseTotal" onchange="computeExpense('{{ budget.id }}')"
+                                                                       type="number">
+                                                            </div>
+
+
+                                                        </div>
+                                                        <div class="form-group" id="allocated-{{ budget.id }}" style="margin-bottom: 20px; display: none;">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" style="margin-bottom: 20px;">Allocated</label>
+                                                            <div class="col-md-9 col-sm-9 col-xs-12" style="margin-bottom: 20px;">
+
+                                                                <input type="number" name="allocated" id="budgetallocated-{{ budget.id }}" value="{{ budget.category.subtotal }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                <input type="number" name="totalallocated" id="totalallocated-{{ budget.id }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                <input type="number" name="budgetalloc" id="budgetalloc-{{ budget.id }}" value="{{ budget.category.totalAllocated }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                <input type="number" name="allocatedleft" id="allocatedleft-{{ budget.id }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                <input type="number" name="totalcost" id="totalcost-{{ budget.id }}" class="form-control col-md-9 col-sm-9 col-xs-12" value="{{ budget.project.budgetSpent }}">
+                                                                <input type="number" name="budgetrem" id="budgetrem-{{ budget.id }}" class="form-control col-md-9 col-sm-9 col-xs-12" value="{{ budget.project.budgetRemaining }}">
+                                                                <input type="number" name="budgetspent" id="budgetspent-{{ budget.id }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                <input type="number" name="budgetremaining" id="budgetremaining-{{ budget.id }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row spacer" style="margin-left: 200px; margin-top: 10px; margin-bottom: 20px;">
+                                                            <div class="form-group">
+                                                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-8">
+                                                                    <input type="submit" class="btn btn-primary">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </form>
+
+                                                </div>
+
+
+                                            </div>
+
+                                        </div>
+                                    </div></td>
+
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
+    <script>
+        function computeExpense(id){
+            allocated =  document.getElementById("budgetallocated-" + id).value;
+            approved = document.getElementById("expenseTotal-" + id).value;
+            budget = document.getElementById("budgetalloc-" + id).value;
+            totalcost = document.getElementById("totalcost-" + id).value;
+            budgetrem = document.getElementById("budgetrem-" + id).value;
+            document.getElementById("totalallocated-" + id).value = allocated-approved
+            document.getElementById("allocatedleft-" + id).value = budget-approved
+            if (totalcost == 0){
+                document.getElementById("budgetspent-" + id).value = approved
+                document.getElementById("budgetremaining-" + id).value = budgetrem - approved
+            }else {
+                document.getElementById("budgetspent-" + id).value = (+approved + +totalcost)
+                document.getElementById("budgetremaining-" + id).value = budgetrem - approved
+            }
+        }
+        function yesNoCheck(id) {
+            if (document.getElementById('budgetstatus-' + id).value == 'Approved') {
+                document.getElementById("approvedamount-" + id).style.display = "block";
+                document.getElementById("remarks-" + id).style.display = "block";
+                document.getElementById("allocated-" + id).style.display = "none";
+                document.getElementById("budgetleft-" + id).style.display = "block";
+
+
+
+            } else {
+                document.getElementById("remarks-" + id).style.display = "block";
+                document.getElementById("approvedamount-" + id).style.display = "none";
+
+                document.getElementById("budgetleft-" + id).style.display = "none";
+            }
+        }
+
+        function calculateAllocated(id){
+            allocated =  document.getElementById("budgetallocated-" + id).value;
+            approved = document.getElementById("approved-" + id).value;
+            document.getElementById("totalallocated-" + id).value = allocated-approved
+
+        }
+    </script>
+{% endblock %}

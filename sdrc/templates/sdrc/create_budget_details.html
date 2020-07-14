@@ -1,0 +1,167 @@
+{% extends "sdrc/base.html" %}
+
+{% block style %}
+<style>
+        #create-forms{
+            width:300px;
+        }
+     #account-no-form{
+            width:100px;
+        }
+
+
+
+</style>
+{% endblock %}
+
+{% block content %}
+    {% if request.user.is_staff %}
+<div class="x_panel">
+
+    <div class="x_title">
+        <h2>Create Budget Detail
+            <small>Please fill out the following</small>
+        </h2>
+        <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i
+                        class="fa fa-wrench"></i></a>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Settings 1</a>
+                    </li>
+                    <li><a href="#">Settings 2</a>
+                    </li>
+                </ul>
+            </li>
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+        </ul>
+        <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+    </div>
+    <br>
+    <form class="form-horizontal form-label-left input_mask" method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12">Project Title <span class="requird red">*</span>
+            </label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+
+                   <select name="project" class = "form-control" name="expense_category">
+                       {% for projects in all_projects %}
+                               <option value="{{ projects.id }}">{{ projects.projectTitle}})</option>
+                        {% endfor %}
+                          </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12">Tranche: <span class="requird red">*</span>
+            </label>
+            <div class="col-md-4" id="account-no-form">
+                <select style="width:310%" id="tranche" class="form-control" readonly name="tranche" required >
+                    <option value="First Tranche">First Tranche</option>
+
+                </select>
+            </div>
+
+            <label class="control-label col-md-3">Amount:<span class="requird red">*</span>
+                </label>
+                <div class="col-md-3">
+                    <input type="number" class="form-control" placeholder="Input the amount in numbers" name="amount"
+                    id="amount" required="required">
+                </div>
+
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12">Budget Extension Status: </label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="budgetExtensionStatus" disabled="disabled" value="NONE"
+                       placeholder="">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-3 col-sm-3 col-xs-12">Budget Release Date<Date></Date><span class="requird red">*</span>
+            </label>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+                <div class="col-md-4">
+                    <fieldset>
+                        <div class="control-group">
+                            <div class="controls">
+                                <div class="input-prepend input-group">
+                                    <span class="add-on input-group-addon"><i
+                                            class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+                                    <input type="date" required="required" style="width: 200px" name="dateOfRelease"
+                                           class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="form-group">
+            <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
+                <button type="button" class="btn btn-primary">Cancel</button>
+                <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+        </div>
+
+    </form>
+</div>
+</div>
+        {% else %}
+
+        <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+     <h2>Restricted access!</h2>
+                </div>
+        </div>
+
+{% endif %}
+{% endblock %}
+
+{% block script%}
+<!-- jQuery -->
+<!-- jQuery -->
+<script src="sdrc/vendors/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="sdrc/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- FastClick -->
+<script src="sdrc/vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="sdrc/vendors/nprogress/nprogress.js"></script>
+<!-- bootstrap-progressbar -->
+<script src="sdrc/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+<!-- iCheck -->
+<script src="sdrc/vendors/iCheck/icheck.min.js"></script>
+<!-- bootstrap-daterangepicker -->
+<script src="sdrc/vendors/moment/min/moment.min.js"></script>
+<script src="sdrc/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+<!-- bootstrap-wysiwyg -->
+<script src="sdrc/vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js"></script>
+<script src="sdrc/vendors/jquery.hotkeys/jquery.hotkeys.js"></script>
+<script src="sdrc/vendors/google-code-prettify/src/prettify.js"></script>
+<!-- jQuery Tags Input -->
+<script src="sdrc/vendors/jquery.tagsinput/src/jquery.tagsinput.js"></script>
+<!-- Switchery -->
+<script src="sdrc/vendors/switchery/dist/switchery.min.js"></script>
+<!-- Select2 -->
+<script src="sdrc/vendors/select2/dist/js/select2.full.min.js"></script>
+<!-- Parsley -->
+<script src="sdrc/vendors/parsleyjs/dist/parsley.min.js"></script>
+<!-- Autosize -->
+<script src="sdrc/vendors/autosize/dist/autosize.min.js"></script>
+<!-- jQuery autocomplete -->
+<script src="sdrc/vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>
+<!-- starrr -->
+<script src="sdrc/vendors/starrr/dist/starrr.js"></script>
+<!-- Custom Theme Scripts -->
+<script src="sdrc/build/js/custom.min.js"></script>
+{% endblock %}

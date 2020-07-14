@@ -1,0 +1,81 @@
+{% extends 'sdrc/base.html' %}
+
+{% block content %}
+
+        <!-- page content -->
+
+        <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2>Create Incident Report</h2>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+                    <br />
+                    <form id="demo-form2" method="post" data-parsley-validate class="form-horizontal form-label-left">
+                        {% csrf_token %}
+                        <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Milestone<span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <select name="milestone" class="form-control col-md-7 col-xs-12">
+                                {% for entry in milestone %}
+                                    <div class="col-4">
+                                        <div class="input-group">
+                                <option value="{{ entry.id }}">{{ entry.milestoneName }}</option>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                        </select>
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Issue Encountered <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" name="issueEncountered" required="required" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Description of the Issue
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" name="issueDescription" required="required" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Date when the issue was encountered <span class="required">*</span></label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <div class='input-group date' id='myDatepicker2'>
+                            <input type='text' name="dateEncountered" class="form-control" />
+                            <span class="input-group-addon">
+                               <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                            </div>
+                        </div>
+                      </div>
+                      <div class="ln_solid"></div>
+                      <div class="form-group">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+
+                          <button type="submit" class="btn btn-success">Submit</button>
+                        </div>
+                      </div>
+
+                    </form>
+                  </div>
+                </div>
+        </div>
+    </div>
+
+
+        <!-- /page content -->
+{% endblock %}
+{% block script %}
+     <script>
+     $('#myDatepicker2').datetimepicker({
+        format: 'DD.MM.YYYY'
+    });
+    </script>
+{% endblock %}

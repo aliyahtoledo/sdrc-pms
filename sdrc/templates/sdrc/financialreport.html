@@ -1,0 +1,193 @@
+{% extends 'sdrc/base.html' %}
+
+{% block content %}
+     <!-- page content -->
+
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h3>(Name of Project)</h3>
+              </div>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="x_panel">
+                  <div class="x_title ">
+                    <h2>Financial Report </h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+
+				  <div class="x_content">
+
+									<section class="content invoice">
+
+									  <div class="row">
+
+									  <div class="col-md-12">
+										<div class="x_panel">
+										  <div class="x_title">
+											<h2 class="col-md-9">Receipts</h2>
+											<h2 class="col-md-3 text-right">Php500,000.00</h2>
+
+											<div class="clearfix"></div>
+										  </div>
+										  <div class="x_content">
+											<p>Drag multiple files to the box below for multi upload or click to select files.</p>
+											<form action="form_upload.html" class="dropzone text-center" style="min-height: 100px !important;" ></form>
+										  </div>
+										</div>
+									  </div>
+
+										<div class="col-xs-12 table-editable">
+										  <table class="table">
+											<thead>
+											  <tr>
+												<th class="col-xs-4">Disbursements</th>
+												<th class="col-xs-4">Total</th>
+												<th class="col-xs-4">Subtotal</th>
+											  </tr>
+											</thead>
+											<tbody>
+											  <tr>
+												<td class="col-xs-4"><strong>I. Personnel</strong></td>
+												<td class="col-xs-4">352,500.00</td>
+												<td class="col-xs-4"> </td>
+											  </tr>
+
+											  <tr>
+												<td class="col-xs-4"> </td>
+												<td class="col-xs-4"> </td>
+												<td class="col-xs-4"><strong>352,500.00</strong></td>
+											  </tr>
+
+											  <tr>
+												<td class="col-xs-4"><strong>II. Field Expense</strong></td>
+												<td class="col-xs-4"> </td>
+												<td class="col-xs-4"> </td>
+											  </tr>
+
+											  <tr>
+												<td class="col-xs-4">Accomodation</td>
+												<td class="col-xs-4">38,265.00</td>
+												<td class="col-xs-4"> </td>
+											  </tr>
+
+											  <tr>
+												<td class="col-xs-4">Transportation</td>
+												<td class="col-xs-4">101,154.00</td>
+												<td class="col-xs-4"> </td>
+											  </tr>
+
+											  <tr>
+												<td class="col-xs-4">Meeting</td>
+												<td class="col-xs-4">58,057.82</td>
+												<td class="col-xs-4"> </td>
+											  </tr>
+
+											  <tr>
+												<td class="col-xs-4">Per diem</td>
+												<td class="col-xs-4">18,000.00</td>
+												<td class="col-xs-4"> </td>
+											  </tr>
+
+											  <tr>
+												<td class="col-xs-4">Postage</td>
+												<td class="col-xs-4">195.00</td>
+												<td class="col-xs-4"> </td>
+											  </tr>
+
+											  <tr>
+												<td class="col-xs-4">Communication</td>
+												<td class="col-xs-4">100.00</td>
+												<td class="col-xs-4"> </td>
+											  </tr>
+
+											  <tr>
+												<td class="col-xs-4">Reproduction</td>
+												<td class="col-xs-4">1,041.00</td>
+												<td class="col-xs-4"> </td>
+											  </tr>
+
+											  <tr>
+												<td class="col-xs-4">Supplies & Stationeries</td>
+												<td class="col-xs-4">6,973.10</td>
+												<td class="col-xs-4"> </td>
+											  </tr>
+
+											  <tr>
+												<td class="col-xs-4"> </td>
+												<td class="col-xs-4"> </td>
+												<td class="col-xs-4"><strong>223,785.92</strong></td>
+											  </tr>
+
+											  <tr>
+												<td class="col-xs-4"><strong>III. Office Equipment</strong></td>
+												<td class="col-xs-4">58,865.50</td>
+												<td class="col-xs-4"> </td>
+											  </tr>
+
+											  <tr>
+												<td class="col-xs-4"> </td>
+												<td class="col-xs-4"> </td>
+												<td class="col-xs-4"><strong>58,865.50</strong></td>
+											  </tr>
+
+											</tbody>
+										  </table>
+										</div>
+										<!-- /.col -->
+									  </div>
+									  <!-- /.row -->
+
+									  <div class="row">
+										<!-- /.col -->
+										<div class="col-xs-12 table">
+											<table class="table table-striped">
+											  <tbody>
+												<tr>
+												  <th class="col-xs-8">FUND BALANCE (Deficit)</th>
+												  <td class="col-xs-4">Php (135,151.42)</td>
+												</tr>
+											  </tbody>
+											</table>
+										</div>
+										<!-- /.col -->
+									  </div>
+									  <!-- /.row -->
+
+
+                      <!-- this row will not appear when printing -->
+                      <div class="row no-print">
+                        <div class="col-xs-12">
+                          <button class="btn btn-default" onclick="window.print();"><i class="fa fa-print"></i> Print</button>
+                          <button class="btn btn-success pull-right"><i class="fa fa-credit-card"></i> Submit</button>
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /page content -->
+
+{% endblock %}

@@ -1,0 +1,11 @@
+{% autoescape off %}
+    Hi {{ user.username }},
+
+    Your account for the Project Management System for SDRC Research has been successfully created.
+
+    Please click the link to activate your account and to change your password.
+    http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+    Thank you,
+    SDRC
+{% endautoescape %}

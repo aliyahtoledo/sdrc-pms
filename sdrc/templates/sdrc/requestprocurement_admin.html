@@ -1,0 +1,678 @@
+{% extends 'sdrc/base.html' %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+    {% load humanize %}
+    {% if request.user.is_staff %}
+        <div id="pagecontent" style="height: auto;">
+
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>View Requests for Procurement</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Settings 1</a>
+                                </li>
+                                <li><a href="#">Settings 2</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content" style="height: auto;">
+
+                    <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                        <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                            {% for project in projects %}
+                                <li role="presentation" class="" style="margin-bottom: 10px;"><a href="#tab_content-{{ forloop.counter }}" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">{{ project.projectTitle }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+
+                       {% for project in projects %}
+                           {% if project.hasTranche == True %}
+
+                                <div id="myTabContent" class="tab-content">
+                            {% for project in projects %}
+                                <div role="tabpanel" class="tab-pane fade" id="tab_content-{{ forloop.counter }}" aria-labelledby="home-tab">
+                                    <table id="datatable-fixed-header" class="table table-striped table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>Account Number</th>
+                                            <th>Project Name</th>
+                                            <th>Milestone Name</th>
+                                            <th>Principal Investigator</th>
+                                            <th>Funding Agency</th>
+                                            <th>Date Requested</th>
+                                            <th>Budget Category</th>
+                                            <th>Expense Name</th>
+                                            <th>Status</th>
+                                            <th>Remarks</th>
+                                            <th>Tranche Amount</th>
+                                            <th>Details</th>
+                                            <th>Edit Status</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for budget in project.projectexpense_set.all %}
+                                            {% if budget.expenseType == 'Procurement' %}
+                                                <tr>
+                                                    <td>{{ budget.project.accountNumber }}</td>
+                                                    <td>{{ budget.project.projectTitle }} </td>
+                                                  <td>{{ budget.milestone.milestoneName }} </td>
+                                                    <td>{{ budget.project.get_name }}</td>
+                                                    <td>{{ budget.project.fundingAgency }}</td>
+                                                    <td>{{ budget.nowDate }}</td>
+                                                    <td>{{ budget.category.title }}</td>
+                                                    <td>{{ budget.expenseName }}</td>
+                                                    <td>{{ budget.status }}</td>
+                                                    <td>{{ budget.remarks }}</td>
+                                                     <td class="green"><strong>{{ budget.milestone.trancheAmount }}</strong></td>
+
+                                                    <!--<td><ul class="list-unstyled project_files">
+
+                                                     <li><a href=""><i class="fa fa-file-word-o"></i> Contract-10_12_2014.docx</a>
+                                                     </li>
+                                                   </ul></td>-->
+                                                    <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".bs-details-modal-sm-{{ budget.id }}">Details</button>
+                                                        <div class="modal fade bs-details-modal-sm-{{ budget.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                                            <div class="modal-dialog modal-sm">
+                                                                <div class="modal-content" style="width: 500px; height: 400px;">
+
+
+                                                                    <div class="modal-header">
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                                                                        </button>
+                                                                        <h4 class="modal-title" id="myModalLabel2">Details of Request</h4>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        {% if budget.category.title == 'Accomodations' %}
+                                                                            <b>Budget Category:</b> {{ budget.category.title }}<br>
+                                                                            <b>Expense Name: </b>{{ budget.expenseName }}<br>
+                                                                            <b>Location: </b>{{ budget.expenseLocation }}<br>
+                                                                            <b>Number of Days: </b>{{ budget.days }}<br>
+                                                                            <b>Pax: </b>{{ budget.expenseQuantity }}<br>
+                                                                            <b>Check-in Date: </b>{{ budget.expenseDate }}<br>
+                                                                            <b>Budget Allotted: </b>P {{ budget.amountRequested|intcomma }}
+
+                                                                        {% endif %}
+
+                                                                        {% if budget.category.title  == 'Flight Tickets' %}
+                                                                            <b>Budget Category:</b> {{ budget.category.title }}<br>
+                                                                            <b>Expense Name: </b>{{ budget.expenseName }}<br>
+                                                                            <b>Location: </b>{{ budget.expenseLocation }}<br>
+                                                                            <b>Destination: </b>{{ budget.destination }}<br>
+                                                                            <b>Pax: </b>{{ budget.expenseQuantity }}<br>
+                                                                            <b>Departure Date: </b>{{ budget.expenseDate }}<br>
+                                                                            <b>Budget Allotted: </b>P {{ budget.amountRequested|intcomma }}
+
+
+
+                                                                        {% endif %}
+
+                                                                        {% if budget.category.title == 'Equipment' %}
+                                                                            <b>Budget Category:</b> {{ budget.category.title }}<br>
+                                                                            <b>Expense Name: </b>{{ budget.expenseName }}<br>
+                                                                            <b>Quantity: </b>{{ budget.expenseQuantity }}<br>
+                                                                            <b>Price: </b>P {{ budget.expenseAmount|intcomma }}<br>
+                                                                            <b>Date Needed: </b>{{ budget.expenseDate }}<br>
+                                                                            <b>Budget Allotted: </b>P {{ budget.amountRequested|intcomma }}
+
+
+                                                                        {% endif %}
+
+                                                                    </div>
+
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div></td>
+                                                    <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".bs-example-modal-sm-{{ budget.id }}">Edit Status</button></td>
+
+                                                    <div class="modal fade bs-example-modal-sm-{{ budget.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                                        <div class="modal-dialog modal-sm">
+                                                            <div class="modal-content" style="width: 500px; height: auto;">
+                                                                <form method="POST" enctype="multipart/form-data">
+                                                                    {% csrf_token %}
+
+
+                                                                    <div class="modal-header">
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                                                                        </button>
+                                                                        <h4 class="modal-title" id="myModalLabel2">Edit Status</h4>
+                                                                    </div>
+                                                                    <div class="modal-body" style="height: auto;">
+                                                                        <input value="{{ budget.id }}" name="budgetID" style="display: none;">
+                                                                        <input value="{{budget.project.id }}" name="projectID" style="display: none;">
+                                                                        <div class="row form-row spacer">
+                                                                            <div class="form-group input-group col-md-12 col-sm-12" id="project" style="">
+                                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12"  style="">Project Name</label>
+                                                                                <div class="col-md-9 col-sm-9 col-xs-12"  style="">
+                                                                                    <input type="text" name="project" value="{{ budget.project.projectTitle }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <input type="text" name="itemType" value="{{ budget.itemType }}" class="form-control col-md-9 col-sm-9 col-xs-12" style="display: none;">
+                                                                        <div class="row form-row spacer">
+                                                                            <div class="form-group input-group col-md-12 col-sm-12" id="selectstatus" style="">
+                                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12" style="">Select Status</label>
+                                                                                <div class="col-md-9 col-sm-9 col-xs-12" style="">
+                                                                                    <select class="form-control col-md-9 col-sm-9 col-xs-12" name="status" id="budgetstatus-{{ budget.id }}" onchange="yesNoCheck({{ budget.id }})">
+                                                                                        <option value="For Revisions">For Revisions</option>
+                                                                                        <option value="Approved">Approved</option>
+                                                                                        <option value="Disapproved">Disapproved</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group" id="budgetleft-{{ budget.id }}" style="display: none;">
+                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" style="margin-bottom: 20px;">Budget Left</label>
+                                                                            <div class="col-md-9 col-sm-9 col-xs-12" style="">
+                                                                                {% for categ in requests %}
+                                                                                    {% if budget.id == categ.id %}
+                                                                                        <input type="number" name="allocated" id="budgetallocated-{{ budget.id }}" value="{{ categ.category.subtotal }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+
+                                                                                    {% endif %}
+
+                                                                                {% endfor %}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row form-row spacer">
+                                                                            <div class="form-group input-group col-md-12 col-sm-12" id="approvedamount-{{ budget.id }}" style="margin-bottom: 20px; display: none;">
+                                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12" style="">Total Amount Spent</label>
+                                                                                <div class="col-md-9 col-sm-9 col-xs-12" style="">
+                                                                                    <input type="number" name="approvedAmount" id="approved-{{ budget.id }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row form-row spacer">
+                                                                            <div class="form-group input-group col-md-12 col-sm-12" style="display: none;" id="expensedate-{{ budget.id }}">
+                                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                                                       for="first-name" style="margin-bottom: 10px;">Expense Date<span class="required"></span>
+                                                                                </label>
+
+                                                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                    <input class="form-control col-md-9 col-sm-9 col-xs-12" style="margin-bottom: 10px;" name="date"
+                                                                                           type="date">
+                                                                                </div>
+
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row form-row spacer">
+                                                                            <div class="form-group input-group col-md-12 col-sm-12" id="receipt-{{ budget.id }}" style="display: none;">
+                                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12" style="">Receipt<span class="required"></span>
+                                                                                </label>
+                                                                                <div class="col-md-9 col-sm-9 col-xs-12" style="">
+                                                                                    <input type="file" class="form-control col-md-9 col-sm-9 col-xs-12" name="receipt" placeholder="Receipt" id="noReceipt" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group" id="allocated-{{ budget.id }}" style="display:none;">
+                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" style="">Allocated</label>
+                                                                            <div class="col-md-9 col-sm-9 col-xs-12" style="">
+                                                                                {% for categ in requests %}
+                                                                                    {% if budget.id == categ.id %}
+                                                                                        <input type="number" name="allocated" id="budgetallocated-{{ budget.id }}" value="{{ categ.category.subtotal }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input type="number" name="totalallocated" id="totalallocated-{{ budget.id }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input type="number" name="budgetalloc" id="budgetalloc-{{ budget.id }}" value="{{ categ.category.totalAllocated }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input type="number" name="allocatedleft" id="allocatedleft-{{ budget.id }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input type="number" name="totalcost" id="totalcost-{{ budget.id }}" class="form-control col-md-9 col-sm-9 col-xs-12" value="{{ budget.project.budgetSpent }}">
+                                                                                    <input type="number" name="budgetrem" id="budgetrem-{{ budget.id }}" class="form-control col-md-9 col-sm-9 col-xs-12" value="{{ budget.project.budgetRemaining }}">
+                                                                                    <input type="number" name="budgetspent" id="budgetspent-{{ budget.id }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                                    <input type="number" name="budgetremaining" id="budgetremaining-{{ budget.id }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                                    {% endif %}
+
+
+                                                                                {% endfor %}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row form-row spacer">
+                                                                            <div class="form-group input-group col-md-12 col-sm-12" id="remarks-{{ budget.id }}" style="">
+                                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12" style="">Remarks</label>
+                                                                                <div class="col-md-9 col-sm-9 col-xs-12" style="">
+                                                                                    <input type="text" name="remarks" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                    <div class="modal-footer" style="margin-top: 50px; "><input type="submit" class="btn btn-primary"></div>
+
+                                                                </form>
+                                                            </div>
+
+                                                        </div>
+                                                    </div></td>
+                                                </tr>{% endif %}
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% endfor %}
+                        </div>
+                               {% else %}
+                                <div id="myTabContent" class="tab-content">
+                            {% for project in projects %}
+                                <div role="tabpanel" class="tab-pane fade" id="tab_content-{{ forloop.counter }}" aria-labelledby="home-tab">
+                                    <table id="datatable-fixed-header" class="table table-striped table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>Account Number</th>
+                                            <th>Project Name</th>
+                                            <th>Principal Investigator</th>
+                                            <th>Funding Agency</th>
+                                            <th>Date Requested</th>
+                                            <th>Budget Category</th>
+                                            <th>Expense Name</th>
+                                            <th>Status</th>
+                                            <th>Remarks</th>
+                                            <th>Details</th>
+                                            <th>Edit Status</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for budget in project.projectexpense_set.all %}
+                                            {% if budget.expenseType == 'Procurement' %}
+                                                <tr>
+                                                    <td>{{ budget.project.accountNumber }}</td>
+                                                    <td>{{ budget.project.projectTitle }} </td>
+                                                    <td>{{ budget.project.get_name }}</td>
+                                                    <td>{{ budget.project.fundingAgency }}</td>
+                                                    <td>{{ budget.nowDate }}</td>
+                                                    <td>{{ budget.category.title }}</td>
+                                                    <td>{{ budget.expenseName }}</td>
+                                                    <td>{{ budget.status }}</td>
+                                                    <td>{{ budget.remarks }}</td>
+
+                                                    <!--<td><ul class="list-unstyled project_files">
+
+                                                     <li><a href=""><i class="fa fa-file-word-o"></i> Contract-10_12_2014.docx</a>
+                                                     </li>
+                                                   </ul></td>-->
+                                                    <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".bs-details-modal-sm-{{ budget.id }}">Details</button>
+                                                        <div class="modal fade bs-details-modal-sm-{{ budget.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                                            <div class="modal-dialog modal-sm">
+                                                                <div class="modal-content" style="width: 500px; height: 400px;">
+
+
+                                                                    <div class="modal-header">
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                                                                        </button>
+                                                                        <h4 class="modal-title" id="myModalLabel2">Details of Request</h4>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        {% if budget.category.title == 'Accomodations' %}
+                                                                            <b>Budget Category:</b> {{ budget.category.title }}<br>
+                                                                            <b>Expense Name: </b>{{ budget.expenseName }}<br>
+                                                                            <b>Location: </b>{{ budget.expenseLocation }}<br>
+                                                                            <b>Number of Days: </b>{{ budget.days }}<br>
+                                                                            <b>Pax: </b>{{ budget.expenseQuantity }}<br>
+                                                                            <b>Check-in Date: </b>{{ budget.expenseDate }}<br>
+                                                                            <b>Budget Allotted: </b>P {{ budget.amountRequested|intcomma }}
+
+                                                                        {% endif %}
+
+                                                                        {% if budget.category.title  == 'Flight Tickets' %}
+                                                                            <b>Budget Category:</b> {{ budget.category.title }}<br>
+                                                                            <b>Expense Name: </b>{{ budget.expenseName }}<br>
+                                                                            <b>Location: </b>{{ budget.expenseLocation }}<br>
+                                                                            <b>Destination: </b>{{ budget.destination }}<br>
+                                                                            <b>Pax: </b>{{ budget.expenseQuantity }}<br>
+                                                                            <b>Departure Date: </b>{{ budget.expenseDate }}<br>
+                                                                            <b>Budget Allotted: </b>P {{ budget.amountRequested|intcomma }}
+
+
+
+                                                                        {% endif %}
+
+                                                                        {% if budget.category.title == 'Equipment' %}
+                                                                            <b>Budget Category:</b> {{ budget.category.title }}<br>
+                                                                            <b>Expense Name: </b>{{ budget.expenseName }}<br>
+                                                                            <b>Quantity: </b>{{ budget.expenseQuantity }}<br>
+                                                                            <b>Price: </b>P {{ budget.expenseAmount|intcomma }}<br>
+                                                                            <b>Date Needed: </b>{{ budget.expenseDate }}<br>
+                                                                            <b>Budget Allotted: </b>P {{ budget.amountRequested|intcomma }}
+
+
+                                                                        {% endif %}
+
+                                                                    </div>
+
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div></td>
+                                                    <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".bs-example-modal-sm-{{ budget.id }}">Edit Status</button></td>
+
+                                                    <div class="modal fade bs-example-modal-sm-{{ budget.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                                        <div class="modal-dialog modal-sm">
+                                                            <div class="modal-content" style="width: 500px; height: auto;">
+                                                                <form method="POST" enctype="multipart/form-data">
+                                                                    {% csrf_token %}
+
+
+                                                                    <div class="modal-header">
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                                                                        </button>
+                                                                        <h4 class="modal-title" id="myModalLabel2">Edit Status</h4>
+                                                                    </div>
+                                                                    <div class="modal-body" style="height: auto;">
+                                                                        <input value="{{ budget.id }}" name="budgetID" style="display: none;">
+                                                                        <input value="{{budget.project.id }}" name="projectID" style="display: none;">
+                                                                        <div class="row form-row spacer">
+                                                                            <div class="form-group input-group col-md-12 col-sm-12" id="project" style="">
+                                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12"  style="">Project Name</label>
+                                                                                <div class="col-md-9 col-sm-9 col-xs-12"  style="">
+                                                                                    <input type="text" name="project" value="{{ budget.project.projectTitle }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <input type="text" name="itemType" value="{{ budget.itemType }}" class="form-control col-md-9 col-sm-9 col-xs-12" style="display: none;">
+                                                                        <div class="row form-row spacer">
+                                                                            <div class="form-group input-group col-md-12 col-sm-12" id="selectstatus" style="">
+                                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12" style="">Select Status</label>
+                                                                                <div class="col-md-9 col-sm-9 col-xs-12" style="">
+                                                                                    <select class="form-control col-md-9 col-sm-9 col-xs-12" name="status" id="budgetstatus-{{ budget.id }}" onchange="yesNoCheck({{ budget.id }})">
+                                                                                        <option value="For Revisions">For Revisions</option>
+                                                                                        <option value="Approved">Approved</option>
+                                                                                        <option value="Disapproved">Disapproved</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group" id="budgetleft-{{ budget.id }}" style="display: none;">
+                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" style="margin-bottom: 20px;">Budget Left</label>
+                                                                            <div class="col-md-9 col-sm-9 col-xs-12" style="">
+                                                                                {% for categ in requests %}
+                                                                                    {% if budget.id == categ.id %}
+                                                                                        <input type="number" name="allocated" id="budgetallocated-{{ budget.id }}" value="{{ categ.category.subtotal }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+
+                                                                                    {% endif %}
+
+                                                                                {% endfor %}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row form-row spacer">
+                                                                            <div class="form-group input-group col-md-12 col-sm-12" id="approvedamount-{{ budget.id }}" style="margin-bottom: 20px; display: none;">
+                                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12" style="">Total Amount Spent</label>
+                                                                                <div class="col-md-9 col-sm-9 col-xs-12" style="">
+                                                                                    <input type="number" name="approvedAmount" onchange="validateAmount({{ budget.expenseAmount }},{{ budget.id }})" id="approved-{{ budget.id }}" placeholder="{{ budget.expenseAmount }}"  class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row form-row spacer">
+                                                                            <div class="form-group input-group col-md-12 col-sm-12" style="display: none;" id="expensedate-{{ budget.id }}">
+                                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                                                       for="first-name" style="margin-bottom: 10px;">Expense Date<span class="required"></span>
+                                                                                </label>
+
+                                                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                    <input class="form-control col-md-9 col-sm-9 col-xs-12" style="margin-bottom: 10px;" name="date"
+                                                                                           type="date">
+                                                                                </div>
+
+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row form-row spacer">
+                                                                            <div class="form-group input-group col-md-12 col-sm-12" id="receipt-{{ budget.id }}" style="display: none;">
+                                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12" style="">Receipt<span class="required"></span>
+                                                                                </label>
+                                                                                <div class="col-md-9 col-sm-9 col-xs-12" style="">
+                                                                                    <input type="file" class="form-control col-md-9 col-sm-9 col-xs-12" name="receipt" placeholder="Receipt" id="noReceipt" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group" id="allocated-{{ budget.id }}" style="display:none;">
+                                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" style="">Allocated</label>
+                                                                            <div class="col-md-9 col-sm-9 col-xs-12" style="">
+                                                                                {% for categ in requests %}
+                                                                                    {% if budget.id == categ.id %}
+                                                                                        <input type="number" name="allocated" id="budgetallocated-{{ budget.id }}" value="{{ categ.category.subtotal }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input type="number" name="totalallocated" id="totalallocated-{{ budget.id }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input type="number" name="budgetalloc" id="budgetalloc-{{ budget.id }}" value="{{ categ.category.totalAllocated }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input type="number" name="allocatedleft" id="allocatedleft-{{ budget.id }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input type="number" name="totalcost" id="totalcost-{{ budget.id }}" class="form-control col-md-9 col-sm-9 col-xs-12" value="{{ budget.project.budgetSpent }}">
+                                                                                    <input type="number" name="budgetrem" id="budgetrem-{{ budget.id }}" class="form-control col-md-9 col-sm-9 col-xs-12" value="{{ budget.project.budgetRemaining }}">
+                                                                                    <input type="number" name="budgetspent" id="budgetspent-{{ budget.id }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                                    <input type="number" name="budgetremaining" id="budgetremaining-{{ budget.id }}" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                                    {% endif %}
+
+
+                                                                                {% endfor %}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row form-row spacer">
+                                                                            <div class="form-group input-group col-md-12 col-sm-12" id="remarks-{{ budget.id }}" style="">
+                                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12" style="">Remarks</label>
+                                                                                <div class="col-md-9 col-sm-9 col-xs-12" style="">
+                                                                                    <input type="text" name="remarks" class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                    <div class="modal-footer" style="margin-top: 50px; "><input type="submit" class="btn btn-primary"></div>
+
+                                                                </form>
+                                                            </div>
+
+                                                        </div>
+                                                    </div></td>
+                                                </tr>{% endif %}
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% endfor %}
+                        </div>
+                           {% endif %}
+                       {% endfor %}
+
+
+                    </div>
+
+
+
+
+                </div>
+            </div>
+        </div>
+
+
+    {% else %}
+        <div id="pagecontent" style="height: auto;">
+
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>View Requests for Procurement</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Settings 1</a>
+                                </li>
+                                <li><a href="#">Settings 2</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content" style="height: auto;">
+                    <table id="datatable-fixed-header" class="table table-striped table-bordered">
+                        <thead>
+                        <tr>
+
+                            <th>Budget Category</th>
+                            <th>Expense Name</th>
+                            <th>Date Requested</th>
+                            <th>Amount Requested</th>
+                            <th>Status</th>
+                            <th>Approved Amount</th>
+                            <th>Remarks</th>
+                            <th>Details</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for budget in procurement %}
+                            <tr>
+
+
+                                <td>{{ budget.category.title }}</td>
+                                <td>{{ budget.expenseName }}</td>
+                                <td>{{ budget.nowDate }}</td>
+                                <td>{{ budget.amountRequested|intcomma }}</td>
+                                <td>{{ budget.status }}</td>
+                                <td>{{ budget.expenseTotal|intcomma }}</td>
+                                <td>{{ budget.remarks }}</td>
+
+
+                                <!--<td><ul class="list-unstyled project_files">
+
+                                 <li><a href=""><i class="fa fa-file-word-o"></i> Contract-10_12_2014.docx</a>
+                                 </li>
+                               </ul></td>-->
+                                <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".bs-details-modal-sm-{{ budget.id }}">Details</button>
+                                    <div class="modal fade bs-details-modal-sm-{{ budget.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-sm">
+                                            <div class="modal-content" style="width: 500px; height: 300px;">
+
+
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                                                    </button>
+                                                    <h4 class="modal-title" id="myModalLabel2">Details of Request</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    {% if budget.itemType == 'Hotel Booking' %}
+                                                        <b>Budget Category:</b> {{ budget.category.title }}<br>
+                                                        <b>Expense Name: </b>{{ budget.expenseName }}<br>
+                                                        <b>Location: </b>{{ budget.expenseLocation }}<br>
+                                                        <b>Hotel/Venue: </b>{{ budget.venue }}<br>
+                                                        <b>Number of Days: </b>{{ budget.days }}<br>
+                                                        <b>Pax: </b>{{ budget.expenseQuantity }}<br>
+                                                        <b>Total Amount Spent: </b>P {{ budget.expenseTotal|intcomma }}<br>
+                                                        <b>Date Spent: </b>{{ budget.expenseDate }}<br>
+                                                        <b>Receipt: </b><a href="{{ budget.expenseReceipt }}" class="fa fa-file-pdf-o"></a><br>
+
+                                                    {% endif %}
+
+                                                    {% if budget.itemType == 'Flight Tickets' %}
+                                                        <b>Budget Category:</b> {{ budget.category.title }}<br>
+                                                        <b>Expense Name: </b>{{ budget.expenseName }}<br>
+                                                        <b>Location: </b>{{ budget.expenseLocation }}<br>
+                                                        <b>Destination: </b>{{ budget.destination }}<br>
+                                                        <b>Pax: </b>{{ budget.expenseQuantity }}<br>
+                                                        <b>Number of Times: </b>{{ budget.times }}<br>
+                                                        <b>Price: </b>P {{ budget.expenseAmount|intcomma }}
+                                                        <b>Total Amount Spent: </b>P {{ budget.expenseTotal|intcomma }}<br>
+                                                        <b>Date Spent: </b>{{ budget.expenseDate }}<br>
+                                                        <b>Receipt: </b><a href="{{ budget.expenseReceipt }}" class="fa fa-file-pdf-o"></a><br>
+
+                                                    {% endif %}
+
+                                                    {% if budget.itemType == 'Field Expense (No Official Receipt)' or budget.itemType == 'Field Expense (Repair and Maintenance of Equipment)' %}
+                                                        <b>Budget Category:</b> {{ budget.category.title }}<br>
+                                                        <b>Expense Name: </b>{{ budget.expenseName }}<br>
+                                                        <b>Location: </b>{{ budget.expenseLocation }}<br>
+                                                        <b>Total Amount Spent: </b>P {{ budget.expenseTotal|intcomma }}<br>
+                                                        <b>Date Spent: </b>{{ budget.expenseDate }}<br>
+                                                        <b>Receipt: </b><a href="{{ budget.expenseReceipt }}" class="fa fa-file-pdf-o"></a><br>
+
+                                                    {% endif %}
+
+                                                    {% if budget.itemType == 'Scientific Equipment and Supplies' or budget.itemType == 'Specialized Scientific/Laboratory Services' or budget.itemType == 'Scientific Software and Databases' or budget.itemType == 'Scientific Literature' or budget.itemType == 'Research Dissemination Expenses'  %}
+                                                        <b>Budget Category:</b> {{ budget.category.title }}<br>
+                                                        <b>Expense Name: </b>{{ budget.expenseName }}<br>
+                                                        <b>Quantity: </b>{{ budget.expenseQuantity }}<br>
+                                                        <b>Price: </b>P {{ budget.expenseAmount|intcomma }}<br>
+                                                        <b>Total Amount Spent: </b>P {{ budget.expenseTotal|intcomma }}<br>
+                                                        <b>Date Spent: </b>{{ budget.expenseDate }}<br>
+                                                        <b>Receipt: </b><a href="{{ budget.expenseReceipt }}" class="fa fa-file-pdf-o"></a><br>
+
+                                                    {% endif %}
+
+                                                </div>
+
+
+                                            </div>
+
+                                        </div>
+                                    </div></td>
+
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
+    <script>
+        function yesNoCheck(id) {
+            if (document.getElementById('budgetstatus-' + id).value == 'Approved') {
+                document.getElementById("approvedamount-" + id).style.display = "block";
+                document.getElementById("remarks-" + id).style.display = "none";
+                document.getElementById("allocated-" + id).style.display = "none";
+                document.getElementById("budgetleft-" + id).style.display = "none";
+                document.getElementById("receipt-" + id).style.display = "block";
+                document.getElementById("expensedate-" + id).style.display = "block";
+                $("#approved-" + id).change(function(){
+                    var allocated =  document.getElementById("budgetallocated-" + id).value;
+                    var approved = document.getElementById("approved-" + id).value;
+                    var budget = document.getElementById("budgetalloc-" + id).value;
+                    var totalcost = document.getElementById("totalcost-" + id).value;
+                    var budgetrem = document.getElementById("budgetrem-" + id).value;
+                    document.getElementById("totalallocated-" + id).value = allocated-approved
+                    document.getElementById("allocatedleft-" + id).value = budget-approved
+                    document.getElementById("budgetspent-" + id).value = (+approved + +totalcost)
+                    document.getElementById("budgetremaining-" + id).value = budgetrem - approved
+
+
+                })
+
+            } else {
+                document.getElementById("remarks-" + id).style.display = "block";
+                document.getElementById("approvedamount-" + id).style.display = "none";
+                document.getElementById("receipt-" + id).style.display = "none";
+                document.getElementById("budgetleft-" + id).style.display = "none";
+                document.getElementById("expensedate-" + id).style.display = "none";
+            }
+        }
+
+        function calculateAllocated(id){
+            allocated =  document.getElementById("budgetallocated-" + id).value;
+            approved = document.getElementById("approved-" + id).value;
+            document.getElementById("totalallocated-" + id).value = allocated-approved
+
+        }
+        function validateAmount(amount,id){
+            var input = document.getElementById("approved-"+id).value
+            if(input>amount){
+                alert("You exceed the amount requested!")
+                document.getElementById("approved-"+id).value=""
+            }
+        }
+    </script>
+{% endblock %}

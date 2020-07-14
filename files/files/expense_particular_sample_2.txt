@@ -1,0 +1,2724 @@
+﻿{% extends "sdrc/base_pi.html" %}
+
+{% block style %}
+    <style>
+    .modal-content{
+        width: 120%;
+
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="x_panel">
+                  <div class="x_title">
+                    <h2>Update Budget Plan </h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+        <p class="red"><b>**Note: Click the refresh button after saving an expense to display the details</b></p>
+    <br>
+     <h1>Project Title: {{ budget.projectTitle }}</h1>
+    <br>
+
+    <label class="control-label col-md-1" for="last-name">Expense Date
+                        </label>
+     <div class="col-md-3 col-sm-6 col-xs-12">
+                         <input type="date" class="form-control has-feedback-left"  name="dateReceived" placeholder="">
+                                <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+
+     <div class="form-group">
+
+                        <div class="col-md-1">
+                         <div class="btn-group">
+                      <input type="file" required=required name= "files" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage">
+                    </div>
+                        </div>
+                      </div>
+    <br>
+    <br>
+      <div class="x_content">
+<!--first row-->
+                  <hr>
+        <form class="form-horizontal form-label-left input_mask" method="POST">
+            {% csrf_token %}
+            <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+            <button type="button" id="personnel-refresh" class="btn btn-primary btn-sm"><span><i class="fa fa-refresh"></i></span></button>
+            <a data-toggle="collapse" href="#collapse1" > <button type="button" id="personnelbtn" class="btn btn-success btn-sm" data-toggle="modal" data-target="#personnel_modal"><span><i class="fa fa-plus-circle"></i></span> Personnel</button></a>
+        </h4>
+      </div>
+      <div id="collapse1" class="panel-collapse collapse">
+      <h3 id="personnelTitle"></h3>
+      <table class="table table-striped" id="personnelTB">
+                      <thead>
+                        <tr>
+                          <th>Particulars</th>
+                          <th>Pax</th>
+                          <th>Amount</th>
+                          <th>Month</th>
+                            <th>Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td id="#particularTb"></td>
+                          <td id = #paxTB></td>
+                          <td id = #qtyTB></td>
+                            <td  id = #monthTB></td>
+                            <td id = #subtotalTB></td>
+                        </tr>
+                        <tr>
+
+                      </tbody>
+                    </table>
+        <div class="panel-footer">
+             <label class="red">TOTAL: </label><label class="red" id = "personnel-total"></label>
+            <br>
+            <label class="red">BUDGET ALLOCATED: </label><label class="red" id = "personnel-allocated"></label>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+        <!-- second row -->
+        <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+            <button type="button" id="fieldwork-refresh" class="btn btn-primary btn-sm"><span><i class="fa fa-refresh"></i></span></button>
+            <a data-toggle="collapse" href="#collapse2" > <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#personnel_modal"><span><i class="fa fa-plus-circle"></i></span> FieldWork</button></a>
+        </h4>
+      </div>
+      <div id="collapse2" class="panel-collapse collapse">
+      <h3 id="personnelTitle"></h3>
+      <table class="table table-striped" id="fieldworkTB">
+                      <thead>
+                        <tr>
+                          <th>Particulars</th>
+                          <th>Pax</th>
+                          <th>Amount</th>
+                          <th>Month</th>
+                            <th>Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td id="#particularTb"></td>
+                          <td id = #paxTB></td>
+                          <td id = #qtyTB></td>
+                            <td  id = #monthTB></td>
+                            <td id = #subtotalTB></td>
+                        </tr>
+                        <tr>
+
+                      </tbody>
+                    </table>
+        <div class="panel-footer">
+                 <label class="red">TOTAL : </label><label class="red" id = "fieldwork-total"></label><br>
+             <label class="red">BUDGET ALLOCATED: </label><label class="red" id = "field-allocated"></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+        <!-- third row -->
+        <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+            <button type="button" id="travel-refresh" class="btn btn-primary btn-sm"><span><i class="fa fa-refresh"></i></span></button>
+            <a data-toggle="collapse" href="#collapse3" > <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#personnel_modal"><span><i class="fa fa-plus-circle"></i></span> Travel and Survey </button></a>
+        </h4>
+      </div>
+      <div id="collapse3" class="panel-collapse collapse">
+      <h3 id="personnelTitle"></h3>
+      <table class="table table-striped" id="travelTB">
+                      <thead>
+                        <tr>
+                          <th>Particulars</th>
+                          <th>Pax</th>
+                          <th>Amount</th>
+                          <th>Month</th>
+                            <th>Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td id="#particularTb"></td>
+                          <td id = #paxTB></td>
+                          <td id = #qtyTB></td>
+                            <td  id = #monthTB></td>
+                            <td id = #subtotalTB></td>
+                        </tr>
+                        <tr>
+
+                      </tbody>
+                    </table>
+        <div class="panel-footer">
+                 <label class="red">TOTAL : </label><label class="red" id = "travel-total"></label><br>
+             <label class="red">BUDGET ALLOCATED: </label><label class="red" id = "travel-allocated"></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+        <!--forth row -->
+         <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+            <button type="button" id="operating-refresh" class="btn btn-primary btn-sm"><span><i class="fa fa-refresh"></i></span></button>
+            <a data-toggle="collapse" href="#collapse4" > <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#personnel_modal"><span><i class="fa fa-plus-circle"></i></span> Operating Expenses </button></a>
+        </h4>
+      </div>
+      <div id="collapse4" class="panel-collapse collapse">
+      <h3 id="personnelTitle"></h3>
+      <table class="table table-striped" id="operatingTB">
+                      <thead>
+                        <tr>
+                          <th>Particulars</th>
+                          <th>Pax</th>
+                          <th>Amount</th>
+                          <th>Month</th>
+                            <th>Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td id="#particularTb"></td>
+                          <td id = #paxTB></td>
+                          <td id = #qtyTB></td>
+                            <td  id = #monthTB></td>
+                            <td id = #subtotalTB></td>
+                        </tr>
+                        <tr>
+
+                      </tbody>
+                    </table>
+        <div class="panel-footer">
+                 <label class="red">TOTAL : </label><label class="red" id = "operating-total"></label>
+            <br>
+             <label class="red">BUDGET ALLOCATED: </label><label class="red" id = "operating-allocated"></label>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+          <!--fifth row
+         <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" href="#collapse5" ><button type="button" id="admin-refresh" class="btn btn-primary btn-sm"><span><i class="fa fa-refresh"></i></span></button></a>
+             <label class="success">Administrative Cost </label></a>
+        </h4>
+      </div>
+      <div id="collapse5" class="panel-collapse collapse">
+      <h3 id="personnelTitle"></h3>
+      <table class="table table-striped" id="adminTB">
+
+                      <tbody>
+                        <tr>
+                          <td id="#particularTb"></td>
+                          <td id = #paxTB></td>
+
+                        </tr>
+                        <tr>
+
+                      </tbody>
+                    </table>
+        <div class="panel-footer"></div>
+      </div>
+    </div>
+  </div>-->
+
+                          <div class="ln_solid"></div>
+                      <h4 class=""><b>Total Expense:<span id="totalAmount"></span></b></h4>
+                       <h4 class=""><b>Total Budget Spent:<span id="totalBudget" value="{{ budget.trancheAmount|safe }}"> {{ budget.trancheAmount }}  </span></b></h4>
+
+                      <div class="form-group">
+                          <br>
+                          <button type="button" class="btn btn-default">Cancel</button>
+                          <a href="/success-category/"><button  type="button" class="btn btn-primary">Submit</button></a>
+                        </div>
+
+
+<!--MODAL-->
+    {% extends "sdrc/base.html" %}
+
+{% block style %}
+    <style>
+    .modal-content{
+        width: 120%;
+
+    }
+
+
+/* ALERT RELATED CLASS (START) */
+
+.alert-area {
+  max-height: 100%;
+  position: fixed;
+  bottom: 5px;
+  left: 20px;
+  right: 20px;
+}
+
+.alert-box {
+  font-size: 16px;
+  color: white;
+  background: rgba(231,76,60,.88);
+  line-height: 1.3em;
+  padding: 10px 15px;
+  margin: 5px 10px;
+  position: relative;
+  border-radius: 5px;
+  transition: opacity 0.5s ease-in;
+  border-color:rgba(231,76,60,.88);
+}
+
+.alert-box.hide {
+  opacity: 0;
+}
+
+.alert-close {
+  background: transparent;
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.alert-close:before,
+.alert-close:after {
+  content: '';
+  width: 15px;
+  border-top: solid 2px white;
+  position: absolute;
+  top: 5px;
+  right: -1px;
+  display: block;
+}
+
+.alert-close:before {
+  transform: rotate(45deg);
+}
+
+.alert-close:after {
+  transform: rotate(135deg);
+}
+
+.alert-close:hover:before,
+.alert-close:hover:after {
+  border-top: solid 2px #d8d8d8;
+}
+
+@media (max-width: 767px) and (min-width: 481px) {
+  .alert-area {
+    left: 100px;
+    right: 100px;
+  }
+}
+
+@media (min-width: 768px) {
+  .alert-area {
+    width: 350px;
+    left: auto;
+    right: 0;
+  }
+}
+
+/* ALERT RELATED CLASS (END) */
+
+.alert-message-container {
+  text-align: center;
+  line-height: 2.5em;
+  margin-top: 50px;
+}
+
+.alert-message-box {
+  font-size: 20px;
+  width: 300px;
+  border: solid 1px #444;
+  padding: 10px 15px;
+  outline: none;
+  transition: box-shadow 0.1s;
+}
+
+.alert-message-box:focus {
+  box-shadow: 0 0 15px 2px #888;
+}
+
+.alert-message-button {
+  font-size: 18px;
+  color: white;
+  background: #14b9ff;
+  width: 250px;
+  border: solid 1px #14b9ff;
+  padding: 10px 20px;
+  margin-top: 5px;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.1s;
+}
+
+.alert-message-button:hover,
+.alert-message-button:focus,
+.alert-message-button:active {
+  background: #7dd8ff;
+}
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="x_panel">
+                  <div class="x_title">
+                    <h2>Create Expense Tracker </h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+        <p class="red"><b>**Note: An alert will be sent when you exceed your project budget.</b></p>
+    <br>
+     <h1>Project Title: {{ project.projectTitle }}
+     <span style="margin-left:30%; position:relative;"><button style="display:none" type="button" id="budgetExModalbtn" class="btn btn-danger" data-toggle="modal" data-target="#budgetExModal">Request for Budget Extension</button></span></h1>
+
+    <hr>
+        <div class="animated flipInY col-lg-4 col-md-3 col-sm-6 col-xs-12">
+<div class="tile-stats">
+    <h3>Total Project Budget</h3>
+<div class="count">P {{project.projectCost}}</div>
+
+</div>
+</div>
+          <div class="animated flipInY col-lg-4 col-md-3 col-sm-6 col-xs-12">
+<div class="tile-stats">
+    <h3> Total Expense Amount</h3>
+<div class="count" id="accumulateTile">P {{project.totalExpense}}</div>
+
+</div>
+</div>
+        {% if project.budgetRemaining >= 0 %}
+          <div class="animated flipInY col-lg-4 col-md-3 col-sm-6 col-xs-12">
+
+              <div class="tile-stats" style="background-color:#13C756  ">
+                  <h3 style="color:#266D30">Budget Remaining</h3>
+                  <div class="count" id="budgetRemainingDiv" style="color:#266D30 ">P {{project.budgetRemaining}}</div>
+
+</div>
+</div>
+
+                  {% elif project.budgetRemaining < 0 %}
+        <div class="animated flipInY col-lg-4 col-md-3 col-sm-6 col-xs-12">
+        <div class="tile-stats" style="background-color:#E02617">
+                  <h3 style="color:#95160C">Budget Remaining</h3>
+                  <div class="count" id="budgetRemainingDiv" style="color:#95160C ">P {{project.budgetRemaining}}</div>
+        </div>
+        </div>
+        {% endif %}
+
+
+
+
+      <div class="x_content">
+
+
+
+        <form class="form-horizontal form-label-left input_mask" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+
+            <input name="budgetRemaining" id="budgetRemainingID" style="display:none">
+             <input name="totalExpense" id="totalExpense" style="display:none">
+            {% for categ in category %}
+            {% if categ.title == 'Personnel' %}
+               <!--personnel-->
+                 <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" href="#collapse1" > <button type="button" id="personnelbtn" class="btn btn-success btn-sm" data-toggle="modal" data-target="#personnel_modal">Personnel</button></a>
+              <span style="color:#314356;font-weight:bold; margin-left:55%; position:relative">Budget Allocated: <label id="personnelAlloc">{{pBudget}}</label></span>
+        </h4>
+      </div>
+        <br>
+      <div id="collapse1" class="panel-collapse collapse">
+             <div class="col-md-1 form-group">
+                  <button class="btn btn-primary btn-round" type="button" id="addPersonnelExpense" style="margin-left:1300%; display:none"><span><i class="fa fa-plus"></i></span> Add Expense</button>
+              </div>
+          <br><br>
+           <div class="col-md-2 col-sm-9 col-xs-12">
+                 <select class="select2_group form-control"  id="personnelSelect">
+                     <option value="Project Director">Choose an expense</option>
+                     <optgroup label="Not in the list">
+                         <option value="Other">Create new expense</option>
+                          <option></option>
+                     <optgroup label="Core Staff">
+                         <option value="Project Director">Project Director</option>
+                         <option value="Project Coordinator">Project Coordinator</option>
+                          <option value="Co-Investigator">Co-Investigator</option>
+                          <option value="Consultant">Consultant</option>
+                          <option value="Project Coordinator">Project Coordinator</option>
+                     </optgroup>
+                     <optgroup label="Research Assistants">
+                         <option value="Research Assistant (Document and Correspondence)">Research Assistant (Document and Correspondence)</option>
+                         <option value="Research Assistant (Regional Coordinators)">Research Assistant (Regional Coordinators)</option>
+                          <option value="Research Assistant (RRL)">Research Assistant (RRL)</option>
+                     </optgroup>
+
+                      <optgroup label="Fieldwork Staff">
+                         <option value="SDRC Hired Field Coordinator (Luzon)">SDRC Hired Field Coordinator (Luzon)</option>
+                         <option value="SDRC Hired Field Supervisor (Luzon)">SDRC Hired Field Supervisor (Luzon)</option>
+                           <option value="SDRC Hired Field Coordinator (Visayas)">SDRC Hired Field Coordinator (Visayas)</option>
+                         <option value="SDRC Hired Field Supervisor (Visayas)">SDRC Hired Field Supervisor (Visayas)</option>
+                           <option value="SDRC Hired Field Coordinator (Mindanao)Research Assistant (Document and Correspondence)">SDRC Hired Field Coordinator (Mindanao)</option>
+                         <option value="SDRC Hired Field Supervisor (Mindanao)s)">SDRC Hired Field Supervisor (Mindanao)</option>
+                            <option value="Local Enumerator (Luzon)">Local Enumerator (Luzon)</option>
+                          <option value="Local Enumerator (Visayas)">Local Enumerator (Visayas)</option>
+                          <option value="Local Enumerator (Mindanao)">Local Enumerator (Mindanao)</option>
+                          <option value="Documentor">Documentor</option>
+                          <option value="Translator Toolkit">Translator Toolkit</option>
+                          <option value="Translator-Transcriber">Translator-Transcriber</option>
+                          <option value="CreativeComm">CreativeComm</option>
+                     </optgroup>
+
+
+
+                     </optgroup>
+                 </select></div>
+
+          <div id="personnelInput" class="form-group col-md-24" style="display:none">
+
+               <div class="col-md-1 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number" class="form-control" onchange="computeP()" placeholder="Pax" name="personnelQuantity" id="personnelQuantity" >
+                            </div>
+                        </div>
+               <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number" class="form-control"  onchange="computeP()" placeholder="Amount" name="personnelAmount" id="personnelAmount">
+                            </div>
+                        </div>
+              <div class="col-md-2 col-sm-6 col-xs-12">
+                         <input type="date" class="form-control has-feedback-left"  id="personnelDate" name="personnelDate" placeholder="Date">
+                                <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+                <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number"  readonly class="form-control"  onchange="computeP()" placeholder="Subtotal" name="personnelSubtotal" id="personnelSubtotal">
+                            </div>
+                        </div>
+                <div class="col-md-1 col-sm-9 col-xs-12">
+                         <div class="btn-group">
+                      <input type="file"  name= "personnelReceipt" id="personnelReceipt" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage">
+                    </div>
+                        </div>
+
+          </div>
+          <br>
+          <br>
+          <br>
+      <table class="table table-striped" id="personnelTB">
+                      <thead>
+                        <tr>
+                          <th>Particulars</th>
+                          <th>Pax</th>
+                          <th>Amount</th>
+                          <th>Date</th>
+                            <th>Receipt</th>
+                            <th>Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for personnels in categ.projectexpense_set.all %}
+                        <tr>
+                          <td id="#particularTb">{{personnels.expenseName}}</td>
+                          <td id = #paxTB>{{personnels.expenseQuantity}}</td>
+                          <td id = #qtyTB>{{personnels.expenseAmount}}</td>
+                            <td  id = #monthTB>{{personnels.expenseDate}}</td>
+                            <td >{{personnels.expenseReceipt}}</td>
+                            <td id = #subtotalTB>{{personnels.expenseTotal}}</td>
+                        </tr>
+                       {% endfor %}
+
+                      </tbody>
+
+
+                    </table>
+        <div class="panel-footer">
+            <hr>
+             <!--<label class="red"> TOTAL PERSONNEL EXPENSE: </label><label class="red" name="personnelExpenseID" id = "personnelExpenseID">{{personnels.totalPersonnelExpense}}</label>-->
+        </div>
+
+
+      </div>
+    </div>
+
+  </div>
+            {% elif categ.title == 'Fieldwork' %}
+            <!--fieldwork-->
+                 <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" href="#collapse2" > <button type="button" id="fieldbtn" class="btn btn-success btn-sm" data-toggle="modal" data-target="#personnel_modal">Fieldwork</button></a>
+             <span style="color:#314356;font-weight:bold; margin-left:55%; position:relative">Budget Allocated: <label id="fieldAlloc">{{fBudget}}</label></span>
+        </h4>
+      </div>
+      <div id="collapse2" class="panel-collapse collapse">
+          <br>
+          <div class="col-md-1 form-group">
+                  <button class="btn btn-primary btn-round" type="button" id="addFieldExpense" style="margin-left:1300%; display:none"><span><i class="fa fa-plus"></i></span> Add Expense</button>
+              <button class="btn btn-primary btn-round" type="button" id="addFieldExpenseRepro" style="margin-left:1300%; display:none"><span><i class="fa fa-plus"></i></span> Add Expense</button>
+
+          </div>
+          <br><br>
+           <div class="col-md-2 col-sm-9 col-xs-12">
+
+                 <select class="select2_group form-control" id="fieldSelect">
+                      <option value="">Choose an expense</option>
+                        <optgroup label="Not in the list">
+                         <option value="Other">Create new expense</option>
+                     </optgroup>
+                        <option value=""></option>
+                      <optgroup label="Materials">
+                         <option value="Laptop">Laptop</option>
+                         <option value="Office Supplies">Office Supplies</option>
+                          <option value="Recorder">Recorder</option>
+                     </optgroup>
+                     <optgroup label="Reproduction of Materials">
+                         <option value="Photocopying">Photocopying</option>
+                         <option value="Printing">Printing</option>
+                         <option value="Scanning">Scanning</option>
+                         <option value="Mimeographing">Mimeographing</option>
+                     </optgroup>
+
+
+                 </select></div>
+          <div id="fieldInput" class="form-group col-md-24" style="display:none">
+
+               <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number" class="form-control" onchange="computeF()" placeholder="Quantity" name="fieldQuantity" id="fieldQuantity" >
+                            </div>
+                        </div>
+               <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number" class="form-control"  onchange="computeF()" placeholder="Amount" name="fieldAmount" id="fieldAmount">
+                            </div>
+                        </div>
+              <div class="col-md-2 col-sm-6 col-xs-12">
+                         <input type="date" class="form-control has-feedback-left"  id="fieldDate" name="fieldDate" placeholder="Date">
+                                <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+                <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number"  readonly class="form-control"  onchange="computeF()" placeholder="Subtotal" name="fieldSubtotal" id="fieldSubtotal">
+                            </div>
+                        </div>
+                <div class="col-md-1 col-sm-9 col-xs-12">
+                         <div class="btn-group">
+                      <input type="file"  name= "fieldReceipt" id="fieldReceipt" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage">
+                    </div>
+                        </div>
+
+
+          </div>
+
+          <div id="fieldReproductionInput" class="form-group col-md-24" style="display:none" >
+
+               <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number" class="form-control" onchange="computeFR()" placeholder="No. of copies" name="fieldQuantity" id="fieldCopies" >
+                            </div>
+                        </div>
+               <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number" class="form-control"  onchange="computeFR()" placeholder="Unit Price" name="fieldAmount" id="fieldPrice">
+                            </div>
+                        </div>
+              <div class="col-md-2 col-sm-6 col-xs-12">
+                         <input type="date" class="form-control has-feedback-left"  id="fieldDateRepro" name="fieldDate" placeholder="Date">
+                                <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+                <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number"  readonly class="form-control"  onchange="computeFR()" placeholder="Subtotal" name="fieldSubtotal" id="fieldSubtotalRepro">
+                            </div>
+                        </div>
+                <div class="col-md-1 col-sm-9 col-xs-12">
+                         <div class="btn-group">
+                      <input type="file"  name= "fieldReceipt" id="fieldReceiptRepro" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage">
+                    </div>
+                        </div>
+
+
+
+
+
+          </div>
+          <br>
+          <br>
+          <br>
+      <table class="table table-striped" id="fieldTB">
+                      <thead>
+                        <tr>
+                          <th>Particulars</th>
+                          <th>Pax</th>
+                          <th>Amount</th>
+                          <th>Date</th>
+                            <th>Receipt</th>
+                            <th>Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                         {% for personnels in categ.projectexpense_set.all %}
+                         {% if personnels.expenseName == "Printing" or personnels.expenseName == "Mimeographing" or personnels.expenseName == "Scanning" or personnels.expenseName == "Photocopying"  %}
+                         <tr>
+                          <td id="#particularTb">{{personnels.expenseName}}</td>
+                          <td id = #paxTB>{{personnels.expenseQuantity}} copy</td>
+                          <td id = #qtyTB>{{personnels.expenseAmount}}</td>
+                            <td  id = #monthTB>{{personnels.expenseDate}}</td>
+                            <td >{{personnels.expenseReceipt}}</td>
+                            <td id = #subtotalTB>{{personnels.expenseTotal}}</td>
+                        </tr>
+
+                         {% else %}
+                        <tr>
+                          <td id="#particularTb">{{personnels.expenseName}}</td>
+                          <td id = #paxTB>{{personnels.expenseQuantity}}</td>
+                          <td id = #qtyTB>{{personnels.expenseAmount}}</td>
+                            <td  id = #monthTB>{{personnels.expenseDate}}</td>
+                            <td >{{personnels.expenseReceipt}}</td>
+                            <td id = #subtotalTB>{{personnels.expenseTotal}}</td>
+                        </tr>
+                          {% endif %}
+                       {% endfor %}
+
+
+                      </tbody>
+
+                    </table>
+
+        <div class="panel-footer">
+            <hr>
+             <!--<label class="red"> TOTAL FIELDWORK EXPENSE: </label><label class="red" name="fieldExpenseID" id = "fieldExpenseID">{{personnels.totalPersonnelExpense}}</label>-->
+        </div>
+
+
+      </div>
+    </div>
+
+  </div>
+            {% elif categ.title == 'Travel' %}
+                <!-- travel -->
+                <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" href="#collapse3" > <button type="button" id="travelbtn" class="btn btn-success btn-sm" data-toggle="modal" data-target="#personnel_modal">Travel and Survey</button></a>
+            <span style="color:#314356;font-weight:bold; margin-left:51%; position:relative">Budget Allocated: <label id="travelAlloc">{{tBudget}}</label></span>
+        </h4>
+      </div>
+      <div id="collapse3" class="panel-collapse collapse">
+          <br>
+          <div class="col-md-1 form-group">
+                  <button class="btn btn-primary btn-round" type="button" id="addTravelExpense" style="margin-left:1300%; display:none"><span><i class="fa fa-plus"></i></span> Add Expense</button>
+               <button class="btn btn-primary btn-round" type="button" id="addTravelExpenseTranspo" style="margin-left:1300%; display:none"><span><i class="fa fa-plus"></i></span> Add Expense</button>
+               <button class="btn btn-primary btn-round" type="button" id="addTravelExpenseRent" style="margin-left:1300%; display:none"><span><i class="fa fa-plus"></i></span> Add Expense</button>
+
+              </div>
+          <br><br>
+
+           <div class="col-md-2 col-sm-9 col-xs-12">
+
+                            <div class="input-icon">
+                                <input type="text" style="display:none" class="form-control" placeholder="Expense Name" name="travelQuantity" id="travelName" >
+                            </div>
+
+
+                 <select class="select2_group form-control" id="travelSelect">
+                     <option value="AK">Choose an expense</option>
+                      <optgroup label="Not in the list">
+                         <option value="Other">Create travel expense</option>
+                      </optgroup>
+                     <option></option>
+                     <optgroup label="Transportation">
+                         <option value="Fare Tickets">Fare Tickets</option>
+                         <option value="Travel">Field Trips</option>
+
+                     </optgroup>
+                     <optgroup label="Accomodation">
+                         <option value="Rent">Rent</option>
+                     </optgroup>
+                     <!--<optgroup label="Insurance">-->
+                         <!--<option value="Insurance Fee">Insurance Fee</option>-->
+                     <!--</optgroup>-->
+                 </select></div>
+          <div id="travelInput" class="form-group col-md-24" style="display:none">
+
+               <div class="col-md-1 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number" class="form-control" onchange="computeT()" placeholder="Pax" name="travelQuantity" id="travelQuantity" >
+                            </div>
+                        </div>
+               <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number" class="form-control"  onchange="computeT()" placeholder="Unit Rate" name="travelAmount" id="travelAmount">
+                            </div>
+                        </div>
+              <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number" class="form-control"  onchange="computeT()" placeholder="No. of Times" name="travelAmount" id="travelNumberofTimes">
+                            </div>
+                        </div>
+              <div class="col-md-2 col-sm-6 col-xs-12">
+                         <input type="date" class="form-control has-feedback-left"  id="travelDate" name="travelDate" placeholder="Date">
+                                <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+                <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number"  readonly class="form-control"  onchange="computeT()" placeholder="Subtotal" name="travelSubtotal" id="travelSubtotal">
+                            </div>
+                        </div>
+                <div class="col-md-1 col-sm-9 col-xs-12">
+                         <div class="btn-group">
+                      <input type="file"  name= "travelReceipt" id="travelReceipt" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage">
+                    </div>
+                        </div>
+
+
+          </div>
+
+          <div id="travelInputAccomodation" class="form-group col-md-24" style="display:none">
+
+               <div class="col-md-2 col-sm-9 col-xs-12">
+                   <div class="input-icon">
+                                <input type="text" class="form-control" onchange="computeT()" placeholder="Hotel/Venue" name="travelQuantity" id="travelVenue" >
+                            </div>
+               </div>
+
+              <div class="col-md-1 col-sm-9 col-xs-12">
+                   <div class="input-icon">
+                                <input type="number" class="form-control" onchange="computeT()" placeholder="Pax" name="travelQuantity" id="travelQuantityRent" >
+                            </div>
+               </div>
+
+
+              <div class="col-md-2 col-sm-9 col-xs-12">
+                   <div class="input-icon">
+                                <input type="number" class="form-control" onchange="computeT()" placeholder="No. of Days" name="travelQuantity" id="travelDays" >
+                            </div>
+               </div>
+
+
+              <div class="col-md-2 col-sm-6 col-xs-12">
+                         <input type="date" class="form-control has-feedback-left"  id="travelDateRent" name="travelDate" placeholder="Date">
+                                <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+
+              <div class="col-md-2 col-sm-9 col-xs-12">
+                   <div class="input-icon">
+                                <input type="number" class="form-control" onchange="computeT()" placeholder="Total Price" name="travelQuantity" id="travelAmountRent" >
+                            </div>
+               </div>
+                <div class="col-md-1 col-sm-9 col-xs-12">
+                         <div class="btn-group">
+                      <input type="file"  name= "travelReceipt" id="travelReceiptRent" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage">
+                    </div>
+                        </div>
+
+
+
+
+          </div>
+          <br><br><br>
+
+               <div id="travelInputTranspo" class="form-group col-md-24" style="display:none">
+                    <hr>
+               <div class="col-md-1 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number" class="form-control" onchange="computeTTranspo()" placeholder="Pax" name="travelQuantity" id="travelQuantityTranspo" >
+                            </div>
+                        </div>
+               <div class="col-md-1 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number" class="form-control"  onchange="computeTTranspo()" placeholder="Price" name="travelAmount" id="travelAmountTranspo">
+                            </div>
+                        </div>
+                    <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="text" class="form-control"   placeholder="Desitnation" name="travelAmount" id="travelDestination">
+                            </div>
+                        </div>
+               <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="text" class="form-control"   placeholder="Mode of Transportation" name="travelAmount" id="travelMode">
+                            </div>
+                        </div>
+               <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number" class="form-control"   placeholder="No. of Times" name="travelAmount" id="travelTimes">
+                            </div>
+                        </div>
+
+                   <div class="col-md-2 col-sm-6 col-xs-12">
+                         <input type="date" class="form-control has-feedback-left"  id="travelDateTranspo" name="travelDate" placeholder="Date">
+                                <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+
+                <div class="col-md-1 col-sm-9 col-xs-12">
+                         <div class="btn-group">
+                      <input type="file"  name= "travelReceipt" id="travelReceiptTranspo" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage">
+                    </div>
+                        </div>
+               <br><br><br>
+                     <div class="col-md-2 col-sm-9 col-xs-12" style="margin-left:80%">
+                            <div class="input-icon">
+                                <input type="number"  readonly class="form-control"  onchange="computeTTranspo()" placeholder="Subtotal" name="travelSubtotal" id="travelSubtotalTranspo">
+                            </div>
+                        </div>
+
+
+          </div>
+
+          <br><br>
+
+          <table class="table table-striped" id="travelTB">
+              <p style="margin-left:0.5%"><u> Transportation Expense:</u> </p>
+                      <thead>
+                        <tr>
+                          <th>Particulars</th>
+                          <th>Pax</th>
+                          <th>Amount</th>
+                             <th>Destination</th>
+                            <th>Mode of Transportation</th>
+                          <th>No. of Times</th>
+                            <th>Date</th>
+                            <th>Receipt</th>
+                            <th>Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for personnels in categ.projectexpense_set.all %}
+                      {% if  not personnels.venue  %}
+                        <tr>
+                          <td id="#particularTb">{{personnels.expenseName}}</td>
+                          <td id = #paxTB>{{personnels.expenseQuantity}}</td>
+                          <td id = #qtyTB>{{personnels.expenseAmount}}</td>
+                            <td id = #monthTB>{{personnels.destination}}</td>
+                            <td >{{personnels.mode}}</td>
+                            <td >{{personnels.times}}</td>
+                            <td >{{personnels.expenseDate}}</td>
+                            <td >{{personnels.expenseReceipt}}</td>
+                            <td id = #subtotalTB>{{personnels.expenseTotal}}</td>
+                        </tr>
+                      {% endif %}
+                      {% endfor %}
+                      </tbody>
+
+
+
+                    </table>
+          <hr>
+          <p style="margin-left:0.5%"><u>Accomodation Expense: </u></p>
+          <table class="table table-striped" id="travelTBAccomodation">
+                      <thead>
+                        <tr>
+                          <th>Particulars</th>
+                          <th>Pax</th>
+                             <th>Hotel/Venue</th>
+                            <th>No. of Days/Nights</th>
+                            <th>Date</th>
+                            <th>Receipt</th>
+                            <th>Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for personnels in categ.projectexpense_set.all %}
+                       {% if personnels.venue and personnels.days %}
+                        <tr>
+                          <td id="#particularTb">{{personnels.expenseName}}</td>
+                          <td id = #paxTB>{{personnels.expenseQuantity}}</td>
+                            <td id = #monthTB>{{personnels.venue}}</td>
+                            <td >{{personnels.days}}</td>
+                            <td >{{personnels.expenseDate}}</td>
+                            <td >{{personnels.expenseReceipt}}</td>
+                            <td id = #subtotalTB>{{personnels.expenseTotal}}</td>
+                        </tr>
+                      {% endif %}
+                      {% endfor %}
+                      </tbody>
+
+
+
+                    </table>
+        <div class="panel-footer">
+            <hr>
+             <!--<label class="red">TOTAL TRAVEL EXPENSE: </label><label class="red" name="travelExpenseID" id = "travelExpenseID">{{personnels.totalPersonnelExpense}}</label>-->
+        </div>
+
+
+      </div>
+    </div>
+
+  </div>
+            {% elif categ.title == 'Operating' %}
+            <!-- operating -->
+                <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" href="#collapse4" > <button type="button" id="operatingbtn" class="btn btn-success btn-sm" data-toggle="modal" data-target="#personnel_modal">Operating Expense</button></a>
+            <span style="color:#314356;font-weight:bold; margin-left:50%; position:relative">Budget Allocated: <label id="operatingAlloc">{{oBudget}}</label></span>
+        </h4>
+      </div>
+      <div id="collapse4" class="panel-collapse collapse">
+          <br>
+          <button class="btn btn-primary btn-round" type="button" id="addOperatingExpense" style="margin-left:87%; display:none "><span><i class="fa fa-plus"></i></span> Add Expense</button>
+          <button class="btn btn-primary btn-round" type="button" id="addOperatingExpenseOther" style="margin-left:87%; display:none "><span><i class="fa fa-plus"></i></span> Add Expense</button>
+          <br>
+           <div class="col-md-2 col-sm-9 col-xs-12">
+               <div class="input-icon">
+                                <input type="text" style="display:none" class="form-control" placeholder="Expense Name" name="travelQuantity" id="operatingName" >
+                            </div>
+                 <select class="select2_group form-control" id="operatingSelect">
+                      <option value="">Choose an expense</option>
+                      <optgroup label="Not in the list">
+                         <option value="Other">Create new expense</option>
+                             <option></option>
+                     </optgroup>
+
+                         <option value="Communication Expense">Communication Expense</option>
+                         <option value="Training Expense">Training Expense </option>
+                     <option value="Others Expenses">Others Expenses</option>
+                 </select></div>
+          <div id="operatingInput" class="form-group col-md-24" style="display:none">
+
+               <div class="col-md-1 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number" class="form-control"  placeholder="Pax" name="operatingQuantity" id="operatingQuantity" >
+                            </div>
+                        </div>
+               <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number" class="form-control"   placeholder="Unit Rate" name="operatingAmount" id="operatingAmount">
+                            </div>
+                        </div>
+              <div class="col-md-2 col-sm-6 col-xs-12">
+                         <input type="date" class="form-control has-feedback-left"  id="operatingDate" name="operatingDate" placeholder="Date">
+                                <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+                <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number"   class="form-control"   placeholder="Total" name="operatingSubtotal" id="operatingSubtotal">
+                            </div>
+                        </div>
+                <div class="col-md-1 col-sm-9 col-xs-12">
+                         <div class="btn-group">
+                      <input type="file"  name= "operatingReceipt" id="operatingReceipt" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage">
+                    </div>
+                        </div>
+
+
+          </div>
+          <br>
+          <br>
+          <br>
+      <table class="table table-striped" id="operatingTB">
+                      <thead>
+                        <tr>
+                          <th>Particulars</th>
+                          <th>Pax</th>
+                          <th>Amount</th>
+                          <th>Date</th>
+                            <th>Receipt</th>
+                            <th>Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                       {% for personnels in categ.projectexpense_set.all %}
+
+                        <tr>
+                          <td id="#particularTb">{{personnels.expenseName}}</td>
+                          <td id = #paxTB>{{personnels.expenseQuantity}}</td>
+                          <td id = #qtyTB>{{personnels.expenseAmount}}</td>
+                            <td id = #monthTB>{{personnels.expenseDate}}</td>
+                            <td >{{personnels.expenseReceipt}}</td>
+                            <td id = #subtotalTB>{{personnels.expenseTotal}}</td>
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+
+                    </table>
+        <div class="panel-footer">
+            <hr>
+             <!--<label class="red">TOTAL OPERATING EXPENSE: </label><label class="red" name="operatingExpenseID" id = "operatingExpenseID">{{personnels.totalPersonnelExpense}}</label>-->
+        </div>
+
+
+      </div>
+    </div>
+
+  </div>
+            <!-- Others -->
+             {% elif categ.title == 'Others' %}
+            <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" href="#collapse5" > <button type="button" id="otherbtn" class="btn btn-success btn-sm" data-toggle="modal" data-target="#personnel_modal">Other Expenses</button></a>
+            <span style="color:#314356;font-weight:bold; margin-left:52%; position:relative">Budget Allocated: <label id="otherAlloc">{{otherBudget}}</label></span>
+        </h4>
+      </div>
+      <div id="collapse5" class="panel-collapse collapse">
+          <br>
+          <button class="btn btn-primary btn-round" type="button" id="addOtherExpense" style="margin-left:87%;"><span><i class="fa fa-plus"></i></span> Add Expense</button>
+          <br>
+           <div class="col-md-2 col-sm-9 col-xs-12">
+               <div class="input-icon">
+                                <input type="text"  class="form-control" placeholder="Expense Name" name="travelQuantity" id="otherName" >
+                            </div>
+                 </div>
+          <div id="otherInput" class="form-group col-md-24">
+
+               <div class="col-md-1 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number" class="form-control" onchange="computeO()" placeholder="Pax" name="otherQuantity" id="otherQuantity" >
+                            </div>
+                        </div>
+               <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number" class="form-control"  onchange="computeO()" placeholder="Unit Rate" name="otherAmount" id="otherAmount">
+                            </div>
+                        </div>
+              <div class="col-md-2 col-sm-6 col-xs-12">
+                         <input type="date" class="form-control has-feedback-left"  id="otherDate" name="otherDate" placeholder="Date">
+                                <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+                <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number"   class="form-control" onchange="computeO()"  placeholder="Subtotal" readonly name="otherSubtotal" id="otherSubtotal">
+                            </div>
+                        </div>
+                <div class="col-md-1 col-sm-9 col-xs-12">
+                         <div class="btn-group">
+                      <input type="file"  name= "operatingReceipt" id="otherReceipt" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage">
+                    </div>
+                        </div>
+
+
+          </div>
+          <br>
+          <br>
+          <br>
+      <table class="table table-striped" id="otherTB">
+                      <thead>
+                        <tr>
+                          <th>Particulars</th>
+                          <th>Pax</th>
+                          <th>Amount</th>
+                          <th>Date</th>
+                            <th>Receipt</th>
+                            <th>Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                       {% for personnels in categ.projectexpense_set.all %}
+
+                        <tr>
+                          <td id="#particularTb">{{personnels.expenseName}}</td>
+                          <td id = #paxTB>{{personnels.expenseQuantity}}</td>
+                          <td id = #qtyTB>{{personnels.expenseAmount}}</td>
+                            <td id = #monthTB>{{personnels.expenseDate}}</td>
+                            <td >{{personnels.expenseReceipt}}</td>
+                            <td id = #subtotalTB>{{personnels.expenseTotal}}</td>
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+
+                    </table>
+        <div class="panel-footer">
+            <hr>
+             <!--<label class="red">TOTAL MISCELLANEOUS EXPENSE: </label><label class="red" name="operatingExpenseID" id = "otherExpenseID">{{personnels.totalPersonnelExpense}}</label>-->
+        </div>
+
+
+      </div>
+    </div>
+
+  </div>
+            {% endif %}
+            {% endfor %}
+
+
+
+            <hr>
+            <button type="submit" id="saveBtn" class="btn btn-primary btn-sm" >Save</button>
+        </form>
+      </div>
+    </div>
+
+<div class="modal fade bs-example-modal-lg in" id="budgetExModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none; padding-right: 17px; margin-left:10%">
+<div class="modal-dialog modal-lg">
+<div class="modal-content">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+</button>
+<h4 class="modal-title">Create Personnel Expense</h4>
+</div>
+<div class="modal-body">
+      <label>Amount:</label>
+    <input type="number" style="width:30%; margin-left:2%">
+   <br>
+    <br>
+      <label>Reason:</label>
+    <textarea style=" width:60%; margin-left:2%"></textarea>
+
+
+</div>
+    <br>
+<div class="modal-footer">
+<button type="button" class="btn btn-default" data-dismiss="modal" id="modalClose">Close</button>
+<button type="button" class="btn btn-primary" id="modalSave">Save changes</button>
+</div>
+</div>
+</div>
+</div>
+
+<!--personel modal -->
+<div class="modal fade bs-example-modal-lg in" id="modal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none; padding-right: 17px; margin-left:10%">
+<div class="modal-dialog modal-lg">
+<div class="modal-content">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+</button>
+<h4 class="modal-title" id="myModalLabel">Create Personnel Expense</h4>
+</div>
+<div class="modal-body">
+    <br>
+<div id="personnelOtherInput" class="form-group col-md-24">
+
+    <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="text" class="form-control"  placeholder="Personnel" name="personnelName" id="personnelNameOther" >
+                            </div>
+                        </div>
+
+               <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number" class="form-control" onchange="computePother()" placeholder="Pax" name="personnelQuantity" id="personnelQuantityOther" >
+                            </div>
+                        </div>
+               <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number" class="form-control"  onchange="computePother()" placeholder="Amount" name="personnelAmount" id="personnelAmountOther">
+                            </div>
+                        </div>
+              <div class="col-md-2 col-sm-6 col-xs-12">
+                         <input type="date" class="form-control has-feedback-left"  id="personnelDateOther" name="personnelDate" placeholder="Date">
+                                <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+                <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number"  readonly class="form-control"  onchange="computePother()" placeholder="Subtotal" name="personnelSubtotal" id="personnelSubtotalOther">
+                            </div>
+                        </div>
+                <div class="col-md-1 col-sm-9 col-xs-12">
+                         <div class="btn-group">
+                      <input type="file"  name= "personnelReceipt" id="personnelReceiptOther" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage">
+                    </div>
+                        </div>
+
+          </div>
+</div>
+    <br>
+<div class="modal-footer">
+<button type="button" class="btn btn-default" data-dismiss="modal" id="modalClose">Close</button>
+<button type="button" class="btn btn-primary" id="modalSave">Save changes</button>
+</div>
+</div>
+</div>
+</div>
+
+<!--field modal -->
+<div class="modal fade bs-example-modal-lg in" id="fieldmodal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none; padding-right: 17px; margin-left:10%">
+<div class="modal-dialog modal-lg">
+<div class="modal-content">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+</button>
+<h4 class="modal-title" id="fieldmodals">Create Fieldwork Expense</h4>
+</div>
+<div class="modal-body">
+    <br>
+<div id="fieldOtherInput" class="form-group col-md-24">
+
+    <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="text" class="form-control"  placeholder="Expense Name" name="personnelName" id="fieldNameOther" >
+                            </div>
+                        </div>
+
+               <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number" class="form-control" onchange="computeFother()" placeholder="Quantity" name="fieldQuantity" id="fieldQuantityOther" >
+                            </div>
+                        </div>
+               <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number" class="form-control"  onchange="computeFother()" placeholder="Amount" name="fieldAmount" id="fieldAmountOther">
+                            </div>
+                        </div>
+              <div class="col-md-2 col-sm-6 col-xs-12">
+                         <input type="date" class="form-control has-feedback-left"  id="fieldDateOther" name="fieldDate" placeholder="Date">
+                                <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+                <div class="col-md-2 col-sm-9 col-xs-12">
+                            <div class="input-icon">
+                                <input type="number"  readonly class="form-control"  onchange="computeFother()" placeholder="Subtotal" name="fieldSubtotal" id="fieldSubtotalOther">
+                            </div>
+                        </div>
+                <div class="col-md-1 col-sm-9 col-xs-12">
+                         <div class="btn-group">
+                      <input type="file"  name= "personnelReceipt" id="fieldReceiptOther" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage">
+                    </div>
+                        </div>
+
+          </div>
+</div>
+    <br>
+<div class="modal-footer">
+<button type="button" class="btn btn-default" data-dismiss="modal" id="modalfieldClose">Close</button>
+<button type="button" class="btn btn-primary" id="modalfieldSave">Save changes</button>
+</div>
+</div>
+</div>
+</div>
+
+<div id="alert-area" class="alert-area"></div>
+
+
+    <!--SCRIPTS-->
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script type="text/javascript">
+
+
+
+var budgetRemaining = {{project.budgetRemaining|safe}};
+  var personnelTotal = 0;
+   var accumulate = {{project.totalExpense|safe}};
+   var fieldTotal = 0;
+  var travelTotal = 0;
+   var operatingTotal = 0;
+
+   if(budgetRemaining <= 0){
+   $(document).ready(function(){
+    $('#budgetExModalbtn').show();
+    lessBudget()
+   });
+
+
+   }
+
+     $(document).ready(function(){
+    $('#personnelSelect').on('change', function(){
+        var select =  document.getElementById("personnelSelect").value
+        if(select == "Other"){
+         $('#personnelSelect').hide()
+         $('#personnelInput').hide()
+         $('#addPersonnelExpense').hide()
+         $('#modal').show()
+        }
+        else{
+         $('#personnelInput').show();
+           $('#addPersonnelExpense').show()
+
+        }
+    });
+
+     $('#modalClose').on('click', function(){
+        $('#modal').hide()
+        $('#addPersonnelExpense').hide()
+         $('#personnelSelect').show()
+    });
+     $('#modalSave').on('click', function(){
+        $('#modal').hide()
+          $('#addPersonnelExpense').hide()
+         $('#personnelSelect').show()
+          var personnelSubtotalOther = document.getElementById("personnelSubtotalOther").value;
+        budgetRemaining = (budgetRemaining*1)-(personnelSubtotalOther*1)
+        personnelTotal = (personnelTotal*1)+(personnelSubtotalOther*1)
+        accumulate = (accumulate*1)+(personnelSubtotalOther*1)
+         document.getElementById("totalExpense").value=accumulate
+        document.getElementById("accumulateTile").innerHTML=accumulate
+        document.getElementById("budgetRemainingID").value=budgetRemaining
+        document.getElementById("budgetRemainingDiv").innerHTML=budgetRemaining
+        document.getElementById("personnelExpenseID").value=personnelTotal
+        document.getElementById("personnelExpenseID").innerHTML=personnelTotal
+
+
+
+         var personnelTB = document.getElementById("personnelTB");
+         // Create an empty <tr> element and add it to the 1st position of the table:
+         var row = personnelTB.insertRow(1);
+         // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+         var particularTB1 = row.insertCell(0);
+         var paxTB1 = row.insertCell(1);
+         var qtyTB1 = row.insertCell(2);
+         var monthTB1 = row.insertCell(3);
+         var receipt1 = row.insertCell(4);
+         var subtotalTB1 = row.insertCell(5);
+
+
+         particularTB1.innerHTML = document.getElementById("personnelNameOther").value;
+        paxTB1.innerHTML =document.getElementById("personnelQuantityOther").value;
+        qtyTB1.innerHTML = document.getElementById("personnelAmountOther").value;
+        monthTB1.innerHTML = document.getElementById("personnelDateOther").value;
+        receipt1.innerHTML = document.getElementById("personnelReceiptOther").value;
+        subtotalTB1.innerHTML =document.getElementById("personnelSubtotalOther").value;
+
+        $.ajax({
+         	url: "/create-expense-tracker/",
+         	type:"POST",
+         	data: {
+         		personnelSelect:$('#personnelNameOther').val(),
+         		personnelQuantity:$('#personnelQuantityOther').val(),
+         		personnelAmount:$('#personnelAmountOther').val(),
+         		personnelDate:$('#personnelDateOther').val(),
+         		personnelReceipt:$('#personnelReceiptOther').val(),
+         		personnelSubtotal:$('#personnelSubtotalOther').val(),
+         		budgetRemaining:$('#budgetRemainingID').val(),
+         		totalExpense:$('#totalExpense').val(),
+         		csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+         		}
+
+         	}).done(function(data){
+
+         	});
+    });
+
+
+    $('#modalfieldSave').on('click', function(){
+        $('#fieldmodal').hide()
+          $('#addFieldExpense').hide()
+         $('#fieldSelect').show()
+          var fieldSubtotalOther = document.getElementById("fieldSubtotalOther").value;
+        budgetRemaining = (budgetRemaining*1)-(fieldSubtotalOther*1)
+        fieldTotal = (personnelTotal*1)+(fieldSubtotalOther*1)
+        accumulate = (accumulate*1)+(fieldSubtotalOther*1)
+         document.getElementById("totalExpense").value=accumulate
+        document.getElementById("accumulateTile").innerHTML=accumulate
+        document.getElementById("budgetRemainingID").value=budgetRemaining
+        document.getElementById("budgetRemainingDiv").innerHTML=budgetRemaining
+        document.getElementById("fieldExpenseID").value=fieldTotal
+        document.getElementById("fieldExpenseID").innerHTML=fieldTotal
+
+
+
+         var fieldTB = document.getElementById("fieldTB");
+         // Create an empty <tr> element and add it to the 1st position of the table:
+         var row = fieldTB.insertRow(1);
+         // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+         var particularTB1 = row.insertCell(0);
+         var paxTB1 = row.insertCell(1);
+         var qtyTB1 = row.insertCell(2);
+         var monthTB1 = row.insertCell(3);
+         var receipt1 = row.insertCell(4);
+         var subtotalTB1 = row.insertCell(5);
+
+
+         particularTB1.innerHTML = document.getElementById("fieldNameOther").value;
+        paxTB1.innerHTML =document.getElementById("fieldQuantityOther").value;
+        qtyTB1.innerHTML = document.getElementById("fieldAmountOther").value;
+        monthTB1.innerHTML = document.getElementById("fieldDateOther").value;
+        receipt1.innerHTML = document.getElementById("fieldReceiptOther").value;
+        subtotalTB1.innerHTML =document.getElementById("fieldSubtotalOther").value;
+
+        $.ajax({
+         	url: "/create-expense-tracker/",
+         	type:"POST",
+         	data: {
+         		fieldSelect:$('#fieldNameOther').val(),
+         		fieldQuantity:$('#fieldQuantityOther').val(),
+         		fieldAmount:$('#fieldAmountOther').val(),
+         		fieldDate:$('#fieldDateOther').val(),
+         		fieldReceipt:$('#fieldReceiptOther').val(),
+         		fieldSubtotal:$('#fieldSubtotalOther').val(),
+         		budgetRemaining:$('#budgetRemainingID').val(),
+         		totalExpense:$('#totalExpense').val(),
+         		csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+         		}
+
+         	}).done(function(data){
+
+         	});
+    });
+     $(document).ready(function(){
+    $('#fieldSelect').on('change', function(){
+        var select =  document.getElementById("fieldSelect").value
+        if(select == "Photocopying" || select == "Printing" || select == "Scanning" || select == "Mimeographing"  ){
+         $('#fieldReproductionInput').show()
+         $('#fieldInput').hide()
+          $('#addFieldExpense').hide();
+           $('#addFieldExpenseRepro').show();
+
+        }
+        else if(select == "Other" ){
+          $('#fieldSelect').hide()
+         $('#fieldInput').hide()
+         $('#addFieldExpense').hide()
+         $('#fieldmodal').show()
+        }
+        else{
+        $('#fieldInput').show();
+        $('#addFieldExpenseRepro').hide();
+        $('#addFieldExpense').show();
+        $('#fieldReproductionInput').hide()
+        }
+    });
+    });
+
+     $('#modalfieldClose').on('click', function(){
+        $('#fieldmodal').hide()
+        $('#addfieldExpense').show()
+         $('#fieldSelect').show()
+    });
+
+    $('#addFieldExpenseRepro').on('click', function(){
+        $('#fieldReproductionInput').hide();
+        $('#addFieldExpense').hide();
+
+         var fieldSubtotalRepro = document.getElementById("fieldSubtotalRepro").value;
+        budgetRemaining = (budgetRemaining*1)-(fieldSubtotalRepro*1)
+        fieldTotal = (fieldTotal*1)+(fieldSubtotalRepro*1)
+        accumulate = (accumulate*1)+(fieldSubtotalRepro*1)
+         document.getElementById("totalExpense").value=accumulate
+        document.getElementById("accumulateTile").innerHTML=accumulate
+        document.getElementById("budgetRemainingID").value=budgetRemaining
+        document.getElementById("budgetRemainingDiv").innerHTML=budgetRemaining
+        document.getElementById("fieldExpenseID").value=fieldTotal
+        document.getElementById("fieldExpenseID").innerHTML=fieldTotal
+
+
+
+         var fieldTB = document.getElementById("fieldTB");
+         // Create an empty <tr> element and add it to the 1st position of the table:
+         var row = fieldTB.insertRow(1);
+         // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+         var particularTB2 = row.insertCell(0);
+         var paxTB2 = row.insertCell(1);
+         var qtyTB2 = row.insertCell(2);
+         var monthTB2 = row.insertCell(3);
+         var receipt2 = row.insertCell(4);
+         var subtotalTB2 = row.insertCell(5);
+
+
+         particularTB2.innerHTML = document.getElementById("fieldSelect").value;
+        paxTB2.innerHTML =document.getElementById("fieldCopies").value+"copy";
+        qtyTB2.innerHTML = document.getElementById("fieldPrice").value;
+        monthTB2.innerHTML = document.getElementById("fieldDateRepro").value;
+        receipt2.innerHTML = document.getElementById("fieldReceiptRepro").value;
+        subtotalTB2.innerHTML =document.getElementById("fieldSubtotalRepro").value;
+
+        $.ajax({
+         	url: "/create-expense-tracker/",
+         	type:"POST",
+         	data: {
+         		fieldSelect:$('#fieldSelect').val(),
+         		fieldQuantity:$('#fieldCopies').val(),
+         		fieldAmount:$('#fieldPrice').val(),
+         		fieldDate:$('#fieldDateRepro').val(),
+         		fieldReceipt:$('#fieldReceiptRepro').val(),
+         		fieldSubtotal:$('#fieldSubtotalRepro').val(),
+         		budgetRemaining:$('#budgetRemainingID').val(),
+         		totalExpense:$('#totalExpense').val(),
+         		csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+         		}
+
+         	}).done(function(data){
+
+         	});
+
+         });
+
+
+     $(document).ready(function(){
+    $('#travelSelect').on('change', function(){
+        var select =  document.getElementById("travelSelect").value
+        if(select == "Travel" || select == "Fare Tickets"){
+         $('#travelInputTranspo').show()
+         $('#travelInput').hide()
+          $('#addTravelExpense').hide();
+           $('#addTravelExpenseTranspo').show();
+            $('#travelInputAccomodation').hide()
+             $('#addTravelExpenseRent').hide()
+
+        }
+        else if(select == "Rent"){
+         $('#travelInputAccomodation').show()
+          $('#addTravelExpenseRent').show()
+         $('#travelInput').hide()
+           $('#travelInputTranspo').hide()
+          $('#addTravelExpense').hide();
+           $('#addTravelExpenseTranspo').hide();
+
+        }
+
+        else{
+        $('#travelInput').show();
+        $('#travelSelect').hide();
+        $('#travelName').show();
+        $('#travelInputTranspo').hide();
+         $('#travelInputAccomodation').hide()
+        $('#addTravelExpense').show();
+        $('#addTravelExpenseTranspo').hide()
+          $('#addTravelExpenseRent').hide()
+        }
+    });
+    });
+
+    $('#addTravelExpenseRent').on('click', function(){
+        $('#travelInputAccomodation').hide();
+        $('#addTravelExpense').hide();
+
+         var travelSubtotalAcomodation = document.getElementById("travelAmountRent").value;
+        budgetRemaining = (budgetRemaining*1)-(travelSubtotalAcomodation*1)
+        travelTotal = (travelTotal*1)+(travelSubtotalAcomodation*1)
+        accumulate = (accumulate*1)+(travelSubtotalAcomodation*1)
+         document.getElementById("totalExpense").value=accumulate
+        document.getElementById("accumulateTile").innerHTML=accumulate
+        document.getElementById("budgetRemainingID").value=budgetRemaining
+        document.getElementById("budgetRemainingDiv").innerHTML=budgetRemaining
+        document.getElementById("travelExpenseID").value=travelTotal
+        document.getElementById("travelExpenseID").innerHTML=travelTotal
+
+
+
+         var travelTB = document.getElementById("travelTBAccomodation");
+         // Create an empty <tr> element and add it to the 1st position of the table:
+         var row = travelTB.insertRow(1);
+         // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+         var particularTB2 = row.insertCell(0);
+         var paxTB2 = row.insertCell(1);
+         var venue = row.insertCell(2);
+           var days= row.insertCell(3);
+            var datetravel= row.insertCell(4);
+            var receipttravel = row.insertCell(5);
+         var subtotalTravel1 = row.insertCell(6);
+
+
+         particularTB2.innerHTML = document.getElementById("travelSelect").value;
+        paxTB2.innerHTML =document.getElementById("travelQuantityRent").value;
+        venue.innerHTML = document.getElementById("travelVenue").value;
+        days.innerHTML = document.getElementById("travelDays").value;
+        datetravel.innerHTML = document.getElementById("travelDateRent").value;
+        receipttravel.innerHTML = document.getElementById("travelReceiptRent").value;
+        subtotalTravel1.innerHTML = document.getElementById("travelAmountRent").value;
+
+        $.ajax({
+            url: "/create-expense-tracker/",
+            type:"POST",
+            data: {
+                travelSelect:$('#travelSelect').val(),
+                travelQuantity:$('#travelQuantityRent').val(),
+                travelVenue:$('#travelVenue').val(),
+                travelDays:$('#travelDays').val(),
+                travelDate:$('#travelDateRent').val(),
+                travelReceipt:$('#travelReceiptRent').val(),
+                travelSubtotal:$('#travelAmountRent').val(),
+                budgetRemaining:$('#budgetRemainingID').val(),
+                totalExpense:$('#totalExpense').val(),
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                }
+
+            }).done(function(data){
+
+            });
+
+         });
+
+     $('#operatingSelect').on('change', function(){
+     var select =  document.getElementById("operatingSelect").value
+     if (select == "Other") {
+     $('#operatingInput').show();
+     $('#operatingName').show();
+     $('#operatingSelect').hide();
+         $('#addOperatingExpense').hide()
+          $('#addOperatingExpenseOther').show()
+     }
+     else{
+
+       $('#operatingInput').show();
+         $('#addOperatingExpense').show()
+
+     }
+
+
+    });
+});
+
+ $(document).ready(function(){
+    $('#addPersonnelExpense').on('click', function(){
+        $('#personnelInput').hide();
+
+         var personnelSubtotal = document.getElementById("personnelSubtotal").value;
+        budgetRemaining = (budgetRemaining*1)-(personnelSubtotal*1)
+        personnelTotal = (personnelTotal*1)+(personnelSubtotal*1)
+        accumulate = (accumulate*1)+(personnelSubtotal*1)
+         document.getElementById("totalExpense").value=accumulate
+        document.getElementById("accumulateTile").innerHTML=accumulate
+        document.getElementById("budgetRemainingID").value=budgetRemaining
+        document.getElementById("budgetRemainingDiv").innerHTML=budgetRemaining
+        document.getElementById("personnelExpenseID").value=personnelTotal
+        document.getElementById("personnelExpenseID").innerHTML=personnelTotal
+
+
+
+         var personnelTB = document.getElementById("personnelTB");
+         // Create an empty <tr> element and add it to the 1st position of the table:
+         var row = personnelTB.insertRow(1);
+         // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+         var particularTB1 = row.insertCell(0);
+         var paxTB1 = row.insertCell(1);
+         var qtyTB1 = row.insertCell(2);
+         var monthTB1 = row.insertCell(3);
+         var receipt1 = row.insertCell(4);
+         var subtotalTB1 = row.insertCell(5);
+
+
+         particularTB1.innerHTML = document.getElementById("personnelSelect").value;
+        paxTB1.innerHTML =document.getElementById("personnelQuantity").value;
+        qtyTB1.innerHTML = document.getElementById("personnelAmount").value;
+        monthTB1.innerHTML = document.getElementById("personnelDate").value;
+        receipt1.innerHTML = document.getElementById("personnelReceipt").value;
+        subtotalTB1.innerHTML =document.getElementById("personnelSubtotal").value;
+
+        $.ajax({
+         	url: "/create-expense-tracker/",
+         	type:"POST",
+         	data: {
+         		personnelSelect:$('#personnelSelect').val(),
+         		personnelQuantity:$('#personnelQuantity').val(),
+         		personnelAmount:$('#personnelAmount').val(),
+         		personnelDate:$('#personnelDate').val(),
+         		personnelReceipt:$('#personnelReceipt').val(),
+         		personnelSubtotal:$('#personnelSubtotal').val(),
+         		budgetRemaining:$('#budgetRemainingID').val(),
+         		totalExpense:$('#totalExpense').val(),
+         		csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+         		}
+
+         	}).done(function(data){
+
+         	});
+
+
+    });
+
+      $('#addFieldExpense').on('click', function(){
+        $('#fieldInput').hide();
+         var fieldSubtotal = document.getElementById("fieldSubtotal").value;
+        budgetRemaining = (budgetRemaining*1)-(fieldSubtotal*1)
+        fieldTotal = (fieldTotal*1)+(fieldSubtotal*1)
+        accumulate = (accumulate*1)+(fieldSubtotal*1)
+         document.getElementById("totalExpense").value=accumulate
+        document.getElementById("accumulateTile").innerHTML=accumulate
+        document.getElementById("budgetRemainingID").value=budgetRemaining
+        document.getElementById("budgetRemainingDiv").innerHTML=budgetRemaining
+        document.getElementById("fieldExpenseID").value=fieldTotal
+        document.getElementById("fieldExpenseID").innerHTML=fieldTotal
+
+
+
+         var fieldTB = document.getElementById("fieldTB");
+         // Create an empty <tr> element and add it to the 1st position of the table:
+         var row = fieldTB.insertRow(1);
+         // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+         var particularTB2 = row.insertCell(0);
+         var paxTB2 = row.insertCell(1);
+         var qtyTB2 = row.insertCell(2);
+         var monthTB2 = row.insertCell(3);
+         var receipt2 = row.insertCell(4);
+         var subtotalTB2 = row.insertCell(5);
+
+
+         particularTB2.innerHTML = document.getElementById("fieldSelect").value;
+        paxTB2.innerHTML =document.getElementById("fieldQuantity").value;
+        qtyTB2.innerHTML = document.getElementById("fieldAmount").value;
+        monthTB2.innerHTML = document.getElementById("fieldDate").value;
+        receipt2.innerHTML = document.getElementById("fieldReceipt").value;
+        subtotalTB2.innerHTML =document.getElementById("fieldSubtotal").value;
+
+        $.ajax({
+         	url: "/create-expense-tracker/",
+         	type:"POST",
+         	data: {
+         		fieldSelect:$('#fieldSelect').val(),
+         		fieldQuantity:$('#fieldQuantity').val(),
+         		fieldAmount:$('#fieldAmount').val(),
+         		fieldDate:$('#fieldDate').val(),
+         		fieldReceipt:$('#fieldReceipt').val(),
+         		fieldSubtotal:$('#fieldSubtotal').val(),
+         		budgetRemaining:$('#budgetRemainingID').val(),
+         		totalExpense:$('#totalExpense').val(),
+         		csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+         		}
+
+         	}).done(function(data){
+
+         	});
+
+         });
+
+         $('#addTravelExpenseTranspo').on('click', function(){
+        $('#travelInputTranspo').hide();
+        $('#addTravelExpense').hide();
+
+         var travelSubtotalTranspo = document.getElementById("travelSubtotalTranspo").value;
+        budgetRemaining = (budgetRemaining*1)-(travelSubtotalTranspo*1)
+        travelTotal = (travelTotal*1)+(travelSubtotalTranspo*1)
+        accumulate = (accumulate*1)+(travelSubtotalTranspo*1)
+         document.getElementById("totalExpense").value=accumulate
+        document.getElementById("accumulateTile").innerHTML=accumulate
+        document.getElementById("budgetRemainingID").value=budgetRemaining
+        document.getElementById("budgetRemainingDiv").innerHTML=budgetRemaining
+        document.getElementById("travelExpenseID").value=travelTotal
+        document.getElementById("travelExpenseID").innerHTML=travelTotal
+
+
+
+         var travelTB = document.getElementById("travelTB");
+         // Create an empty <tr> element and add it to the 1st position of the table:
+         var row = travelTB.insertRow(1);
+         // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+         var particularTB2 = row.insertCell(0);
+         var paxTB2 = row.insertCell(1);
+         var qtyTB2 = row.insertCell(2);
+           var destination= row.insertCell(3);
+            var mode= row.insertCell(4);
+            var times = row.insertCell(5);
+         var monthTB2 = row.insertCell(6);
+         var receipt2 = row.insertCell(7);
+         var subtotalTB2 = row.insertCell(8);
+
+
+         particularTB2.innerHTML = document.getElementById("travelSelect").value;
+        paxTB2.innerHTML =document.getElementById("travelQuantityTranspo").value;
+        qtyTB2.innerHTML = document.getElementById("travelAmountTranspo").value;
+        destination.innerHTML = document.getElementById("travelDestination").value;
+        mode.innerHTML = document.getElementById("travelMode").value;
+        times.innerHTML = document.getElementById("travelTimes").value;
+        monthTB2.innerHTML = document.getElementById("travelDateTranspo").value;
+        receipt2.innerHTML = document.getElementById("travelReceiptTranspo").value;
+        subtotalTB2.innerHTML =document.getElementById("travelSubtotalTranspo").value;
+
+        $.ajax({
+            url: "/create-expense-tracker/",
+            type:"POST",
+            data: {
+                travelSelect:$('#travelSelect').val(),
+                travelQuantity:$('#travelQuantityTranspo').val(),
+                travelAmount:$('#travelAmountTranspo').val(),
+                traveldestination:$('#travelDestination').val(),
+                travelmode:$('#travelMode').val(),
+                traveltimes:$('#travelTimes').val(),
+                travelDate:$('#travelDateTranspo').val(),
+                travelReceipt:$('#travelReceiptTranspo').val(),
+                travelSubtotal:$('#travelSubtotalTranspo').val(),
+                budgetRemaining:$('#budgetRemainingID').val(),
+                totalExpense:$('#totalExpense').val(),
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                }
+
+            }).done(function(data){
+
+            });
+
+         });
+
+         $('#addTravelExpense').on('click', function(){
+        $('#travelInput').hide();
+         $('#travelInputAccomodation').hide();
+         $('#travelSelect').show();
+         $('#travelName').hide();
+        $('#addTravelExpense').hide();
+        $('#addTravelExpenseRent').hide();
+
+         var travelSubtotal= document.getElementById("travelSubtotal").value;
+        budgetRemaining = (budgetRemaining*1)-(travelSubtotal*1)
+        travelTotal = (travelTotal*1)+(travelSubtotal*1)
+        accumulate = (accumulate*1)+(travelSubtotal*1)
+         document.getElementById("totalExpense").value=accumulate
+        document.getElementById("accumulateTile").innerHTML=accumulate
+        document.getElementById("budgetRemainingID").value=budgetRemaining
+        document.getElementById("budgetRemainingDiv").innerHTML=budgetRemaining
+        document.getElementById("travelExpenseID").value=travelTotal
+        document.getElementById("travelExpenseID").innerHTML=travelTotal
+
+
+
+          var travelTB = document.getElementById("travelTB");
+         // Create an empty <tr> element and add it to the 1st position of the table:
+         var row = travelTB.insertRow(1);
+         // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+         var particularTB2 = row.insertCell(0);
+         var paxTB2 = row.insertCell(1);
+         var qtyTB2 = row.insertCell(2);
+         var qtyTB121 = row.insertCell(3);
+         var qtyTB221 = row.insertCell(4);
+            var times = row.insertCell(5);
+         var monthTB2 = row.insertCell(6);
+         var receipt2 = row.insertCell(7);
+         var subtotalTB2 = row.insertCell(8);
+
+         particularTB2.innerHTML = document.getElementById("travelName").value;
+        paxTB2.innerHTML =document.getElementById("travelQuantity").value;
+        qtyTB2.innerHTML = document.getElementById("travelAmount").value;
+         times.innerHTML = document.getElementById("travelNumberofTimes").value;
+        monthTB2.innerHTML = document.getElementById("travelDate").value;
+        receipt2.innerHTML = document.getElementById("travelReceipt").value;
+        subtotalTB2.innerHTML =document.getElementById("travelSubtotal").value;
+
+        $.ajax({
+            url: "/create-expense-tracker/",
+            type:"POST",
+            data: {
+                travelSelect:$('#travelName').val(),
+                travelQuantity:$('#travelQuantity').val(),
+                travelAmount:$('#travelAmount').val(),
+                traveltimes:$('#travelNumberofTimes').val(),
+                travelDate:$('#travelDate').val(),
+                travelReceipt:$('#travelReceipt').val(),
+                travelSubtotal:$('#travelSubtotal').val(),
+                budgetRemaining:$('#budgetRemainingID').val(),
+                totalExpense:$('#totalExpense').val(),
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                }
+
+            }).done(function(data){
+
+            });
+
+         });
+
+         $('#addOperatingExpense').on('click', function(){
+        $('#operatingInput').hide();
+        $('#operatingSelect').show();
+        $('#operatingName').hide();
+        $('#addOperatingExpense').hide();
+
+         var operatingSubtotal= document.getElementById("operatingSubtotal").value;
+        budgetRemaining = (budgetRemaining*1)-(operatingSubtotal*1)
+        travelTotal = (travelTotal*1)+(operatingSubtotal*1)
+        accumulate = (accumulate*1)+(operatingSubtotal*1)
+         document.getElementById("totalExpense").value=accumulate
+        document.getElementById("accumulateTile").innerHTML=accumulate
+        document.getElementById("budgetRemainingID").value=budgetRemaining
+        document.getElementById("budgetRemainingDiv").innerHTML=budgetRemaining
+        document.getElementById("operatingExpenseID").value=operatingTotal
+        document.getElementById("operatingExpenseID").innerHTML=operatingTotal
+
+
+
+          var operatingTB = document.getElementById("operatingTB");
+         // Create an empty <tr> element and add it to the 1st position of the table:
+         var row = operatingTB.insertRow(1);
+         // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+         var particularTB5 = row.insertCell(0);
+         var paxTB5 = row.insertCell(1);
+         var qtyTB5= row.insertCell(2);
+         var monthTB5 = row.insertCell(3);
+         var receipt5 = row.insertCell(4);
+         var subtotalTB5 = row.insertCell(5);
+
+         particularTB5.innerHTML = document.getElementById("operatingSelect").value;
+        paxTB5.innerHTML =document.getElementById("operatingQuantity").value;
+        qtyTB5.innerHTML = document.getElementById("operatingAmount").value;
+         monthTB5.innerHTML = document.getElementById("operatingDate").value;
+        receipt5.innerHTML = document.getElementById("operatingReceipt").value;
+        subtotalTB5.innerHTML =document.getElementById("operatingSubtotal").value;
+
+        $.ajax({
+            url: "/create-expense-tracker/",
+            type:"POST",
+            data: {
+                operatingSelect:$('#operatingSelect').val(),
+                operatingQuantity:$('#operatingQuantity').val(),
+                operatingAmount:$('#operatingAmount').val(),
+                operatingDate:$('#operatingDate').val(),
+                operatingReceipt:$('#operatingReceipt').val(),
+                operatingSubtotal:$('#operatingSubtotal').val(),
+                budgetRemaining:$('#budgetRemainingID').val(),
+                totalExpense:$('#totalExpense').val(),
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                }
+
+            }).done(function(data){
+
+            });
+
+         });
+
+         $('#addOperatingExpenseOther').on('click', function(){
+        $('#operatingInput').hide();
+        $('#operatingSelect').show();
+        $('#operatingName').hide();
+        $('#addOperatingExpenseOther').hide();
+
+         var operatingSubtotal= document.getElementById("operatingSubtotal").value;
+        budgetRemaining = (budgetRemaining*1)-(operatingSubtotal*1)
+        travelTotal = (travelTotal*1)+(operatingSubtotal*1)
+        accumulate = (accumulate*1)+(operatingSubtotal*1)
+         document.getElementById("totalExpense").value=accumulate
+        document.getElementById("accumulateTile").innerHTML=accumulate
+        document.getElementById("budgetRemainingID").value=budgetRemaining
+        document.getElementById("budgetRemainingDiv").innerHTML=budgetRemaining
+        document.getElementById("operatingExpenseID").value=operatingTotal
+        document.getElementById("operatingExpenseID").innerHTML=operatingTotal
+
+
+
+          var operatingTB = document.getElementById("operatingTB");
+         // Create an empty <tr> element and add it to the 1st position of the table:
+         var row = operatingTB.insertRow(1);
+         // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+         var particularTB5 = row.insertCell(0);
+         var paxTB5 = row.insertCell(1);
+         var qtyTB5= row.insertCell(2);
+         var monthTB5 = row.insertCell(3);
+         var receipt5 = row.insertCell(4);
+         var subtotalTB5 = row.insertCell(5);
+
+         particularTB5.innerHTML = document.getElementById("operatingName").value;
+        paxTB5.innerHTML =document.getElementById("operatingQuantity").value;
+        qtyTB5.innerHTML = document.getElementById("operatingAmount").value;
+         monthTB5.innerHTML = document.getElementById("operatingDate").value;
+        receipt5.innerHTML = document.getElementById("operatingReceipt").value;
+        subtotalTB5.innerHTML =document.getElementById("operatingSubtotal").value;
+
+        $.ajax({
+            url: "/create-expense-tracker/",
+            type:"POST",
+            data: {
+                operatingSelect:$('#operatingName').val(),
+                operatingQuantity:$('#operatingQuantity').val(),
+                operatingAmount:$('#operatingAmount').val(),
+                operatingDate:$('#operatingDate').val(),
+                operatingReceipt:$('#operatingReceipt').val(),
+                operatingSubtotal:$('#operatingSubtotal').val(),
+                budgetRemaining:$('#budgetRemainingID').val(),
+                totalExpense:$('#totalExpense').val(),
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                }
+
+            }).done(function(data){
+
+            });
+
+         });
+
+         $('#addOtherExpense').on('click', function(){
+
+         var otherSubtotal= document.getElementById("otherSubtotal").value;
+        budgetRemaining = (budgetRemaining*1)-(otherSubtotal*1)
+        travelTotal = (travelTotal*1)+(otherSubtotal*1)
+        accumulate = (accumulate*1)+(otherSubtotal*1)
+         document.getElementById("totalExpense").value=accumulate
+        document.getElementById("accumulateTile").innerHTML=accumulate
+        document.getElementById("budgetRemainingID").value=budgetRemaining
+        document.getElementById("budgetRemainingDiv").innerHTML=budgetRemaining
+        document.getElementById("operatingExpenseID").value=operatingTotal
+        document.getElementById("operatingExpenseID").innerHTML=operatingTotal
+
+
+
+          var otherTB = document.getElementById("otherTB");
+         // Create an empty <tr> element and add it to the 1st position of the table:
+         var row = otherTB.insertRow(1);
+         // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+         var particularTB6 = row.insertCell(0);
+         var paxTB6 = row.insertCell(1);
+         var qtyTB6= row.insertCell(2);
+         var monthTB6 = row.insertCell(3);
+         var receipt6 = row.insertCell(4);
+         var subtotalTB6 = row.insertCell(5);
+
+         particularTB6.innerHTML = document.getElementById("otherName").value;
+        paxTB6.innerHTML =document.getElementById("otherQuantity").value;
+        qtyTB6.innerHTML = document.getElementById("otherAmount").value;
+         monthTB6.innerHTML = document.getElementById("otherDate").value;
+        receipt6.innerHTML = document.getElementById("otherReceipt").value;
+        subtotalTB6.innerHTML =document.getElementById("otherSubtotal").value;
+
+        $.ajax({
+            url: "/create-expense-tracker/",
+            type:"POST",
+            data: {
+                otherSelect:$('#otherName').val(),
+                otherQuantity:$('#otherQuantity').val(),
+                otherAmount:$('#otherAmount').val(),
+                otherDate:$('#otherDate').val(),
+                otherReceipt:$('#otherReceipt').val(),
+                otherSubtotal:$('#otherSubtotal').val(),
+                budgetRemaining:$('#budgetRemainingID').val(),
+                totalExpense:$('#totalExpense').val(),
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                }
+
+            }).done(function(data){
+
+            });
+
+         });
+
+
+
+
+      });
+
+
+
+
+
+
+function computeP(){
+ var t = document.getElementById("personnelSelect");
+     var x = document.getElementById("personnelQuantity").value;
+          var y = document.getElementById("personnelAmount").value;
+       var z = document.getElementById("personnelDate");
+        var w = document.getElementById("personnelReceipt");
+          var subtotalP = x * y
+          document.getElementById("personnelSubtotal").value=subtotalP
+
+}
+
+function computePother(){
+
+     var xx = document.getElementById("personnelQuantityOther").value;
+          var yy = document.getElementById("personnelAmountOther").value;
+          var subtotalPP = xx * yy
+          document.getElementById("personnelSubtotalOther").value= subtotalPP
+
+
+}
+
+function computeF(){
+ var t1 = document.getElementById("fieldSelect");
+     var x1 = document.getElementById("fieldQuantity").value;
+          var y1 = document.getElementById("fieldAmount").value;
+       var z1 = document.getElementById("fieldDate");
+        var w1 = document.getElementById("fieldReceipt");
+          var subtotalT = x1 * y1
+          document.getElementById("fieldSubtotal").value=subtotalT
+
+}
+function computeFR(){
+ var t1 = document.getElementById("fieldSelect");
+     var x1 = document.getElementById("fieldCopies").value;
+          var y1 = document.getElementById("fieldPrice").value;
+       var z1 = document.getElementById("fieldDateRepro");
+        var w1 = document.getElementById("fieldReceiptRepro");
+          var subtotalTr = x1 * y1
+          document.getElementById("fieldSubtotalRepro").value=subtotalTr
+
+}
+
+function computeFother(){
+
+     var xxx = document.getElementById("fieldQuantityOther").value;
+          var yyy = document.getElementById("fieldAmountOther").value;
+          var subtotalFF = xxx * yyy
+          document.getElementById("fieldSubtotalOther").value= subtotalFF
+
+
+}
+
+function computeT(){
+ var t2 = document.getElementById("travelSelect");
+     var x2 = document.getElementById("travelQuantity").value;
+          var y2 = document.getElementById("travelAmount").value;
+       var z2 = document.getElementById("travelDate");
+        var w2 = document.getElementById("travelReceipt");
+          var subtotalTt = x2 * y2
+          document.getElementById("travelSubtotal").value=subtotalTt
+
+}
+function computeTTranspo(){
+ var t2 = document.getElementById("travelSelect");
+     var x21 = document.getElementById("travelQuantityTranspo").value;
+          var y21 = document.getElementById("travelAmountTranspo").value;
+
+          var subtotalTtr = x21 * y21
+          document.getElementById("travelSubtotalTranspo").value=subtotalTtr
+
+}
+
+function computeO(){
+ var t3 = document.getElementById("otherSelect");
+     var x3 = document.getElementById("otherQuantity").value;
+          var y3 = document.getElementById("otherAmount").value;
+       var z3 = document.getElementById("otherDate");
+        var w3 = document.getElementById("otherReceipt");
+          var subtotalO = x3 * y3
+          document.getElementById("otherSubtotal").value=subtotalO
+
+}
+
+
+
+ function lessBudget(){
+ // The main class
+var AlertBox = function(id, option) {
+  this.show = function(msg) {
+    if (msg === ''  || typeof msg === 'undefined' || msg === null) {
+      throw '"msg parameter is empty"';
+    }
+    else {
+      var alertArea = document.querySelector(id);
+      var alertBox = document.createElement('DIV');
+      var alertContent = document.createElement('DIV');
+      var alertClose = document.createElement('A');
+      var alertClass = this;
+      alertContent.classList.add('alert-content');
+      alertContent.innerText = msg;
+      alertClose.classList.add('alert-close');
+      alertClose.setAttribute('href', '#');
+      alertBox.classList.add('alert-box');
+      alertBox.appendChild(alertContent);
+      if (!option.hideCloseButton || typeof option.hideCloseButton === 'undefined') {
+        alertBox.appendChild(alertClose);
+      }
+      alertArea.appendChild(alertBox);
+      alertClose.addEventListener('click', function(event) {
+        event.preventDefault();
+        alertClass.hide(alertBox);
+      });
+      if (!option.persistent) {
+        var alertTimeout = setTimeout(function() {
+          alertClass.hide(alertBox);
+          clearTimeout(alertTimeout);
+        }, option.closeTime);
+      }
+    }
+  };
+
+  this.hide = function(alertBox) {
+    alertBox.classList.add('hide');
+    var disperseTimeout = setTimeout(function() {
+      alertBox.parentNode.removeChild(alertBox);
+      clearTimeout(disperseTimeout);
+    }, 500);
+  };
+};
+
+// Sample invoke
+var alertNonPersistent = document.querySelector('#alertNonPersistent');
+var alertPersistent = document.querySelector('#alertPersistent');
+var alertShowMessage = document.querySelector('#personnelSave');
+var alertHiddenClose = document.querySelector('#alertHiddenClose');
+var alertMessageBox = document.querySelector('#alertMessageBox');
+var alertbox = new AlertBox('#alert-area', {
+  closeTime: 1500000,
+  persistent: false,
+  hideCloseButton: false
+});
+var alertboxPersistent = new AlertBox('#alert-area', {
+  closeTime: 1500000,
+  persistent: true,
+  hideCloseButton: false
+});
+var alertNoClose = new AlertBox('#alert-area', {
+  closeTime: 1500000,
+  persistent: false,
+  hideCloseButton: true
+});
+
+  alertbox.show('You have no more budget! ' +
+  'Request for budget extension');
+
+ }
+
+
+</script>
+
+{% endblock %}
+
+{% block script %}
+
+
+
+{% endblock %}
+
+
+        </form>
+                  </div>
+    </div>
+
+
+    <!--SCRIPTS-->
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script type="text/javascript">
+function updateElementIndex(el, prefix, ndx) {
+    var id_regex = new RegExp('(' + prefix + '-\\d+)');
+    var replacement = prefix + '-' + ndx;
+    if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex, replacement));
+    if (el.id) el.id = el.id.replace(id_regex, replacement);
+    if (el.name) el.name = el.name.replace(id_regex, replacement);
+    if (el.quantity) el.quantity = el.quantity.replace(id_regex, replacement);
+    if (el.amount) el.amount = el.amount.replace(id_regex, replacement);
+    if (el.month) el.month = el.month.replace(id_regex, replacement);
+    if (el.total) el.total = el.total.replace(id_regex, replacement);
+
+
+}
+function cloneMore(selector, prefix) {
+    var newElement = $(selector).clone(true);
+    var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
+
+    newElement.find(':input').each(function() {
+        var name = $(this).attr('name')
+        var quantity = $(this).attr('quantity')
+        var amount = $(this).attr('amount')
+        var month = $(this).attr('month')
+        var subtotal = $(this).attr('total')
+
+        if(name) {
+            name = name.replace('-' + (total-1) + '-', '-' + total + '-');
+            var id = 'id_' + name;
+            $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+
+        }
+        else if(quantity) {
+            quantity = quantity.replace('-' + (total-1) + '-', '-' + total + '-');
+            var id = 'id_' + quantity;
+            $(this).attr({'quantity': quantity, 'id': id}).val('').removeAttr('checked');
+
+        }
+        else if(amount) {
+            amount = amount.replace('-' + (total-1) + '-', '-' + total + '-');
+            var id = 'id_' + amount;
+
+           $(this).attr({'amount': amount, 'id': id}).val('').removeAttr('checked');
+
+        }
+        else if(month) {
+            month = month.replace('-' + (total-1) + '-', '-' + total + '-');
+            var id = 'id_' + month;
+           $(this).attr({'month': month, 'id': id}).val('').removeAttr('checked');
+
+
+
+        }
+        else if(subtotal) {
+            subtotal = subtotal.replace('-' + (total-1) + '-', '-' + total + '-');
+            var id = 'id_' + subtotal;
+           $(this).attr({'total': subtotal, 'id': id}).val('').removeAttr('checked');
+
+        }
+
+
+
+})
+
+    total++;
+    $('#id_' + prefix + '-TOTAL_FORMS').val(total);
+    $(selector).after(newElement);
+    var conditionRow = $('.form-row:not(:last)');
+    conditionRow.find('.btn.add-form-row')
+    .removeClass('btn-success').addClass('btn-danger')
+    .removeClass('add-form-row').addClass('remove-form-row')
+    .html('-');
+    return false;
+
+}
+
+function deleteForm(prefix, btn) {
+    var total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+    if (total > 1){
+        btn.closest('.form-row').remove();
+        var forms = $('.form-row');
+        $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+        for (var i=0, formCount=forms.length; i<formCount; i++) {
+            $(forms.get(i)).find(':input').each(function() {
+                updateElementIndex(this, prefix, i);
+            });
+        }
+    }
+    return false;
+}
+$(document).on('click', '.add-form-row', function(e){
+    e.preventDefault();
+    cloneMore('.form-row:last', 'form');
+    return false;
+});
+$(document).on('click', '.remove-form-row', function(e){
+    e.preventDefault();
+    deleteForm('form', $(this));
+    return false;
+});
+
+
+function calc(){
+    var newWVal = 0;
+    var inputs= [];
+    var ctrlength =[];
+    var ctr=0;
+
+    var t = document.getElementsByClassName("form-control name");
+     var x = document.getElementsByClassName("form-control amount");
+          var y = document.getElementsByClassName("form-control quantity");
+       var z = document.getElementsByClassName("form-control month");
+        var w = document.getElementsByClassName("form-control total");
+
+     for (var i = 0; i<x.length; i++) {
+         tVal = t[i].value;
+         xVal = x[i].value;
+         yVal = y[i].value;
+         zVal = z[i].value;
+         xyzVal = xVal * yVal * zVal;
+         wVal = w[i].value = xyzVal;
+         newWVal += wVal;
+
+         ctrlength.push(tVal, yVal, xVal, zVal, wVal);
+         inputs.push(ctrlength);
+         ctrlength=[];
+
+
+
+     }
+
+    return inputs;
+
+
+
+}
+
+$(document).on('click', '#personnel-refresh', function(e){
+    var input= calc();
+    getPersonnelinputVal(input);
+
+
+});
+
+
+function getPersonnelinputVal(inputs) {
+
+    var trancheAmount = document.getElementById("totalBudget").innerHTML;
+     var sub =4;
+     var subx=5
+     var totalExpense = 0;
+    for(var i=0; i<inputs.length;i++){
+
+        var allInputs = inputs[i];
+        var sub1= allInputs[sub];
+        prevtotalExpense = sub1;
+        totalExpense+=prevtotalExpense;
+        var budgetSpent = trancheAmount-totalExpense;
+        sub+subx;
+         displayPersonnel(allInputs)
+
+
+        console.log("arraysSubtotal "+allInputs[sub])
+        console.log("SUBTOTAL" + allInputs[sub])
+
+    }
+    document.getElementById("totalBudget").value = budgetSpent;
+    document.getElementById("totalBudget").innerHTML = budgetSpent;
+    document.getElementById("totalAmount").value = totalExpense;
+    document.getElementById("totalAmount").innerHTML = totalExpense;
+    document.getElementById("personnel-total").innerHTML = totalExpense;
+
+}
+
+
+function displayPersonnel(allInputs) {
+     var personnelTB = document.getElementById("personnelTB");
+         // Create an empty <tr> element and add it to the 1st position of the table:
+         var row = personnelTB.insertRow(0);
+         // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+         var particularTB = row.insertCell(0);
+         var paxTB = row.insertCell(1);
+         var qtyTB = row.insertCell(2);
+         var monthTB = row.insertCell(3);
+         var subtotalTB = row.insertCell(4);
+
+
+         particularTB.innerHTML = allInputs[0];
+        paxTB.innerHTML =allInputs[1];
+        qtyTB.innerHTML = allInputs[2];
+        monthTB.innerHTML = allInputs[3];
+        subtotalTB.innerHTML =allInputs[4];
+
+}
+
+
+//for fieldwork functions
+$(document).on('click', '#fieldwork-refresh', function(e){
+    var input= calc();
+    getFieldWorkinputVal(input);
+
+
+});
+
+function  getFieldWorkinputVal(inputs) {
+
+    var trancheAmount = document.getElementById("totalBudget").value;
+
+    var newExpense=document.getElementById("totalAmount").value; //from previous
+
+     var sub =4;
+     var subx=5
+
+     var newSub= 0
+
+    for(var i=0; i<inputs.length;i++){
+
+         // getting the subtotal for this categroy
+        var allInputs = inputs[i]; // get inputs based on index
+        var sub1= allInputs[sub]; //subtotal of input based on index
+        newSub+=sub1; // get previous subtotal then add it to the current subtotal
+        trancheAmount-=sub1;
+        sub+subx;
+         displayFieldWork(allInputs)
+
+
+    }
+    newExpense +=newSub; //insert value of previous expense and add it to the current subtotal// getting total expense from this category and the previous
+    var totalExpense= newExpense //  value of newExpense is now the value of the totalAMount ID and is stored to totalAmountVal variable
+     var newBudgetSpen = trancheAmount;
+
+
+    document.getElementById("totalBudget").value = newBudgetSpen;
+    document.getElementById("totalBudget").innerHTML = newBudgetSpen;
+     // var allExpense = document.getElementById("totalAmount").value = totalExpense;
+        document.getElementById("totalAmount").value = totalExpense;
+     document.getElementById("totalAmount").innerHTML = totalExpense;
+     document.getElementById("fieldwork-total").innerHTML = newSub;
+
+}
+
+
+function displayFieldWork(allInputs) {
+     var fieldworkTB = document.getElementById("fieldworkTB");
+         // Create an empty <tr> element and add it to the 1st position of the table:
+         var row = fieldworkTB.insertRow(0);
+         // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+         var particularTB1 = row.insertCell(0);
+         var paxTB1 = row.insertCell(1);
+         var qtyTB1 = row.insertCell(2);
+         var monthTB1 = row.insertCell(3);
+         var subtotalTB1 = row.insertCell(4);
+
+
+         particularTB1.innerHTML = allInputs[0];
+        paxTB1.innerHTML =allInputs[1];
+        qtyTB1.innerHTML = allInputs[2];
+        monthTB1.innerHTML = allInputs[3];
+        subtotalTB1.innerHTML =allInputs[4];
+
+}
+
+//for travel function
+$(document).on('click', '#travel-refresh', function(e){
+    var input= calc();
+    getTravelinputVal(input);
+
+
+});
+
+
+function getTravelinputVal(inputs) {
+     var trancheAmount = document.getElementById("totalBudget").value;
+
+    var newExpense=document.getElementById("totalAmount").value; //from previous
+
+     var sub =4;
+     var subx=5
+
+     var newSub= 0
+
+    for(var i=0; i<inputs.length;i++){
+
+         // getting the subtotal for this categroy
+        var allInputs = inputs[i]; // get inputs based on index
+        var sub1= allInputs[sub]; //subtotal of input based on index
+        newSub+=sub1; // get previous subtotal then add it to the current subtotal
+        trancheAmount-=sub1;
+        sub+subx;
+         displayTravel(allInputs)
+
+
+    }
+    newExpense +=newSub; //insert value of previous expense and add it to the current subtotal// getting total expense from this category and the previous
+    var totalExpense= newExpense //  value of newExpense is now the value of the totalAMount ID and is stored to totalAmountVal variable
+     var newBudgetSpen = trancheAmount;
+
+    document.getElementById("totalBudget").value = newBudgetSpen;
+    document.getElementById("totalBudget").innerHTML = newBudgetSpen;
+     // var allExpense = document.getElementById("totalAmount").value = totalExpense;
+     document.getElementById("totalAmount").value = totalExpense;
+     document.getElementById("totalAmount").innerHTML = totalExpense;
+     document.getElementById("travel-total").innerHTML = newSub;
+
+
+
+}
+
+function displayTravel(allInputs) {
+     var fieldworkTB = document.getElementById("travelTB");
+         // Create an empty <tr> element and add it to the 1st position of the table:
+         var row = fieldworkTB.insertRow(0);
+         // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+         var particularTB1 = row.insertCell(0);
+         var paxTB1 = row.insertCell(1);
+         var qtyTB1 = row.insertCell(2);
+         var monthTB1 = row.insertCell(3);
+         var subtotalTB1 = row.insertCell(4);
+
+
+         particularTB1.innerHTML = allInputs[0];
+        paxTB1.innerHTML =allInputs[1];
+        qtyTB1.innerHTML = allInputs[2];
+        monthTB1.innerHTML = allInputs[3];
+        subtotalTB1.innerHTML =allInputs[4];
+
+}
+
+//for operating expense function
+$(document).on('click', '#operating-refresh', function(e){
+    var input= calc();
+    getOperatinginputVal(input);
+
+
+});
+
+
+function getOperatinginputVal(inputs) {
+
+   var trancheAmount = document.getElementById("totalBudget").value;
+    var newExpense=document.getElementById("totalAmount").value; //from previous
+
+     var sub =4;
+     var subx=5
+
+     var newSub= 0
+
+    for(var i=0; i<inputs.length;i++){
+
+         // getting the subtotal for this categroy
+        var allInputs = inputs[i]; // get inputs based on index
+        var sub1= allInputs[sub]; //subtotal of input based on index
+        newSub+=sub1; // get previous subtotal then add it to the current subtotal
+        trancheAmount-=sub1;
+        sub+subx;
+         displayOperating(allInputs)
+
+
+    }
+    newExpense +=newSub; //insert value of previous expense and add it to the current subtotal// getting total expense from this category and the previous
+    var totalExpense= newExpense //  value of newExpense is now the value of the totalAMount ID and is stored to totalAmountVal variable
+     var newBudgetSpen = trancheAmount;
+
+
+    document.getElementById("totalBudget").value = newBudgetSpen;
+    document.getElementById("totalBudget").innerHTML = newBudgetSpen;
+     // var allExpense = document.getElementById("totalAmount").value = totalExpense;
+     document.getElementById("totalAmount").value = totalExpense;
+     document.getElementById("totalAmount").innerHTML = totalExpense;
+     document.getElementById("operating-total").innerHTML = newSub;
+
+
+
+}
+
+
+function displayOperating(allInputs) {
+     var fieldworkTB = document.getElementById("operatingTB");
+         // Create an empty <tr> element and add it to the 1st position of the table:
+         var row = fieldworkTB.insertRow(0);
+         // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+         var particularTB1 = row.insertCell(0);
+         var paxTB1 = row.insertCell(1);
+         var qtyTB1 = row.insertCell(2);
+         var monthTB1 = row.insertCell(3);
+         var subtotalTB1 = row.insertCell(4);
+
+
+         particularTB1.innerHTML = allInputs[0];
+        paxTB1.innerHTML =allInputs[1];
+        qtyTB1.innerHTML = allInputs[2];
+        monthTB1.innerHTML = allInputs[3];
+        subtotalTB1.innerHTML =allInputs[4];
+
+}
+
+/*for admin expense function
+$(document).on('click', '#admin-refresh', function(e){
+
+    displayAdministrative();
+
+
+});
+function displayAdministrative() {
+     var totalProjected = document.getElementById("totalAmount").value;
+      var fieldworkTB = document.getElementById("adminTB");
+         // Create an empty <tr> element and add it to the 1st position of the table:
+         var row =fieldworkTB.insertRow(0);
+         // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+         var particularTB1 = row.insertCell(0);
+         var paxTB1 = row.insertCell(4);
+
+         particularTB1.innerHTML = "20% of Total Project Expenses";
+        paxTB1.innerHTML =totalProjected * 0.20;
+
+}*/
+
+</script>
+
+{% endblock %}
+
+{% block script %}
+
+
+
+{% endblock %}

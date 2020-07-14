@@ -1,0 +1,1701 @@
+{% extends 'sdrc/base.html' %} {% block style %} {% endblock %} {% block content %} {% load humanize %} {% load mytags %}
+    <script src="https://code.highcharts.com/gantt/highcharts-gantt.js"></script> <!-- page content -->
+    {% if activeproject %}
+        {% if access == 'True' %}
+            <div class="right_col" role="main" style="height: 650px; margin-left: -25px;"><!-- page content -->
+                <div id="dashboardbody">
+                    <div class="row" id="dashboardheader" style="margin-bottom: 20px;">
+                        <h3 style="margin-top: 60px; margin-left: 10px;"><strong>Welcome to the Project Management
+                            System for SDRC Research, {{ request.user.first_name }}!</strong></h3>
+                        <button type="button" class="btn-primary btn-lg" data-toggle="modal"
+                                data-target=".bs-example-modal-lg" style="margin-top: 20px; margin-left: 5px;">You have
+                            been assigned a project!
+                        </button>
+                        <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content" style="width: 600px; margin-left: 200px;">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal"><span
+                                                aria-hidden="true">×</span>
+                                        </button>
+                                        <h4 class="modal-title" id="myModalLabel"><strong>Project Details</strong>
+                                        </h4>
+                                    </div>
+                                    <div class="modal-body" style="font-size: 15px;">
+
+                                        {% for p in project %}
+                                            {% if p.principalInvestigator.profile.active_project %}
+                                                <div class="row">
+                                                    <div class="col-md-3"><b>Project Name: </b></div>
+                                                    <div class="col-md-4">{{ p.projectTitle }}</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-3"><b>Project Details: </b></div>
+                                                    <div class="col-md-4">{{ p.projectOverview }}</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-3"><b>Funding Agency: </b></div>
+                                                    <div class="col-md-4">{{ p.fundingAgency }}</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-3"><b>Deadline: </b></div>
+                                                    <div class="col-md-4">{{ p.endDate }}</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-3"><b>Project Budget: </b></div>
+                                                    <div class="col-md-4">P {{ p.trancheAmount|intcomma }}</div>
+                                                </div>
+                                            {% endif %}
+
+                                        {% endfor %}
+
+                                    </div>
+                                    <div class="modal-footer">
+
+
+                                        <button type="button" class="btn btn-primary" id="createMembers"
+                                                onclick="ganttChart()">Generate Gantt Chart
+                                        </button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <script>
+                    function addMembers() {
+
+                        window.location = {% url 'addmembers' %};
+                    }
+                </script>
+            <script>
+                    function viewMilestone() {
+
+                        window.location = {% url 'milestonestatus' %};
+                    }
+                </script>
+            <script>
+                    function ganttChart() {
+
+                        window.location = {% url 'samplegantt' %};
+                    }
+                </script>
+
+
+            </div>
+
+
+
+        {% elif all_milestones > 0 %}
+            <div id="dashboardbody">
+
+                <div class="row" id="dashboardheader" style="margin-bottom: 20px;">
+
+                    <h3 class="col-md-8 col-sm-8 col-xs-12" style="margin-bottom: 1px;"><strong>Project
+                        Name:</strong> {{ project.projectTitle }}</h3>
+
+
+                </div>
+
+
+                <div class="row">
+                    <div class="animated flipInY col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                        <div class="tile-stats" style="height: 180px; padding: 10px;">
+                            <div class="icon"><i class="glyphicon glyphicon-tasks"
+                                                 style="margin-top: 120px; color: #355691;" aria-hidden="true"></i>
+                            </div>
+                            <div class="count"
+                                 style="font-size: 30px; color: black;">{{ percentage_completed|floatformat:"0" }}%
+                            </div>
+
+                            <h3 class="metricsheader" style="margin-top: 5px; color: #355691;"><strong>Percentage
+                                Completed</strong></h3>
+                            <!--<button type="button" class="btn btn-primary" data-toggle="modal" id="metricsmodal" data-target=".bs-example-modal-lg-1">More details</button>-->
+                            <div class="modal fade bs-example-modal-lg-1" tabindex="-1" role="dialog" aria-hidden="true"
+                                 style="display: none;">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"><span
+                                                    aria-hidden="true">×</span>
+                                            </button>
+                                            <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <h4>Text in a modal</h4>
+                                            <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
+                                                Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor
+                                                auctor.</p>
+                                            <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus
+                                                magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec
+                                                ullamcorper nulla non metus auctor fringilla.</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="animated flipInY col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                        <div class="tile-stats" style="height: 180px; padding: 10px;">
+                            <div class="icon"><i class="fa fa-money" aria-hidden="true"
+                                                 style="margin-top: 120px; height: 5px; color: #960200;"></i>
+                            </div>
+
+
+                            <div class="count"
+                                 style="font-size: 30px; color: black;">₱ {{ project.budgetSpent|intcomma }}</div>
+                            <h3 class="metricsheader" style="margin-top: 5px; color: #960200;"><strong>Budget
+                                Spent</strong></h3>
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                    style="margin-top: 40px; margin-left: 5px;" data-target="#expensemodal">More details
+                            </button>
+
+
+                            <!-- <button type="button" class="btn btn-primary" data-toggle="modal" id="metricsmodal" data-target=".bs-example-modal-lg-3">More details</button> -->
+                            <div class="modal fade bs-example-modal-lg-3" id="expensemodal" tabindex="-1" role="dialog"
+                                 aria-hidden="true"
+                                 style="display: none;">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"><span
+                                                    aria-hidden="true">×</span>
+                                            </button>
+                                            <h4 class="modal-title" id="myModalLabel">Expense Overview</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+
+
+                                                    <th>Personnel Expenses</th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for c in categories %}
+                                                    {% if c.category == 'Personnel' %}
+                                                <tr>
+                                                    <th scope="row">{{ c.title }}</th>
+                                                    <td>
+                                                    </td>
+                                                    <td></td>
+                                                    <td>P {{ c.allocatedAmount|intcomma }}</td>
+                                                </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                </tbody>
+
+                                            </table>
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+
+                                                    <th>Travel and Survey Expenses</th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <th scope="row">Accommodations</th>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>{% for t in total %}
+                                                        {% for c in categories %}
+                                                            {% if c.title == 'Accomodations' %}
+                                                                {% if t.category == c.id and t.status == 'Approved' %}
+                                                                   P {{ t.sum|intcomma }}
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endfor %}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Transportation</th>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>{% for t in total %}
+                                                        {% for c in categories %}
+                                                            {% if c.title == 'Transportation' %}
+                                                                {% if t.category == c.id and t.status == 'Approved' %}
+                                                                  P {{ t.sum|intcomma }}
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endfor %}</td>
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+
+                                                    <th>Operating Expenses</th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <th scope="row">Supplies and Materials</th>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>{% for t in total %}
+                                                        {% for c in categories %}
+                                                            {% if c.title == 'Supplies and Materials' %}
+                                                                {% if t.category == c.id and t.status == 'Approved' %}
+                                                                   P {{ t.sum|intcomma }}
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endfor %}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Equipment</th>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>{% for t in total %}
+                                                        {% for c in categories %}
+                                                            {% if c.title == 'Equipment' %}
+                                                                {% if t.category == c.id and t.status == 'Approved' %}
+                                                                    P {{ t.sum|intcomma }}
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endfor %}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Training</th>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>{% for t in total %}
+                                                        {% for c in categories %}
+                                                            {% if c.title == 'Training' %}
+                                                                {% if t.category == c.id and t.status == 'Approved' %}
+                                                                    P {{ t.sum|intcomma }}
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endfor %}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Other Expense</th>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>{% for t in total %}
+                                                        {% for c in categories %}
+                                                            {% if c.title == 'Other Expense' %}
+                                                                {% if t.category == c.id and t.status == 'Approved' %}
+                                                                  P {{ t.sum|intcomma }}
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endfor %}</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="animated flipInY col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                        <div class="tile-stats" style="height: 180px; padding: 10px;">
+                            <div class="icon"><i class="fa fa-money" aria-hidden="true"
+                                                 style="margin-top: 120px; height: 5px; color: #2A9134;"></i>
+                            </div>
+
+                            <div class="count" style="font-size: 30px; color: black; font-weight: bold;">
+                                ₱ {{ project.budgetRemaining|intcomma }}</div>
+
+                            <h3 class="metricsheader" style="margin-top: 5px; color: #2A9134;"><strong>Remaining
+                                Budget</strong></h3>
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                    style="margin-top: 40px; margin-left: 5px;" data-target="#budgetmodal">More details
+                            </button>
+
+
+                            <!-- <button type="button" class="btn btn-primary" data-toggle="modal" id="metricsmodal" data-target=".bs-example-modal-lg-3">More details</button> -->
+                            <div class="modal fade bs-example-modal-lg-3" id="budgetmodal" tabindex="-1" role="dialog"
+                                 aria-hidden="true"
+                                 style="display: none;">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"><span
+                                                    aria-hidden="true">×</span>
+                                            </button>
+                                            <h4 class="modal-title" id="myModalLabel">Remaining Budget</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+
+                                                    <th>Personnel Expenses</th>
+                                                    <th></th>
+                                                    <th>Allocated</th>
+                                                    <th>Remaining</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for c in categories %}
+                                                    {% if c.category == 'Personnel' %}
+                                                <tr>
+                                                    <th scope="row">{{ c.title }}</th>
+                                                    <td>
+                                                    </td>
+                                                    <td>P {{ c.allocatedAmount|intcomma }}</td>
+                                                    <td>P {{ c.allocatedAmount|intcomma }}</td>
+                                                </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                </tbody>
+
+                                            </table>
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+
+                                                    <th>Travel and Survey Expenses</th>
+                                                    <th></th>
+                                                    <th>Allocated</th>
+                                                    <th>Remaining</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <th scope="row">Accommodations</th>
+                                                    <td></td>
+                                                    <td>{% for c in categories %}
+                                                            {% if c.title == 'Accomodations' %}
+                                                                P {{ c.allocatedAmount|intcomma }}
+                                                            {% endif %}
+                                                        {% endfor %}</td>
+                                                    <td>
+                                                        {% for c in categories %}
+                                                            {% if c.title == 'Accomodations' %}
+                                                               P {{ c.subtotal|intcomma }}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                  </td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Transportation</th>
+                                                    <td></td>
+                                                    <td>{% for c in categories %}
+                                                            {% if c.title == 'Transportation' %}
+                                                                P {{ c.allocatedAmount|intcomma }}
+                                                            {% endif %}
+                                                        {% endfor %}</td>
+                                                    <td>{% for c in categories %}
+                                                            {% if c.title == 'Transportation' %}
+                                                                P {{ c.subtotal|intcomma }}
+                                                            {% endif %}
+                                                        {% endfor %}</td>
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+
+                                                    <th>Operating Expenses</th>
+                                                    <th></th>
+                                                    <th>Allocated</th>
+                                                    <th>Remaining</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <th scope="row">Supplies and Materials</th>
+                                                    <td></td>
+                                                    <td>{% for c in categories %}
+                                                            {% if c.title == 'Supplies and Materials' %}
+                                                                P {{ c.allocatedAmount|intcomma }}
+                                                            {% endif %}
+                                                        {% endfor %}</td>
+                                                    <td>{% for c in categories %}
+                                                            {% if c.title == 'Supplies and Materials' %}
+                                                                P {{ c.subtotal|intcomma }}
+                                                            {% endif %}
+                                                        {% endfor %}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Equipment</th>
+                                                    <td></td>
+                                                    <td>{% for c in categories %}
+                                                            {% if c.title == 'Equipment' %}
+                                                                P {{ c.allocatedAmount|intcomma }}
+                                                            {% endif %}
+                                                        {% endfor %}</td>
+                                                    <td>{% for c in categories %}
+                                                            {% if c.title == 'Equipment' %}
+                                                                P {{ c.subtotal|intcomma }}
+                                                            {% endif %}
+                                                        {% endfor %}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Training</th>
+                                                    <td></td>
+                                                    <td>{% for c in categories %}
+                                                            {% if c.title == 'Training' %}
+                                                                P {{ c.allocatedAmount|intcomma }}
+                                                            {% endif %}
+                                                        {% endfor %}</td>
+                                                    <td>{% for c in categories %}
+                                                            {% if c.title == 'Training' %}
+                                                                P {{ c.subtotal|intcomma }}
+                                                            {% endif %}
+                                                        {% endfor %}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Other Expense</th>
+                                                    <td></td>
+                                                    <td>{% for c in categories %}
+                                                            {% if c.title == 'Other Expense' %}
+                                                                P {{ c.allocatedAmount|intcomma }}
+                                                            {% endif %}
+                                                        {% endfor %}</td>
+                                                    <td>{% for c in categories %}
+                                                            {% if c.title == 'Other Expense' %}
+                                                                P {{ c.subtotal|intcomma }}
+                                                            {% endif %}
+                                                        {% endfor %}</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                              </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="animated flipInY col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                        <div class="tile-stats" style="height: 180px; padding: 10px;">
+                            <div class="icon"><i class="glyphicon glyphicon-time"
+                                                 style="margin-top: 120px; color: #960200;" aria-hidden="true"></i>
+                            </div>
+
+                            {% if project.endDate > datenow %}
+                                <div class="count"
+                                     style="font-size: 30px; color: black;">{{ project.endDate|timeuntil:datenow }}</div>
+                                <h3 class="metricsheader" style="margin-top: 5px; color: #960200;"><strong>Remaining
+                                    Days</strong></h3>
+                            {% else %}
+                                <div class="count" style="font-size: 40px; color: black;">Delayed</div>
+
+
+                            {% endif %}
+
+                            <!--<button type="button" class="btn btn-primary" data-toggle="modal" id="metricsmodal" data-target=".bs-example-modal-lg-2">More details</button>-->
+                            <div class="modal fade bs-example-modal-lg-2" tabindex="-1" role="dialog" aria-hidden="true"
+                                 style="display: none;">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"><span
+                                                    aria-hidden="true">×</span>
+                                            </button>
+                                            <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <h4>Text in a modal</h4>
+                                            <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
+                                                Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor
+                                                auctor.</p>
+                                            <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus
+                                                magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec
+                                                ullamcorper nulla non metus auctor fringilla.</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+  <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>Upcoming Task Approaching Deadline</h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                           aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li><a href="#">Settings 1</a>
+                                            </li>
+                                            <li><a href="#">Settings 2</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+
+
+        {% if not upcoming_task and not days_left %}
+           <h4>No tasks approaching deadline within the next 30 days.</h4>
+            {% else %}
+            {% if days_left < 0 %}
+<a class="btn btn-app" style="margin-left: 300px; height: 80px; width: 130px;">
+                                        <i class="fa fa-calendar"></i>
+                                        <h4>{{ days_left|abs }} days delayed </h4>
+
+
+</a><h3><b><div style="margin-left: 450px; margin-top: -90px;">{{ upcoming_task }}</div></b></h3>
+                <div style="margin-left: 450px; margin-top: 10px;"> <h4><b>Please accomplish task as soon as possible.</b></h4></div>
+
+
+                {% else %}
+
+               <a class="btn btn-app" style="margin-left: 300px; height: 80px; width: 100px;">
+                                        <i class="fa fa-calendar"></i>
+                                        <h4>{{ days_left }} days left</h4>
+
+                </a><h3><b><div style="margin-left: 450px; margin-top: -90px;">{{ upcoming_task }}</div></b></h3>
+                <div style="margin-left: 450px; margin-top: 10px;"> <h4><b>Please accomplish task as soon as possible.</b></h4></div>
+                {% endif %}
+
+
+</a>{% endif %}
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>Gantt Chart</h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                           aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li><a href="#">Settings 1</a>
+                                            </li>
+                                            <li><a href="#">Settings 2</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+
+                                <div id="container" style="max-width: 800px; height: auto; margin: 1em auto;"></div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- Start to do list -->
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <h2>Task Tracker</h2>
+                                    <ul class="nav navbar-right panel_toolbox">
+                                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                        </li>
+                                        <li class="dropdown">
+                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                               aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li><a href="#">Settings 1</a>
+                                                </li>
+                                                <li><a href="#">Settings 2</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                        </li>
+                                    </ul>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content">
+                                    <canvas id="myChart" width="400" height="180"></canvas>
+
+
+                                </div>
+                                <!-- Modal -->
+                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+                                     aria-labelledby="myModalLabel">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close"><span aria-hidden="true">&times;</span>
+                                                </button>
+                                                <h4 class="modal-title" id="myModalLabel">Not Started Tasks</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <table class="table table-bordered">
+
+                                                    <thead>
+
+                                                    <tr>
+
+                                                        <th>Task Name</th>
+                                                        <th>Deadline</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for ns in not_started %}
+                                                        <tr>
+                                                            <td>
+                                                                {{ ns.taskName }}
+                                                            </td>
+                                                            <td>{{ ns.taskendDate }}</td>
+                                                        </tr>
+
+                                                    {% endfor %}                                  </tbody>
+                                                </table>
+
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">
+                                                    Close
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="myModal2" tabindex="-1" role="dialog"
+                                     aria-labelledby="myModalLabel">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close"><span aria-hidden="true">&times;</span>
+                                                </button>
+                                                <h4 class="modal-title" id="myModalLabel">In Progress Tasks</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <table class="table table-bordered">
+
+                                                    <thead>
+
+                                                    <tr>
+
+                                                        <th>Task Name</th>
+                                                        <th>Deadline</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for ns in in_progress %}
+                                                        <tr>
+                                                            <td>
+                                                                {{ ns.taskName }}
+                                                            </td>
+                                                            <td>{{ ns.taskendDate }}</td>
+                                                        </tr>
+                                                    {% endfor %}                                  </tbody>
+                                                </table>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">
+                                                    Close
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="myModal3" tabindex="-1" role="dialog"
+                                     aria-labelledby="myModalLabel">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close"><span aria-hidden="true">&times;</span>
+                                                </button>
+                                                <h4 class="modal-title" id="myModalLabel">Completed Tasks</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <table class="table table-bordered">
+
+                                                    <thead>
+
+                                                    <tr>
+
+                                                        <th>Task Name</th>
+                                                        <th>Date Completed</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for ns in finished %}
+                                                        <tr>
+                                                            <td>
+                                                                {{ ns.taskName }}
+                                                            </td>
+                                                            <td>{{ ns.taskFinished }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">
+                                                    Close
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Modal -->
+                                <div class="modal fade" id="myModal4" tabindex="-1" role="dialog"
+                                     aria-labelledby="myModalLabel">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close"><span aria-hidden="true">&times;</span>
+                                                </button>
+                                                <h4 class="modal-title" id="myModalLabel">Delayed Tasks</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <table class="table table-bordered">
+
+                                                    <thead>
+
+                                                    <tr>
+
+                                                        <th>Task Name</th>
+                                                        <th>Deadline</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for ns in delayed %}
+                                                        <tr>
+                                                            <td>
+                                                                {{ ns.taskName }}
+                                                            </td>
+                                                            <td>{{ ns.taskendDate }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">
+                                                    Close
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- End to do list -->
+
+                        <!-- bar charts group -->
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <h2>Milestone Tracker</h2>
+                                    <ul class="nav navbar-right panel_toolbox">
+                                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                        </li>
+                                        <li class="dropdown">
+                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                               aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li><a href="#">Settings 1</a>
+                                                </li>
+                                                <li><a href="#">Settings 2</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                        </li>
+                                    </ul>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content">
+                                    <form method="POST">
+                                        {% csrf_token %}
+                                        <table class="table table-bordered">
+
+                                            <thead>
+
+                                            <tr>
+
+                                                <th style="background-color: #ABC4A1;">Milestone Name</th>
+                                                <th style="background-color: #D4A0A7;">Percentage Completed</th>
+                                                <th style="background-color: #D8BFAA;">Days Left</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for ms in milestone %}
+                                                <tr>
+
+                                                    <td>{{ ms.milestoneName }}</td>
+                                                    <td>{% if ms.get_finished_task %}
+                                                        {{ ms.get_finished_task|floatformat:"0" }}
+                                                        % {% else %}0%{% endif %}</td>
+                                                    <td>{{ ms.milestoneendDate|timeuntil:datenow }}</td>
+                                                </tr>
+
+                                            {% endfor %}
+
+                                            </tbody>
+                                        </table>
+
+
+                                    </form>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="clearfix"></div>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+        {% endif %}
+
+
+    {% endif %}
+
+    {% if inactiveproject %}
+        <h3 style="margin-top: 20px;">No project is currently assigned to you.</h3>
+
+
+
+    {% endif %}
+    {% if approved %}
+        {% if all_milestones == 0 and all_tasks == 0 %}
+            <div class="right_col" role="main" style="height: 650px; margin-left: -25px;"><!-- page content -->
+                <div id="dashboardbody">
+                    <div class="row" id="dashboardheader" style="margin-bottom: 20px;">
+                        <h3 style="margin-top: 60px; margin-left: 10px;"><strong>Welcome to the Project Management
+                            System for SDRC Research, {{ request.user.first_name }}!</strong></h3>
+                        <button type="button" class="btn-primary btn-lg" data-toggle="modal"
+                                data-target=".bs-example-modal-lg" style="margin-top: 20px; margin-left: 5px;">You have
+                            been assigned a project!
+                        </button>
+                        <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content" style="width: 600px; margin-left: 200px;">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal"><span
+                                                aria-hidden="true">×</span>
+                                        </button>
+                                        <h4 class="modal-title" id="myModalLabel"><strong>Project Details</strong>
+                                        </h4>
+                                    </div>
+                                    <div class="modal-body" style="font-size: 15px;">
+
+                                        {% for p in project %}
+                                            {% if p.principalInvestigator.profile.active_project %}
+                                                <div class="row">
+                                                    <div class="col-md-3"><b>Project Name: </b></div>
+                                                    <div class="col-md-4">{{ p.projectTitle }}</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-3"><b>Project Details: </b></div>
+                                                    <div class="col-md-4">{{ p.projectOverview }}</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-3"><b>Funding Agency: </b></div>
+                                                    <div class="col-md-4">{{ p.fundingAgency }}</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-3"><b>Deadline: </b></div>
+                                                    <div class="col-md-4">{{ p.endDate }}</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-3"><b>Project Budget: </b></div>
+                                                    <div class="col-md-4">P {{ p.trancheAmount|intcomma }}</div>
+                                                </div>
+                                            {% endif %}
+
+                                        {% endfor %}
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                                        </button>
+                                        <button type="button" class="btn btn-primary" id="createMembers"
+                                                onclick="addMembers()">Add Milestones
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <script>
+                    function addMembers() {
+                        alert('Are you sure you want to be redirected?');
+                        window.location = {% url 'createmilestone' %};
+                    }
+                </script>
+
+
+            </div>
+
+
+
+        {% elif all_milestones > 0 %}
+            <div id="dashboardbody">
+
+                <div class="row" id="dashboardheader" style="margin-bottom: 20px;">
+
+                    <h3 class="col-md-8 col-sm-8 col-xs-12" style="margin-bottom: 1px;"><strong>Project
+                        Name:</strong> {{ project.projectTitle }}</h3>
+
+
+                </div>
+
+
+                <div class="row">
+                    <div class="animated flipInY col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                        <div class="tile-stats" style="height: 180px; padding: 10px;">
+                            <div class="icon"><i class="glyphicon glyphicon-tasks"
+                                                 style="margin-top: 120px; color: #355691;" aria-hidden="true"></i>
+                            </div>
+                            <div class="count"
+                                 style="font-size: 30px; color: black;">{{ percentage_completed|floatformat:"0" }}%
+                            </div>
+
+                            <h3 class="metricsheader" style="margin-top: 5px; color: #355691;"><strong>Percentage
+                                Completed</strong></h3>
+                            <!--<button type="button" class="btn btn-primary" data-toggle="modal" id="metricsmodal" data-target=".bs-example-modal-lg-1">More details</button>-->
+                            <div class="modal fade bs-example-modal-lg-1" tabindex="-1" role="dialog" aria-hidden="true"
+                                 style="display: none;">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"><span
+                                                    aria-hidden="true">×</span>
+                                            </button>
+                                            <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <h4>Text in a modal</h4>
+                                            <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
+                                                Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor
+                                                auctor.</p>
+                                            <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus
+                                                magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec
+                                                ullamcorper nulla non metus auctor fringilla.</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="animated flipInY col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                        <div class="tile-stats" style="height: 180px; padding: 10px;">
+                            <div class="icon"><i class="fa fa-money" aria-hidden="true"
+                                                 style="margin-top: 120px; height: 5px; color: #960200;"></i>
+                            </div>
+
+
+                            <div class="count"
+                                 style="font-size: 30px; color: black;">₱ {{ project.budgetSpent|intcomma }}</div>
+                            <h3 class="metricsheader" style="margin-top: 5px; color: #960200;"><strong>Budget
+                                Spent</strong></h3>
+
+
+                            <!--<button type="button" class="btn btn-primary" data-toggle="modal" id="metricsmodal" data-target=".bs-example-modal-lg-2">More details</button>-->
+                            <div class="modal fade bs-example-modal-lg-2" tabindex="-1" role="dialog" aria-hidden="true"
+                                 style="display: none;">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"><span
+                                                    aria-hidden="true">×</span>
+                                            </button>
+                                            <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <h4>Text in a modal</h4>
+                                            <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
+                                                Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor
+                                                auctor.</p>
+                                            <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus
+                                                magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec
+                                                ullamcorper nulla non metus auctor fringilla.</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="animated flipInY col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                        <div class="tile-stats" style="height: 180px; padding: 10px;">
+                            <div class="icon"><i class="fa fa-money" aria-hidden="true"
+                                                 style="margin-top: 120px; height: 5px; color: #2A9134;"></i>
+                            </div>
+
+                            <div class="count" style="font-size: 30px; color: black; font-weight: bold;">
+                                ₱ {{ project.budgetRemaining|intcomma }}</div>
+
+                            <h3 class="metricsheader" style="margin-top: 5px; color: #2A9134;"><strong>Remaining
+                                Budget</strong></h3>
+
+
+                            <!-- <button type="button" class="btn btn-primary" data-toggle="modal" id="metricsmodal" data-target=".bs-example-modal-lg-3">More details</button> -->
+                            <div class="modal fade bs-example-modal-lg-3" tabindex="-1" role="dialog" aria-hidden="true"
+                                 style="display: none;">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"><span
+                                                    aria-hidden="true">×</span>
+                                            </button>
+                                            <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <h4>Text in a modal</h4>
+                                            <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
+                                                Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor
+                                                auctor.</p>
+                                            <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus
+                                                magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec
+                                                ullamcorper nulla non metus auctor fringilla.</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="animated flipInY col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                        <div class="tile-stats" style="height: 180px; padding: 10px;">
+                            <div class="icon"><i class="glyphicon glyphicon-time"
+                                                 style="margin-top: 120px; color: #960200;" aria-hidden="true"></i>
+                            </div>
+
+                            {% if project.endDate > datenow %}
+                                <div class="count"
+                                     style="font-size: 30px; color: black;">{{ project.endDate|timeuntil:datenow }}</div>
+                                <h3 class="metricsheader" style="margin-top: 5px; color: #960200;"><strong>Remaining
+                                    Days</strong></h3>
+                            {% else %}
+                                <div class="count" style="font-size: 40px; color: black;">Delayed</div>
+
+
+                            {% endif %}
+
+                            <!--<button type="button" class="btn btn-primary" data-toggle="modal" id="metricsmodal" data-target=".bs-example-modal-lg-2">More details</button>-->
+                            <div class="modal fade bs-example-modal-lg-2" tabindex="-1" role="dialog" aria-hidden="true"
+                                 style="display: none;">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"><span
+                                                    aria-hidden="true">×</span>
+                                            </button>
+                                            <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <h4>Text in a modal</h4>
+                                            <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
+                                                Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor
+                                                auctor.</p>
+                                            <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus
+                                                magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec
+                                                ullamcorper nulla non metus auctor fringilla.</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>Upcoming Task Approaching Deadline</h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                           aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li><a href="#">Settings 1</a>
+                                            </li>
+                                            <li><a href="#">Settings 2</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+
+
+        {% if not upcoming_task and not days_left %}
+           <h4>No tasks approaching deadline within the next 30 days.</h4>
+            {% else %}
+            {% if days_left < 0 %}
+<a class="btn btn-app" style="margin-left: 300px; height: 80px; width: 130px;">
+                                        <i class="fa fa-calendar"></i>
+                                        <h4>{{ days_left|abs }} days delayed</h4>
+
+
+</a><h3><b><div style="margin-left: 450px; margin-top: -90px;">{{ upcoming_task.taskName }}</div></b></h3>
+                <div style="margin-left: 450px; margin-top: 10px;"> <h4><b>Please accomplish task as soon as possible.</b></h4></div>
+
+
+                {% else %}
+
+               <a class="btn btn-app" style="height: 80px; width: 100px;">
+                                        <i class="fa fa-calendar"></i>
+                                        <h4>{{ days_left }} days left</h4>
+                {% endif %}
+
+
+</a>{% endif %}
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>Gantt Chart</h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                           aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li><a href="#">Settings 1</a>
+                                            </li>
+                                            <li><a href="#">Settings 2</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+
+                                <div id="container" style="max-width: 800px; height: auto; margin: 1em auto;"></div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- Start to do list -->
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <h2>Task Tracker</h2>
+                                    <ul class="nav navbar-right panel_toolbox">
+                                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                        </li>
+                                        <li class="dropdown">
+                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                               aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li><a href="#">Settings 1</a>
+                                                </li>
+                                                <li><a href="#">Settings 2</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                        </li>
+                                    </ul>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content">
+                                    <canvas id="myChart" width="400" height="180"></canvas>
+
+
+                                </div>
+                                <!-- Modal -->
+                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+                                     aria-labelledby="myModalLabel">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close"><span aria-hidden="true">&times;</span>
+                                                </button>
+                                                <h4 class="modal-title" id="myModalLabel">Not Started Tasks</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <table class="table table-bordered">
+
+                                                    <thead>
+
+                                                    <tr>
+
+                                                        <th>Task Name</th>
+                                                        <th>Deadline</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for ns in not_started %}
+
+                                                        <td>
+                                                            {{ ns.taskName }}
+                                                        </td>
+                                                        <td>{{ ns.taskendDate }}</td>
+                                                    {% endfor %}                                  </tbody>
+                                                </table>
+
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">
+                                                    Close
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="myModal2" tabindex="-1" role="dialog"
+                                     aria-labelledby="myModalLabel">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close"><span aria-hidden="true">&times;</span>
+                                                </button>
+                                                <h4 class="modal-title" id="myModalLabel">In Progress Tasks</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <table class="table table-bordered">
+
+                                                    <thead>
+
+                                                    <tr>
+
+                                                        <th>Task Name</th>
+                                                        <th>Deadline</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for ns in in_progress %}
+
+                                                        <td>
+                                                            {{ ns.taskName }}
+                                                        </td>
+                                                        <td>{{ ns.taskendDate }}</td>
+                                                    {% endfor %}                                  </tbody>
+                                                </table>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">
+                                                    Close
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="myModal3" tabindex="-1" role="dialog"
+                                     aria-labelledby="myModalLabel">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close"><span aria-hidden="true">&times;</span>
+                                                </button>
+                                                <h4 class="modal-title" id="myModalLabel">Completed Tasks</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <table class="table table-bordered">
+
+                                                    <thead>
+
+                                                    <tr>
+
+                                                        <th>Task Name</th>
+                                                        <th>Date Completed</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for ns in finished %}
+                                                        <tr>
+                                                            <td>
+                                                                {{ ns.taskName }}
+                                                            </td>
+                                                            <td>{{ ns.taskFinished }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">
+                                                    Close
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Modal -->
+                                <div class="modal fade" id="myModal4" tabindex="-1" role="dialog"
+                                     aria-labelledby="myModalLabel">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close"><span aria-hidden="true">&times;</span>
+                                                </button>
+                                                <h4 class="modal-title" id="myModalLabel">Delayed Tasks</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <table class="table table-bordered">
+
+                                                    <thead>
+
+                                                    <tr>
+
+                                                        <th>Task Name</th>
+                                                        <th>Deadline</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for ns in delayed %}
+
+                                                        <td>
+                                                            {{ ns.taskName }}
+                                                        </td>
+                                                        <td>{{ ns.taskendDate }}</td>
+                                                    {% endfor %}                                  </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">
+                                                    Close
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- End to do list -->
+
+                        <!-- bar charts group -->
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <h2>Milestone Tracker</h2>
+                                    <ul class="nav navbar-right panel_toolbox">
+                                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                        </li>
+                                        <li class="dropdown">
+                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                               aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li><a href="#">Settings 1</a>
+                                                </li>
+                                                <li><a href="#">Settings 2</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                        </li>
+                                    </ul>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content">
+                                    <form method="POST">
+                                        {% csrf_token %}
+                                        <table class="table table-bordered">
+
+                                            <thead>
+
+                                            <tr>
+
+                                                <th style="background-color: #ABC4A1;">Milestone Name</th>
+                                                <th style="background-color: #D4A0A7;">Percentage Completed</th>
+                                                <th style="background-color: #D8BFAA;">Days Left</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for ms in milestone %}
+                                                <tr>
+
+                                                    <td>{{ ms.milestoneName }}</td>
+                                                    <td>{% if ms.get_finished_task %}
+                                                        {{ ms.get_finished_task|floatformat:"0" }}
+                                                        % {% else %}0%{% endif %}</td>
+                                                    <td>{{ ms.milestoneendDate|timeuntil:datenow }}</td>
+                                                </tr>
+
+                                            {% endfor %}
+
+                                            </tbody>
+                                        </table>
+
+
+                                    </form>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="clearfix"></div>
+                    </div>
+
+
+                </div>
+            </div>
+        {% endif %}
+
+    {% endif %}
+    <!-- /page content -->
+{% endblock %}
+{% block script %}
+
+    <script src="https://cdnjs.com/libraries/Chart.js"></script>
+    <script>
+        var ctx = document.getElementById("myChart");
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ["Not Started", "In Progress", "Completed", "Delayed"],
+                datasets: [{
+                    label: 'Number of Tasks',
+                    data: [{{ array_task|safe }}[0], {{ array_task|safe }}[1], {{ array_task|safe }}[2], {{ array_task|safe }}[3]],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+
+            options: {
+                responsive: true,
+                showTooltips: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+        ctx.onclick = function (evt) {
+            var activePoints = myChart.getElementsAtEvent(evt);
+            if (activePoints[0]) {
+                var chartData = activePoints[0]['_chart'].config.data;
+                var idx = activePoints[0]['_index'];
+
+                if (idx == 0) {
+                    $('#myModal').modal('show');
+                } else if (idx == 1) {
+                    $('#myModal2').modal('show');
+                } else if (idx == 2) {
+                    $('#myModal3').modal('show');
+                } else if (idx == 3) {
+                    $('#myModal4').modal('show');
+                }
+
+            }
+        };
+
+    </script>
+    <script>
+
+
+        var today = new Date(),
+            day = 1000 * 60 * 60 * 24;
+
+        // Set to 00:00:00:000 today
+        today.setUTCHours(0);
+        today.setUTCMinutes(0);
+        today.setUTCSeconds(0);
+        today.setUTCMilliseconds(0);
+
+        array = {{ array|safe }}
+            array1 =
+        {{ array_1|safe }}
+
+
+        var mySeries = [];
+        for (var i = 0; i < {{ array_1|length }}; i++) {
+            mySeries.push({
+                name: {{ array_1|safe }}[i][0],
+                id: {{ array_1|safe }}[i][0],
+                start: today.getTime() + ({{ array_1|safe }}[i][1] * day),
+                end: today.getTime() + ({{ array_1|safe }}[i][2] * day),
+                color: 'black'
+
+            });
+        }
+        if (({{ notstarted_array|length }}) != 0) {
+            for (var i = 0; i < {{ notstarted_array|length }}; i++) {
+                mySeries.push({
+                    name: {{ notstarted_array|safe }}[i][1],
+                    id: {{ notstarted_array|safe }}[i][1],
+                    parent: {{ notstarted_array|safe }}[i][0],
+                    start: today.getTime() + ({{ notstarted_array|safe }}[i][3] * day),
+                    end: today.getTime() + ({{ notstarted_array|safe }}[i][4] * day),
+                    color: 'orange'
+
+
+                });
+            }
+        }
+        if (({{ inprogress_array|length }}) != 0) {
+            for (var i = 0; i < {{ inprogress_array|length }}; i++) {
+                mySeries.push({
+                    name: {{ inprogress_array|safe }}[i][1],
+                    id: {{ inprogress_array|safe }}[i][1],
+                    parent: {{ inprogress_array|safe }}[i][0],
+                    start: today.getTime() + ({{ inprogress_array|safe }}[i][3] * day),
+                    end: today.getTime() + ({{ inprogress_array|safe }}[i][4] * day),
+                    color: 'green'
+
+
+                });
+            }
+        }
+        if (({{ completed_array|length }}) != 0) {
+            for (var i = 0; i < {{ completed_array|length }}; i++) {
+                mySeries.push({
+                    name: {{ completed_array|safe }}[i][1],
+                    id: {{ completed_array|safe }}[i][1],
+                    parent: {{ completed_array|safe }}[i][0],
+                    start: today.getTime() + ({{ completed_array|safe }}[i][3] * day),
+                    end: today.getTime() + ({{ completed_array|safe }}[i][4] * day),
+                    color: 'blue'
+
+
+                });
+            }
+        }
+
+
+        // THE CHART
+        Highcharts.ganttChart('container', {
+
+            xAxis: {
+                min: today.getTime() - (0 * day),
+                max: null
+            },
+            series: [{
+                name: {{ array_1|safe }}[1][3],
+                data: mySeries
+            }]
+        });
+
+    </script>
+
+{% endblock %}

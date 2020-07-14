@@ -1,0 +1,202 @@
+{% extends 'sdrc/base.html' %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="">
+
+        <div class="clearfix"></div>
+
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>View Users</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#">Settings 1</a>
+                                    </li>
+                                    <li><a href="#">Settings 2</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+
+
+                        <p class="text-muted font-13 m-b-30">
+
+                        </p>
+                        <div id="datatable-fixed-header_wrapper"
+                             class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <table id="datatable-fixed-header"
+                                           class="table table-striped table-bordered dataTable no-footer" role="grid"
+                                           aria-describedby="datatable-fixed-header_info">
+                                        <thead>
+                                        {% if request.user.is_staff %}
+                                            <tr role="row">
+                                                <th class="sorting_asc" tabindex="0"
+                                                    aria-controls="datatable-fixed-header"
+                                                    rowspan="1" colspan="1" aria-sort="ascending"
+                                                    aria-label="Name: activate to sort column descending"
+                                                    style="width: 95px;">
+                                                    Name
+                                                </th>
+                                                <th class="sorting_asc" tabindex="0"
+                                                    aria-controls="datatable-fixed-header"
+                                                    rowspan="1" colspan="1" aria-sort="ascending"
+                                                    aria-label="Name: activate to sort column descending"
+                                                    style="width: 95px;">
+                                                    Email Address
+                                                </th>
+                                                <th class="sorting_asc" tabindex="0"
+                                                    aria-controls="datatable-fixed-header"
+                                                    rowspan="1" colspan="1" aria-sort="ascending"
+                                                    aria-label="Name: activate to sort column descending"
+                                                    style="width: 95px;">
+                                                    Date Joined
+                                                </th>
+                                                <th class="sorting_asc" tabindex="0"
+                                                    aria-controls="datatable-fixed-header"
+                                                    rowspan="1" colspan="1" aria-sort="ascending"
+                                                    aria-label="Name: activate to sort column descending"
+                                                    style="width: 95px;">
+                                                    Principal Investigator
+                                                </th>
+                                                <th class="sorting" tabindex="0" aria-controls="datatable-fixed-header"
+                                                    rowspan="1"
+                                                    colspan="1" aria-label="Position: activate to sort column ascending"
+                                                    style="width: 139px;">Active Project
+                                                </th>
+                                                <th class="sorting" tabindex="0" aria-controls="datatable-fixed-header"
+                                                    rowspan="1"
+                                                    colspan="1" aria-label="Position: activate to sort column ascending"
+                                                    style="width: 139px;">Last Active
+                                                </th>
+                                                <th class="sorting" tabindex="0" aria-controls="datatable-fixed-header"
+                                                    rowspan="1"
+                                                    colspan="1" aria-label="Position: activate to sort column ascending"
+                                                    style="width: 139px;">
+                                                </th>
+
+
+                                            </tr>
+
+                                        {% endif %}
+                                        </thead>
+                                        {% if request.user.is_staff %}
+                                            <tbody>
+                                            {% for user in users %}
+
+                                                <tr role="row" class="odd">
+                                                    <td class="sorting_1">{{ user.first_name }} {{ user.last_name }}</td>
+                                                    <td class="sorting_1">{{ user.email }}</td>
+                                                    <td class="sorting_1"
+                                                        tabindex="0">{{ user.date_joined }}  </td>
+                                                    <td class="sorting_1"
+                                                        tabindex="0">{% if user.profile.principal_investigator %}
+                                                        Yes {% else %}No{% endif %}</td>
+                                                    <td class="sorting_1"
+                                                        tabindex="0">{% if user.profile.active_project %}Yes {% else %}
+                                                        No{% endif %}</td>
+                                                    <td class="sorting_1"
+                                                        tabindex="0">{{ user.last_login }}</td>
+                                                    <td class="sorting_1"
+                                                        tabindex="0">
+                                                        {% if not user.profile.active_project %}
+                                                            <button type="button"
+                                                                    class="btn btn-danger btn-xs" data-toggle="modal"
+                                                                    data-target=".bs-example-modal-{{ user.id }}">
+                                                                Deactivate
+                                                            </button>{% endif %}</td>
+
+
+                                                </tr>
+
+                                            {% endfor %}
+                                            </tbody>
+
+                                        {% endif %}
+                                    </table>
+                                    {% for user in users %}
+                                        <div class="modal fade bs-example-modal-{{ user.id }}"
+                                             tabindex="-1" role="dialog" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close"
+                                                                data-dismiss="modal"
+                                                                aria-label="Close"><span
+                                                                aria-hidden="true">×</span>
+                                                        </button>
+                                                        <h4 class="modal-title" id="myModalLabel2">
+                                                            Delete User</h4>
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <form method="POST">
+                                                            {% csrf_token %}
+                                                            <input style="display: none" name="userID"
+                                                                   value="{{ user.id }}">
+                                                            <h4>Are you sure you want to
+                                                                delete {{ user.first_name }} {{ user.last_name }}'s
+                                                                account?</h4>
+                                                            <div style="margin-top: 30px; margin-left: 350px;">
+                                                            <button type="submit" class="btn btn-primary">Confirm
+                                                            </button>
+                                                            <button type="button" class="btn btn-dark"
+                                                                    data-dismiss="modal"
+                                                                    aria-label="Close">Cancel
+                                                            </button>
+                                                                </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    </div>
+    </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $(".form-control input-sm").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#datatable-fixed-header tr td").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+
+{% endblock %}

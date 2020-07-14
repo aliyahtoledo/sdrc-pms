@@ -1,0 +1,2284 @@
+{% extends 'sdrc/base.html' %}
+
+{% block style %}
+    <style>
+
+/* ALERT RELATED CLASS (START) */
+
+.alert-area1 {
+  max-height: 100%;
+  position: fixed;
+  bottom: 5px;
+  left: 20px;
+  right: 20px;
+}
+
+.alert-box1 {
+  font-size: 16px;
+  color: white;
+  background: rgba(243,156,18,.88);
+  line-height: 1.3em;
+  padding: 10px 15px;
+  margin: 5px 10px;
+  position: relative;
+  border-radius: 5px;
+  transition: opacity 0.5s ease-in;
+  border-color: rgba(243,156,18,.88);
+}
+
+.alert-box.hide {
+  opacity: 0;
+}
+
+.alert-close {
+  background: transparent;
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.alert-close:before,
+.alert-close:after {
+  content: '';
+  width: 15px;
+  border-top: solid 2px white;
+  position: absolute;
+  top: 5px;
+  right: -1px;
+  display: block;
+}
+
+.alert-close:before {
+  transform: rotate(45deg);
+}
+
+.alert-close:after {
+  transform: rotate(135deg);
+}
+
+.alert-close:hover:before,
+.alert-close:hover:after {
+  border-top: solid 2px #d8d8d8;
+}
+
+@media (max-width: 767px) and (min-width: 481px) {
+  .alert-area1 {
+    left: 100px;
+    right: 100px;
+  }
+}
+
+@media (min-width: 768px) {
+  .alert-area1 {
+    width: 350px;
+    left: auto;
+    right: 0;
+  }
+}
+
+/* ALERT RELATED CLASS (END) */
+
+.alert-message-container {
+  text-align: center;
+  line-height: 2.5em;
+  margin-top: 50px;
+}
+
+.alert-message-box {
+  font-size: 20px;
+  width: 300px;
+  border: solid 1px #444;
+  padding: 10px 15px;
+  outline: none;
+  transition: box-shadow 0.1s;
+}
+
+.alert-message-box:focus {
+  box-shadow: 0 0 15px 2px #888;
+}
+
+.alert-message-button {
+  font-size: 18px;
+  color: white;
+  background: #14b9ff;
+  width: 250px;
+  border: solid 1px #14b9ff;
+  padding: 10px 20px;
+  margin-top: 5px;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.1s;
+}
+
+.alert-message-button:hover,
+.alert-message-button:focus,
+.alert-message-button:active {
+  background: #7dd8ff;
+}
+
+
+/* ALERT RELATED CLASS (END) */
+
+.alert-message-container {
+  text-align: center;
+  line-height: 2.5em;
+  margin-top: 50px;
+}
+
+.alert-message-box {
+  font-size: 20px;
+  width: 300px;
+  border: solid 1px #444;
+  padding: 10px 15px;
+  outline: none;
+  transition: box-shadow 0.1s;
+}
+
+.alert-message-box:focus {
+  box-shadow: 0 0 15px 2px #888;
+}
+
+.alert-message-button {
+  font-size: 18px;
+  color: white;
+  background: #14b9ff;
+  width: 250px;
+  border: solid 1px #14b9ff;
+  padding: 10px 20px;
+  margin-top: 5px;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.1s;
+}
+
+.alert-message-button:hover,
+.alert-message-button:focus,
+.alert-message-button:active {
+  background: #7dd8ff;
+}
+
+
+/* ALERT RELATED CLASS (START) */
+
+.alert-area {
+  max-height: 100%;
+  position: fixed;
+  bottom: 5px;
+  left: 20px;
+  right: 20px;
+}
+
+.alert-box {
+  font-size: 16px;
+  color: white;
+  background: rgba(231,76,60,.88);
+  line-height: 1.3em;
+  padding: 10px 15px;
+  margin: 5px 10px;
+  position: relative;
+  border-radius: 5px;
+  transition: opacity 0.5s ease-in;
+  border-color:rgba(231,76,60,.88);
+}
+
+.alert-box.hide {
+  opacity: 0;
+}
+
+.alert-close {
+  background: transparent;
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.alert-close:before,
+.alert-close:after {
+  content: '';
+  width: 15px;
+  border-top: solid 2px white;
+  position: absolute;
+  top: 5px;
+  right: -1px;
+  display: block;
+}
+
+.alert-close:before {
+  transform: rotate(45deg);
+}
+
+.alert-close:after {
+  transform: rotate(135deg);
+}
+
+.alert-close:hover:before,
+.alert-close:hover:after {
+  border-top: solid 2px #d8d8d8;
+}
+
+@media (max-width: 767px) and (min-width: 481px) {
+  .alert-area {
+    left: 100px;
+    right: 100px;
+  }
+}
+
+@media (min-width: 768px) {
+  .alert-area {
+    width: 350px;
+    left: auto;
+    right: 0;
+  }
+}
+
+/* ALERT RELATED CLASS (END) */
+
+.alert-message-container {
+  text-align: center;
+  line-height: 2.5em;
+  margin-top: 50px;
+}
+
+.alert-message-box {
+  font-size: 20px;
+  width: 300px;
+  border: solid 1px #444;
+  padding: 10px 15px;
+  outline: none;
+  transition: box-shadow 0.1s;
+}
+
+.alert-message-box:focus {
+  box-shadow: 0 0 15px 2px #888;
+}
+
+.alert-message-button {
+  font-size: 18px;
+  color: white;
+  background: #14b9ff;
+  width: 250px;
+  border: solid 1px #14b9ff;
+  padding: 10px 20px;
+  margin-top: 5px;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.1s;
+}
+
+.alert-message-button:hover,
+.alert-message-button:focus,
+.alert-message-button:active {
+  background: #7dd8ff;
+}
+
+
+
+
+    </style>
+{% endblock %}
+{% block content %}
+
+{% load humanize %}
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <div class="x_panel">
+
+                  <div class="x_title">
+                    <h2>Create Budget Plan </h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+     {% if not categories %}
+     <p class="red"><b>INSTRUCTIONS:<br>
+
+     1. Click the button of the expense category you want to allocate budget<br>
+    2. Choose among the list of specific expenses under each category from the dropdown menu
+    <br>
+    3. Fill up all required inputs, then click the "Add" button to display results
+    <br>
+    4. Once you finalized the budget plan,click the "Submit" button below to save the budget plan.
+     <br>
+         5. Wait for a success alert before exiting the page</b><br>
+     </p>
+
+        {%else %}
+          {% if messages %}
+    <div class="alert alert-success alert-dismissible fade in" role="alert" style="height: 50%;">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+                    </button>
+                     <ul class="messages">
+    {% for message in messages %}
+      <li class="{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+                  </div>
+{% endif %}
+     <p class="red"><b>Click the "Print" button to print the budget plan</b><br>
+     </p>
+{% endif %}
+
+
+    <br>
+  <h1> Project Name: {{ projects.projectTitle }}</h1>
+        <br>
+        <!-- display of budget and expense -->
+         <div class="animated flipInY col-lg-4 col-md-3 col-sm-6 col-xs-12">
+<div class="tile-stats">
+    <h3 class="projectBudgetTitle" id="projectBudgetTitle">Total Project Budget</h3>
+<div class="count projectBudgetAmount" id="projectBudgetAmount">P {{projects.trancheAmount|intcomma}}</div>
+
+
+</div>
+</div>
+{% if not categories %}
+         <div class="animated flipInY col-lg-4 col-md-3 col-sm-6 col-xs-12">
+<div class="tile-stats">
+    <h3>Total Projected Expenses</h3>
+{#    <input style="display:none" name="totalExpense" id="totalExpense">#}
+<div class="count" id="projectedExpense">P {{project.projectCost|intcomma}}</div><span><p class="red"><b>+ administrative cost</b></p></span>
+
+
+</div>
+</div>
+    {% endif %}
+ <!--end display of budget and expense -->
+
+        <!-- page content -->
+        <div class="x_content">
+     <hr>
+        <form id="form" class="form-horizontal form-label-left input_mask" method="POST">
+            {% csrf_token %}
+
+            <!-- PERSONNEL PANEL -->
+
+                 <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+       <div class="panel-title">
+            <h4 style="color:#4E5D73;">
+                <input type="text" id="personnel_category" value="Personnel" style="display:none">
+                <b style="display: inline-block;" >PROFESSIONAL FEES</b>
+
+                <b  style="display: inline-block;position: relative;margin-left: 40%">Budget Allocated: P {% if categories %}
+                    {% for t in total %}
+                        {% if t.category == 'Personnel' %}
+                            {{ t.sum|intcomma }}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %} <span id="personnelAlloc"></span></b>
+
+                <hr>
+                {% if not categories %}
+                  <button type="button" id="personnel_button"  class="btn btn-success btn-sm milestone_btn" data-toggle="modal" data-target="#personnel_modal"><span><i class="fa fa-plus-circle"></i></span> Add Personnel Expenses</button>
+               <br><br>
+                {% endif %}
+                <div style="display:none;" class="personnel-field">
+                    <input class="form-control col-md-2" style=" display:none;width:30%" placeholder="Input personnel" id="personnel_title_input">
+                   <select onclick="getPersonnelAmount()" class="select2_group form-control col-md-2"id="personnelSelect" style="width: 30%;">
+                       <option >Choose a personnel</option>
+                         <optgroup label="Others">
+                           <option value="other">Create new personnel</option>
+                       </optgroup>
+
+                       <optgroup label="Core Staff">
+                           <option value="Project Director">Project Director</option>
+                           <option value="Project Coordinator">Project Coordinator</option>
+                            <option value="Co-Investigator">Co-Investigator</option>
+                            <option value="Consultant">Consultant</option>
+                            <option value="Research Assistant (Documentation and Correspondence)">Research Assistant (Documentation and Correspondence)</option>
+                            <option value="Research Assistant (Regional Coordinator)">Research Assistant (Regional Coordinators)</option>
+                           <option value="Research Assistant (RRL)">Research Assistant(RRL)</option>
+                       </optgroup>
+
+                       <optgroup label="Fieldwork Staff">
+                           <option value="SDRC Hired Field Coordinator Luzon">SDRC Hired Field Coordinator Luzon</option>
+                            <option value="SDRC Hired Field Coordinator Visayas">SDRC Hired Field Coordinator Visayas</option>
+                            <option value="SDRC Hired Field Coordinator Mindanao">SDRC Hired Field Coordinator Mindanao</option>
+                            <option value="SDRC Hired Field Supervisor/Enumerator Luzon">SDRC Hired Field Supervisor/Enumerator Luzon</option>
+                            <option value="SDRC Hired Field Supervisor/Enumerator Visayas">SDRC Hired Field Supervisor/Enumerator Visayas</option>
+                            <option value="SDRC Hired Field Supervisor/Enumerator Mindanao">SDRC Hired Field Supervisor/Enumerator Mindanao</option>
+                            <option value="Local Enumerator Luzon"> Local Enumerator Luzon</option>
+                           <option value="Local Enumerator Visayas"> Local Enumerator Visayas</option>
+                           <option value="Local Enumerator Mindanao"> Local Enumerator Mindanao</option>
+                           <option value="Documentor"> Documentor</option>
+                           <option value="Translator Toolkit"> Translator Toolkit</option>
+                           <option value="Creative Committee"> Creative Committee</option>
+
+                       </optgroup>
+
+
+                   </select>
+                    <input type="number" onchange="computePersonnel()"  id="personnelQuantity" class="form-control col-md-2" placeholder="Pax" style="width: 10%;">
+                     <input type="number" id="personnelAmount" readonly class="form-control col-md-2" placeholder="Unit Rate" style="width: 20%;">
+                    <input type="number" id="personnelSubtotal" class="form-control col-md-2" readonly placeholder="Subtotal" style="width: 20%;">
+                    <button type="button" id="personnel_button_add"  class="btn btn-success btn-sm addPersonnel" style="margin-left:2%; margin-top:0%" data-toggle="modal" data-target="#personnel_modal">Add</button>
+                    <button type="button" id="personnel_other_button"  class="btn btn-success btn-sm " style="margin-left:2%; display: none; margin-top:0%" data-toggle="modal" data-target="#personnel_modal">Add</button>
+
+                </div>
+            </h4>
+
+
+
+       </div>
+
+      </div>
+      <div>
+          <br>
+      {% if categories %}
+           <table class="table table-striped" >
+                      <thead>
+                        <tr>
+
+                          <th>Personnel</th>
+                          <th>Pax</th>
+                            <th>Unit Rate</th>
+                            <th>Subtotal</th>
+
+
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for category in categories %}
+                          {% if category.category == 'Personnel' %}
+                      <tr>
+
+                          <td>{{ category.title | intcomma }}</td>
+                            <td>{{ category.quantity | intcomma }}</td>
+                            <td>{{ category.amount | intcomma }}</td>
+                      <td>{{ category.subtotal | intcomma }}</td>
+                      </tr>
+                          {% endif %}
+                      {% endfor %}
+
+
+                      </tbody>
+                    </table>
+              {% else %}
+          <table style="display: none" class="table table-striped" id="personneltable">
+                      <thead>
+                        <tr>
+
+                          <th>Personnel</th>
+                          <th>Pax</th>
+                            <th>Unit Rate</th>
+                            <th>Subtotal</th>
+
+
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                      <tr class="corestaff" style="background: #EED644">
+                          <td><b>Core Staff</b></td>
+                          <td></td>
+                            <td></td>
+                            <td></td>
+                      </tr>
+
+
+
+                       <tr class="fieldstaff" style="background: #F7BEC1" >
+                          <td><b>Others</b></td>
+                          <td></td>
+                            <td></td>
+                            <td></td>
+                      </tr>
+                      <tr></tr>
+
+                      </tbody>
+                    </table>
+          {% endif %}
+
+      </div>
+
+    </div>
+  </div>
+
+            <!-- TRAVEL AND SURVEY PANEL -->
+              <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+       <div class="panel-title">
+            <h4 style="color:#4E5D73;">
+                <input type="text" id="travel_category" value="Travel and Survey Cost"  style="display:none">
+                <b style="display: inline-block;" >TRAVEL AND SURVEY COST</b>
+
+
+                <b  style="display: inline-block;position: relative;margin-left: 40%">Budget Allocated: P {% if categories %}{% for t in total %}
+                    {% if t.category == 'Travel and Survey Cost' %}
+                        {{ t.sum|intcomma }}
+                {% endif %}{% endfor %}{% endif %}<span id="fieldAlloc"></span></b>
+
+                <hr>
+                {% if not categories %}
+                  <button type="button" id="field_button"  class="btn btn-success btn-sm milestone_btn" data-toggle="modal" data-target="#field_modal"><span><i class="fa fa-plus-circle"></i></span> Add Travel Expenses</button>
+               {% endif %}
+                <br><br>
+                <div style="display:none;" class="field-field">
+                     <input class="form-control col-md-2" style=" display:none;width:30%" placeholder="Input travel expense" id="field_title_input">
+                    <select onclick="getTravelSelect()" class="select2_group form-control col-md-2"id="fieldSelect" style="width: 30%;">
+                       <option >Choose travel expense </option>
+                         <optgroup label="Others">
+                           <option value="other">Create new travel expense</option>
+                       </optgroup>
+                        <optgroup label="Travel">
+                             <option value="Transportation">Transportation</option>
+                         <option value="Accomodations">Accomodations</option>
+                         <option value="Insurance Fee">Insurance Fee</option>
+                        </optgroup>
+                    </select>
+                         <input type="number" onchange="computeField()" id="fieldQuantity"  class="form-control col-md-2" placeholder="Pax" style="display:none;width: 20%;">
+                     <input type="number" onchange="computeField()" id="fieldAmount"  class="form-control col-md-2" placeholder="Unit Rate" style="width: 20%;display: none">
+                     <input type="number"  id="fieldTotal"  class="form-control col-md-2" placeholder="Total Amount" style="width: 20%;">
+{#                    <input type="number" id="fieldSubtotal" class="form-control col-md-2" readonly placeholder="Subtotal" style="width: 20%;display: none;">#}
+                    <input type="number"  id="fieldSubtotal_other" class="form-control col-md-2"  placeholder="Subtotal" style="width: 20%;display: none;">
+                    <button type="button" id="field_button_add"  class="btn btn-success btn-sm addField" style="margin-left:2%; margin-top:0%" data-toggle="modal" data-target="#personnel_modal">Add</button>
+                    <button type="button" id="field_other_button"  class="btn btn-success btn-sm " style="margin-left:2%; display: none; margin-top:0%" data-toggle="modal" data-target="#personnel_modal">Add</button>
+
+                </div>
+            </h4>
+
+
+
+       </div>
+
+      </div>
+      <div>
+          <br>
+          {% if not categories %}
+          <table style="display:none"class="table table-striped" id="fieldtable">
+                      <thead>
+                        <tr style="background:#EED644;">
+
+                          <th>Particulars</th>
+                          <th>Pax</th>
+                            <th>Unit Rate</th>
+                            <th>Total</th>
+
+
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                      </tbody>
+                    </table>
+          {% else %}
+
+            <table class="table table-striped" >
+                      <thead>
+                        <tr>
+
+                          <th>Particulars</th>
+                          <th>Pax</th>
+                            <th>Unit Rate</th>
+                            <th>Total</th>
+
+
+                        </tr>
+                      </thead>
+                 {% for category in categories %}
+                      <tbody>
+                      {% if category.category == 'Travel and Survey Cost' %}
+                          <tr>
+                          <td>{{ category.title | intcomma}}</td>
+                          <td>{{ category.quantity | intcomma}}</td>
+                          <td>{{ category.amount | intcomma}}</td>
+                          <td>{{ category.subtotal | intcomma}}</td>
+                          </tr>
+                      {% endif %}
+
+                      </tbody>
+              {% endfor %}
+                    </table>
+
+          {% endif %}
+
+      </div>
+
+    </div>
+  </div>
+
+
+            <!-- OPERATING PANEL -->
+            <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+       <div class="panel-title">
+            <h4 style="color:#4E5D73;">
+                <input type="text" id="operating_category" value="Operating Expense"  style="display:none">
+                <b style="display: inline-block;" >OPERATING EXPENSE</b>
+                <b  style="display: inline-block;position: relative;margin-left: 40%">Budget Allocated: P {% if categories %}
+                    {% for t in total %}
+                        {% if t.category == 'Operating Expense' %}
+                            {{ t.sum|intcomma }}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}<span id="operatingAlloc"></span></b>
+                <hr>
+                {% if not categories %}
+                  <button type="button" id="operating_button"  class="btn btn-success btn-sm milestone_btn" data-toggle="modal" data-target="#operating_modal"><span><i class="fa fa-plus-circle"></i></span> Add Operating Expenses</button>
+               {% endif %}
+                <br><br>
+                <div style="display:none;" class="operating-field">
+                     <input class="form-control col-md-2" style=" display:none;width:30%" placeholder="Input operating expense" id="operating_title_input">
+                    <select onclick="getOperatingSelect()" class="select2_group form-control col-md-2"id="operatingSelect" style="width: 30%;">
+                       <option >Choose operating expense </option>
+                         <optgroup label="Others">
+                           <option value="other">Create new operating expense</option>
+                       </optgroup>
+                        <optgroup label="Operating">
+                              <option value="Communication Expense">Communication Expense</option>
+                         <option value="Supplies and Materials">Supplies and Materials</option>
+                        <option value="Equipment">Equipment</option>
+                         <option value="Training">Training</option>
+                            <option value="Other Expense">Others</option>
+                        </optgroup>
+
+
+                    </select>
+                         <input type="number" onchange="computeOperating()" id="operatingQuantity"  class="form-control col-md-2" placeholder="Pax" style="display:none;width: 20%;">
+                     <input type="number" onchange="computeOperating()" id="operatingAmount"  class="form-control col-md-2" placeholder="Unit Rate" style="width: 20%;display: none">
+                     <input type="number"  id="operatingTotal"  class="form-control col-md-2" placeholder="Total Amount" style="width: 20%;">
+{#                    <input type="number" id="operatingSubtotal" class="form-control col-md-2" readonly placeholder="Subtotal" style="width: 20%;display: none;">#}
+                    <input type="number"  id="operatingSubtotal_other" class="form-control col-md-2"  placeholder="Subtotal" style="width: 20%;display: none;">
+                    <button type="button" id="operating_button_add"  class="btn btn-success btn-sm addOperating" style="margin-left:2%; margin-top:0%" data-toggle="modal" data-target="#personnel_modal">Add</button>
+                    <button type="button" id="operating_other_button"  class="btn btn-success btn-sm " style="margin-left:2%; display: none; margin-top:0%" data-toggle="modal" data-target="#personnel_modal">Add</button>
+
+                </div>
+            </h4>
+
+
+
+       </div>
+
+      </div>
+      <div>
+          <br>
+          {% if not categories %}
+          <table style="display:none"class="table table-striped" id="operatingtable">
+                      <thead>
+                        <tr style="background:#EED644;">
+
+                          <th>Particulars</th>
+                          <th>Pax</th>
+                            <th>Unit Rate</th>
+                            <th>Total</th>
+
+
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                      </tbody>
+                    </table>
+          {% else %}
+                <table class="table table-striped">
+                      <thead>
+                        <tr>
+
+                          <th>Particulars</th>
+                          <th>Pax</th>
+                            <th>Unit Rate</th>
+                            <th>Total</th>
+
+                        </tr>
+                      </thead>
+                {% for category in categories %}
+                      <tbody>
+                          {% if category.category == 'Operating Expense' %}
+                              <tr>
+                              <td>{{ category.title | intcomma}}</td>
+                              <td>{{ category.quantity| intcomma }}</td>
+                              <td>{{ category.amount | intcomma}}</td>
+                              <td>{{ category.subtotal| intcomma }}</td>
+                              </tr>
+                          {% endif %}
+                      </tbody>
+                {% endfor %}
+                    </table>
+          {% endif %}
+
+
+      </div>
+
+    </div>
+  </div>
+
+            <!-- OTHERS PANEL -->
+            <!-- ADMINISTRATIVE EXPENSE PANEL -->
+
+        {% if not categories %}
+        <button type="submit" id="submitPlan" class="btn btn-default source btn-primary">Submit</button>
+        {% else %}
+            <button type="button" id="printPlan" class="btn btn-default source btn-default">Print</button>
+            <a href="/{{ projects.id }}/update-budget-plan/"><button type="button" id="printPlan" class="btn btn-default source btn-primary">Update</button></a>
+        {% endif %}
+        </form>
+        {% if categories %}
+         <form method="POST">
+            {% csrf_token %}
+             <input style="display: none;" name="dontload" value="1">
+            <input style="display: none;" name="projectID" value="{{ pid }}">
+            <button type="submit" style="margin-top: -58px; margin-left: 145px;" class="btn btn-primary">Create Milestones</button>
+        </form>
+        {% endif %}
+    </div>
+    </div>
+
+  <!-- alert popup -->
+<div id="alert-area" class="alert-area"></div>
+<div id="alert-area1" class="alert-area1"></div>
+        <!-- end of page content -->
+
+    <script>
+    var personnelctr=0;
+    var travelctr=0;
+    var operatingctr=0;
+    var rowctr=2;
+    {#var adminExpenses=0;#}
+    var projectedExpense=0;
+   var personnelExpense=0;
+    var travelExpense=0;
+    var operatingExpense=0;
+    var totalExpense=0;
+    var personnelAlloc=0;
+     var fieldAlloc=0;
+      var operatingAlloc=0;
+
+    var personnelTitlesArray=[];
+    var personnelTitles=[];
+    var personnelQuantityArray=[];
+    var personnelQuatity=[]
+    var personnelAmountArray=[];
+    var personnelAmounts =[];
+    var personnelSubtotalArray=[];
+    var personnelSubtotals=[];
+    var personnelAllocatedArray = [];
+    var personnelTotalAllocatedArray =[];
+
+
+    var travelTitlesArray=[];
+    var travelTitles=[];
+    var travelQuantityArray=[];
+    var travelQuatity=[]
+    var travelAmountArray=[];
+    var travelAmounts =[];
+    var travelSubtotalArray=[];
+    var travelSubtotals=[];
+    var travelAllocatedArray = [];
+    var travelTotalAllocatedArray =[];
+
+    var operatingTitlesArray=[];
+    var operatingTitles=[];
+    var operatingQuantityArray=[];
+    var operatingQuatity=[]
+    var operatingAmountArray=[];
+    var operatingAmounts =[];
+    var operatingSubtotalArray=[];
+    var operatingSubtotals=[];
+    var operatingAllocatedArray = [];
+    var operatingTotalAllocatedArray =[];
+
+    var budgetVar=0;
+    var budgetRemaining = {{ projects.projectCost|safe }};
+
+
+
+    $("#personnel_button").click(function () {
+        $(".personnel-field").show()
+        $("#personnel_button").hide()
+    })
+
+    $(".addPersonnel").click(function () {
+
+        budgetVar = budgetRemaining - (document.getElementById("personnelSubtotal").value*1)
+
+
+        if(budgetVar>0){
+             if(document.getElementById("personnelSelect").value=="" || document.getElementById("personnelSelect").value == "Choose a personnel"){
+            alert("Please choose a personnel")
+        }
+
+        else if(document.getElementById("personnelQuantity").value==""){
+             alert("Please input a quantity")
+        }
+
+        else if(document.getElementById("personnelQuantity").value==""){
+             alert("Please input an amount")
+        }
+        else{
+             $("#personneltable").show()
+        var personnelTable=document.getElementById("personneltable")
+
+        var personnelRow = personnelTable.insertRow(2)
+
+        var personnel= personnelRow.insertCell(0)
+        var personnelQuantity= personnelRow.insertCell(1)
+        var personnelAmount= personnelRow.insertCell(2)
+        var personnelSubtotal= personnelRow.insertCell(3)
+
+        personnel.innerHTML=document.getElementById("personnelSelect").value
+        personnelQuantity.innerHTML=addCommas(document.getElementById("personnelQuantity").value)
+        personnelAmount.innerHTML=addCommas(document.getElementById("personnelAmount").value)
+        personnelSubtotal.innerHTML=addCommas(document.getElementById("personnelSubtotal").value)
+
+
+        alert("Click OK to confirm!")
+                  personnelAlloc = (personnelAlloc*1)+ (1*document.getElementById("personnelSubtotal").value)
+        document.getElementById("personnelAlloc").value=personnelAlloc
+        document.getElementById("personnelAlloc").innerHTML=addCommas(personnelAlloc)
+              projectedExpense=(projectedExpense*1)+((1*document.getElementById("personnelSubtotal").value))
+                {#var adminExpenses=projectedExpense*0.20#}
+          {#document.getElementById("admintable").rows[0].cells[1].innerHTML=adminExpenses#}
+            totalExpense=projectedExpense
+
+
+             document.getElementById("projectedExpense").innerHTML=addCommas(totalExpense)
+            personnelTitlesArray =[document.getElementById("personnelSelect").value]
+            personnelTitles.push(personnelTitlesArray)
+
+             personnelQuantityArray =[document.getElementById("personnelQuantity").value]
+            personnelQuatity.push(personnelQuantityArray)
+
+             personnelAmountArray =[document.getElementById("personnelAmount").value]
+            personnelAmounts.push(personnelAmountArray)
+
+             personnelSubtotalArray =[document.getElementById("personnelSubtotal").value]
+            personnelSubtotals.push(personnelSubtotalArray)
+
+
+
+         document.getElementById("personnelSelect").value="Choose a personnel"
+         document.getElementById("personnel_title_input").value=""
+        document.getElementById("personnelQuantity").value=""
+        document.getElementById("personnelAmount").value=""
+        document.getElementById("personnelSubtotal").value=""
+        rowctr++;
+             budgetRemaining = budgetVar
+                  document.getElementById("projectBudgetTitle").innerHTML= "Remaining Budget Amount"
+                  document.getElementById("projectBudgetAmount").innerHTML=addCommas(budgetRemaining)
+        }
+        }
+        else if(budgetVar<0){
+            lessBudget();
+            budgetVar = budgetRemaining
+
+        }
+        else if(budgetVar==0){
+            noBudget()
+             if(document.getElementById("personnelSelect").value=="" || document.getElementById("personnelSelect").value == "Choose a personnel"){
+            alert("Please choose a personnel")
+        }
+
+        else if(document.getElementById("personnelQuantity").value==""){
+             alert("Please input a quantity")
+        }
+
+        else if(document.getElementById("personnelQuantity").value==""){
+             alert("Please input an amount")
+        }
+        else{
+             $("#personneltable").show()
+        var personnelTable=document.getElementById("personneltable")
+
+        var personnelRow = personnelTable.insertRow(2)
+
+        var personnel= personnelRow.insertCell(0)
+        var personnelQuantity= personnelRow.insertCell(1)
+        var personnelAmount= personnelRow.insertCell(2)
+        var personnelSubtotal= personnelRow.insertCell(3)
+
+        personnel.innerHTML=document.getElementById("personnelSelect").value
+        personnelQuantity.innerHTML=addCommas(document.getElementById("personnelQuantity").value)
+        personnelAmount.innerHTML=addCommas(document.getElementById("personnelAmount").value)
+        personnelSubtotal.innerHTML=addCommas(document.getElementById("personnelSubtotal").value)
+
+
+        alert("Click OK to confirm!")
+
+
+              projectedExpense=(projectedExpense*1)+((1*document.getElementById("personnelSubtotal").value))
+                {#var adminExpenses=projectedExpense*0.20#}
+          {#document.getElementById("admintable").rows[0].cells[1].innerHTML=adminExpenses#}
+            totalExpense=projectedExpense
+
+
+             document.getElementById("projectedExpense").innerHTML=addCommas(totalExpense)
+            personnelTitlesArray =[document.getElementById("personnelSelect").value]
+            personnelTitles.push(personnelTitlesArray)
+
+             personnelQuantityArray =[document.getElementById("personnelQuantity").value]
+            personnelQuatity.push(personnelQuantityArray)
+
+             personnelAmountArray =[document.getElementById("personnelAmount").value]
+            personnelAmounts.push(personnelAmountArray)
+
+             personnelSubtotalArray =[document.getElementById("personnelSubtotal").value]
+            personnelSubtotals.push(personnelSubtotalArray)
+
+
+
+         document.getElementById("personnelSelect").value="Choose a personnel"
+         document.getElementById("personnel_title_input").value=""
+        document.getElementById("personnelQuantity").value=""
+        document.getElementById("personnelAmount").value=""
+        document.getElementById("personnelSubtotal").value=""
+        rowctr++
+             budgetRemaining = budgetVar
+                  document.getElementById("projectBudgetTitle").innerHTML= "Remaining Budget Amount"
+                  document.getElementById("projectBudgetAmount").innerHTML=addCommas(budgetRemaining)
+
+        }
+
+        }
+
+
+
+
+
+    })
+
+   $("#personnel_other_button").click(function () {
+
+       budgetVar = budgetRemaining - (document.getElementById("personnelSubtotal").value*1)
+
+       if(budgetVar>0){
+            $("#personnel_other_button").hide()
+       $("#personnel_button_add").show()
+       $("#personnelSelect").show()
+       $("#personnel_title_input").hide()
+       document.getElementById("personnelAmount").setAttribute("readonly","readonly")
+
+        if(document.getElementById("personnel_title_input").value==""){
+            alert("Please input a personnel")
+        }
+
+        else if(document.getElementById("personnelQuantity").value==""){
+             alert("Please input a quantity")
+        }
+
+        else if(document.getElementById("personnelQuantity").value==""){
+             alert("Please input an amount")
+        }
+        else{
+             $("#personneltable").show()
+        var personnelTable=document.getElementById("personneltable")
+
+        var personnelRow = personnelTable.insertRow(rowctr+1)
+
+        var personnel= personnelRow.insertCell(0)
+        var personnelQuantity= personnelRow.insertCell(1)
+        var personnelAmount= personnelRow.insertCell(2)
+        var personnelSubtotal= personnelRow.insertCell(3)
+
+        personnel.innerHTML=document.getElementById("personnel_title_input").value
+        personnelQuantity.innerHTML=addCommas(document.getElementById("personnelQuantity").value)
+        personnelAmount.innerHTML=addCommas(document.getElementById("personnelAmount").value)
+        personnelSubtotal.innerHTML=addCommas(document.getElementById("personnelSubtotal").value)
+       alert("Click OK to confirm")
+        personnelAlloc = (personnelAlloc*1)+ (1*document.getElementById("personnelSubtotal").value)
+        document.getElementById("personnelAlloc").value=personnelAlloc
+        document.getElementById("personnelAlloc").innerHTML=addCommas(personnelAlloc)
+
+
+              projectedExpense=(projectedExpense*1)+((1*document.getElementById("personnelSubtotal").value))
+                {#var adminExpenses=projectedExpense*0.20#}
+          {#document.getElementById("admintable").rows[0].cells[1].innerHTML=adminExpenses#}
+            totalExpense=projectedExpense
+
+            document.getElementById("projectedExpense").innerHTML=addCommas(totalExpense)
+             document.getElementById("projectedExpense").innerHTML=addCommas(totalExpense)
+
+             personnelTitlesArray =[document.getElementById("personnel_title_input").value]
+            personnelTitles.push(personnelTitlesArray)
+
+             personnelQuantityArray =[document.getElementById("personnelQuantity").value]
+            personnelQuatity.push(personnelQuantityArray)
+
+             personnelAmountArray =[document.getElementById("personnelAmount").value]
+            personnelAmounts.push(personnelAmountArray)
+
+             personnelSubtotalArray =[document.getElementById("personnelSubtotal").value]
+            personnelSubtotals.push(personnelSubtotalArray)
+
+        document.getElementById("personnelSelect").value="Choose a personnel"
+         document.getElementById("personnel_title_input").value=""
+        document.getElementById("personnelQuantity").value=""
+        document.getElementById("personnelAmount").value=""
+        document.getElementById("personnelSubtotal").value=""
+            budgetRemaining=budgetVar
+              document.getElementById("projectBudgetTitle").innerHTML= "Remaining Budget Amount"
+                  document.getElementById("projectBudgetAmount").innerHTML=addCommas(budgetRemaining)
+        }
+       }
+       else if(budgetVar<0){
+           lessBudget()
+           budgetVar = budgetRemaining
+       }
+       else if(budgetVar == 0){
+           noBudget()
+            $("#personnel_other_button").hide()
+       $("#personnel_button_add").show()
+       $("#personnelSelect").show()
+       $("#personnel_title_input").hide()
+       document.getElementById("personnelAmount").setAttribute("readonly","readonly")
+
+        if(document.getElementById("personnel_title_input").value==""){
+            alert("Please input a personnel")
+        }
+
+        else if(document.getElementById("personnelQuantity").value==""){
+             alert("Please input a quantity")
+        }
+
+        else if(document.getElementById("personnelQuantity").value==""){
+             alert("Please input an amount")
+        }
+        else{
+             $("#personneltable").show()
+        var personnelTable=document.getElementById("personneltable")
+
+        var personnelRow = personnelTable.insertRow(rowctr+1)
+
+        var personnel= personnelRow.insertCell(0)
+        var personnelQuantity= personnelRow.insertCell(1)
+        var personnelAmount= personnelRow.insertCell(2)
+        var personnelSubtotal= personnelRow.insertCell(3)
+
+        personnel.innerHTML=document.getElementById("personnel_title_input").value
+        personnelQuantity.innerHTML=addCommas(document.getElementById("personnelQuantity").value)
+        personnelAmount.innerHTML=addCommas(document.getElementById("personnelAmount").value)
+        personnelSubtotal.innerHTML=addCommas(document.getElementById("personnelSubtotal").value)
+       alert("Click OK to confirm")
+        personnelAlloc = (personnelAlloc*1)+ (1*document.getElementById("personnelSubtotal").value)
+        document.getElementById("personnelAlloc").value=personnelAlloc
+        document.getElementById("personnelAlloc").innerHTML=addCommas(personnelAlloc)
+
+
+              projectedExpense=(projectedExpense*1)+((1*document.getElementById("personnelSubtotal").value))
+                {#var adminExpenses=projectedExpense*0.20#}
+          {#document.getElementById("admintable").rows[0].cells[1].innerHTML=adminExpenses#}
+            totalExpense=projectedExpense
+
+            document.getElementById("projectedExpense").innerHTML=addCommas(totalExpense)
+             document.getElementById("projectedExpense").innerHTML=addCommas(totalExpense)
+
+             personnelTitlesArray =[document.getElementById("personnel_title_input").value]
+            personnelTitles.push(personnelTitlesArray)
+
+             personnelQuantityArray =[document.getElementById("personnelQuantity").value]
+            personnelQuatity.push(personnelQuantityArray)
+
+             personnelAmountArray =[document.getElementById("personnelAmount").value]
+            personnelAmounts.push(personnelAmountArray)
+
+             personnelSubtotalArray =[document.getElementById("personnelSubtotal").value]
+            personnelSubtotals.push(personnelSubtotalArray)
+
+        document.getElementById("personnelSelect").value="Choose a personnel"
+         document.getElementById("personnel_title_input").value=""
+        document.getElementById("personnelQuantity").value=""
+        document.getElementById("personnelAmount").value=""
+        document.getElementById("personnelSubtotal").value=""
+            budgetRemaining=budgetVar
+              document.getElementById("projectBudgetTitle").innerHTML= "Remaining Budget Amount"
+                  document.getElementById("projectBudgetAmount").innerHTML=addCommas(budgetRemaining)
+        }
+       }
+
+
+
+   })
+
+
+    function getPersonnelAmount(){
+       if(document.getElementById("personnelSelect").value=="Project Director"){
+            $("#personnel_title_input").hide()
+            $("#personnelSelect").show()
+
+             document.getElementById("personnelAmount").setAttribute("readonly","readonly")
+          document.getElementById("personnelAmount").value=45000
+           var pAmount =  document.getElementById("personnelAmount").value
+        var pQuantity= document.getElementById("personnelQuantity").value
+        var pSubtotal = document.getElementById("personnelSubtotal").value= pAmount*pQuantity
+
+       }
+       else if(document.getElementById("personnelSelect").value=="Project Coordinator"){
+           document.getElementById("personnelAmount").setAttribute("readonly","readonly")
+            document.getElementById("personnelAmount").value=30000
+           var pAmount =  document.getElementById("personnelAmount").value
+        var pQuantity= document.getElementById("personnelQuantity").value
+        var pSubtotal = document.getElementById("personnelSubtotal").value= pAmount*pQuantity
+       }
+
+       else if(document.getElementById("personnelSelect").value=="Co-Investigator"){
+           $("#personnel_title_input").hide()
+            $("#personnelSelect").show()
+           document.getElementById("personnelAmount").setAttribute("readonly","readonly")
+            document.getElementById("personnelAmount").value=40000
+           var pAmount =  document.getElementById("personnelAmount").value
+        var pQuantity= document.getElementById("personnelQuantity").value
+        var pSubtotal = document.getElementById("personnelSubtotal").value= pAmount*pQuantity
+       }
+       else if(document.getElementById("personnelSelect").value=="Consultant"){
+           $("#personnel_title_input").hide()
+            $("#personnelSelect").show()
+           document.getElementById("personnelAmount").setAttribute("readonly","readonly")
+            document.getElementById("personnelAmount").value=20000
+           var pAmount =  document.getElementById("personnelAmount").value
+        var pQuantity= document.getElementById("personnelQuantity").value
+        var pSubtotal = document.getElementById("personnelSubtotal").value= pAmount*pQuantity
+       }
+
+       else if(document.getElementById("personnelSelect").value=="Research Assistant (Documentation and Correspondence)"){
+           $("#personnel_title_input").hide()
+            $("#personnelSelect").show()
+           document.getElementById("personnelAmount").setAttribute("readonly","readonly")
+            document.getElementById("personnelAmount").value=17000
+           var pAmount =  document.getElementById("personnelAmount").value
+        var pQuantity= document.getElementById("personnelQuantity").value
+        var pSubtotal = document.getElementById("personnelSubtotal").value= pAmount*pQuantity
+       }
+           else if(document.getElementById("personnelSelect").value=="Research Assistant (Regional Coordinator)"){
+               $("#personnel_title_input").hide()
+            $("#personnelSelect").show()
+               document.getElementById("personnelAmount").setAttribute("readonly","readonly")
+            document.getElementById("personnelAmount").value=17000
+           var pAmount =  document.getElementById("personnelAmount").value
+        var pQuantity= document.getElementById("personnelQuantity").value
+        var pSubtotal = document.getElementById("personnelSubtotal").value= pAmount*pQuantity
+       }
+           else if(document.getElementById("personnelSelect").value=="Research Assistant (RRL)"){
+               $("#personnel_title_input").hide()
+            $("#personnelSelect").show()
+               document.getElementById("personnelAmount").setAttribute("readonly","readonly")
+            document.getElementById("personnelAmount").value=10000
+           var pAmount =  document.getElementById("personnelAmount").value
+        var pQuantity= document.getElementById("personnelQuantity").value
+        var pSubtotal = document.getElementById("personnelSubtotal").value= pAmount*pQuantity
+       }
+            else if(document.getElementById("personnelSelect").value=="SDRC Hired Field Coordinator Luzon"){
+                $("#personnel_title_input").hide()
+            $("#personnelSelect").show()
+                document.getElementById("personnelAmount").setAttribute("readonly","readonly")
+            document.getElementById("personnelAmount").value=850
+           var pAmount =  document.getElementById("personnelAmount").value
+        var pQuantity= document.getElementById("personnelQuantity").value
+        var pSubtotal = document.getElementById("personnelSubtotal").value= pAmount*pQuantity
+       }
+             else if(document.getElementById("personnelSelect").value=="SDRC Hired Field Coordinator Visayas"){
+                 $("#personnel_title_input").hide()
+            $("#personnelSelect").show()
+                 document.getElementById("personnelAmount").setAttribute("readonly","readonly")
+            document.getElementById("personnelAmount").value=850
+           var pAmount =  document.getElementById("personnelAmount").value
+        var pQuantity= document.getElementById("personnelQuantity").value
+        var pSubtotal = document.getElementById("personnelSubtotal").value= pAmount*pQuantity
+       }
+              else if(document.getElementById("personnelSelect").value=="SDRC Hired Field Coordinator Mindanao"){
+                  $("#personnel_title_input").hide()
+            $("#personnelSelect").show()
+                  document.getElementById("personnelAmount").setAttribute("readonly","readonly")
+            document.getElementById("personnelAmount").value=850
+           var pAmount =  document.getElementById("personnelAmount").value
+        var pQuantity= document.getElementById("personnelQuantity").value
+        var pSubtotal = document.getElementById("personnelSubtotal").value= pAmount*pQuantity
+       }
+          else if(document.getElementById("personnelSelect").value=="SDRC Hired Field Supervisor/Enumerator Luzon"){
+              $("#personnel_title_input").hide()
+            $("#personnelSelect").show()
+              document.getElementById("personnelAmount").setAttribute("readonly","readonly")
+            document.getElementById("personnelAmount").value=800
+           var pAmount =  document.getElementById("personnelAmount").value
+        var pQuantity= document.getElementById("personnelQuantity").value
+        var pSubtotal = document.getElementById("personnelSubtotal").value= pAmount*pQuantity
+       }
+            else if(document.getElementById("personnelSelect").value=="SDRC Hired Field Supervisor/Enumerator Visayas"){
+                document.getElementById("personnelAmount").setAttribute("readonly","readonly")
+            document.getElementById("personnelAmount").value=800
+           var pAmount =  document.getElementById("personnelAmount").value
+        var pQuantity= document.getElementById("personnelQuantity").value
+        var pSubtotal = document.getElementById("personnelSubtotal").value= pAmount*pQuantity
+       }
+            else if(document.getElementById("personnelSelect").value=="SDRC Hired Field Supervisor/Enumerator Mindanao"){
+                $("#personnel_title_input").hide()
+            $("#personnelSelect").show()
+                document.getElementById("personnelAmount").setAttribute("readonly","readonly")
+            document.getElementById("personnelAmount").value=800
+           var pAmount =  document.getElementById("personnelAmount").value
+        var pQuantity= document.getElementById("personnelQuantity").value
+        var pSubtotal = document.getElementById("personnelSubtotal").value= pAmount*pQuantity
+       }
+            else if(document.getElementById("personnelSelect").value=="Local Enumerator Luzon"){
+                $("#personnel_title_input").hide()
+            $("#personnelSelect").show()
+                document.getElementById("personnelAmount").setAttribute("readonly","readonly")
+            document.getElementById("personnelAmount").value=550
+           var pAmount =  document.getElementById("personnelAmount").value
+        var pQuantity= document.getElementById("personnelQuantity").value
+        var pSubtotal = document.getElementById("personnelSubtotal").value= pAmount*pQuantity
+       }
+             else if(document.getElementById("personnelSelect").value=="Local Enumerator Visayas"){
+                 $("#personnel_title_input").hide()
+            $("#personnelSelect").show()
+                 document.getElementById("personnelAmount").setAttribute("readonly","readonly")
+            document.getElementById("personnelAmount").value=550
+           var pAmount =  document.getElementById("personnelAmount").value
+        var pQuantity= document.getElementById("personnelQuantity").value
+        var pSubtotal = document.getElementById("personnelSubtotal").value= pAmount*pQuantity
+       }
+              else if(document.getElementById("personnelSelect").value=="Local Enumerator Mindanao"){
+                  $("#personnel_title_input").hide()
+            $("#personnelSelect").show()
+                  document.getElementById("personnelAmount").setAttribute("readonly","readonly")
+            document.getElementById("personnelAmount").value=550
+           var pAmount =  document.getElementById("personnelAmount").value
+        var pQuantity= document.getElementById("personnelQuantity").value
+        var pSubtotal = document.getElementById("personnelSubtotal").value= pAmount*pQuantity
+       }
+               else if(document.getElementById("personnelSelect").value=="Documentor"){
+                   $("#personnel_title_input").hide()
+            $("#personnelSelect").show()
+                   document.getElementById("personnelAmount").setAttribute("readonly","readonly")
+            document.getElementById("personnelAmount").value=500
+           var pAmount =  document.getElementById("personnelAmount").value
+        var pQuantity= document.getElementById("personnelQuantity").value
+        var pSubtotal = document.getElementById("personnelSubtotal").value= pAmount*pQuantity
+       }
+                else if(document.getElementById("personnelSelect").value=="Translator Toolkit"){
+                    $("#personnel_title_input").hide()
+            $("#personnelSelect").show()
+                    document.getElementById("personnelAmount").setAttribute("readonly","readonly")
+            document.getElementById("personnelAmount").value=10000
+           var pAmount =  document.getElementById("personnelAmount").value
+        var pQuantity= document.getElementById("personnelQuantity").value
+        var pSubtotal = document.getElementById("personnelSubtotal").value= pAmount*pQuantity
+       }
+       {#         else if(document.getElementById("personnelSelect").value==" Transcriber"){#}
+       {#              $("#personnel_title_input").hide()#}
+       {#     $("#personnelSelect").show()#}
+       {#              document.getElementById("personnelAmount").setAttribute("readonly","readonly")#}
+       {#     document.getElementById("personnelAmount").value=2000#}
+       {#    var pAmount =  document.getElementById("personnelAmount").value#}
+       {# var pQuantity= document.getElementById("personnelQuantity").value#}
+       {# var pSubtotal = document.getElementById("personnelSubtotal").value= pAmount*pQuantity#}
+
+                  else if(document.getElementById("personnelSelect").value=="Creative Committee"){
+                      $("#personnel_title_input").hide()
+            $("#personnelSelect").show()
+                      document.getElementById("personnelAmount").setAttribute("readonly","readonly")
+            document.getElementById("personnelAmount").value=50000
+           var pAmount =  document.getElementById("personnelAmount").value
+        var pQuantity= document.getElementById("personnelQuantity").value
+        var pSubtotal = document.getElementById("personnelSubtotal").value= pAmount*pQuantity
+       }
+                  else if(document.getElementById("personnelSelect").value=="other"){
+                      document.getElementById("personnelAmount").removeAttribute("readonly")
+            $("#personnel_button_add").hide()
+           $("#personnel_other_button").show()
+
+           $("#personnel_title_input").show()
+            $("#personnelSelect").hide()
+
+           var pAmount =  document.getElementById("personnelAmount").value
+        var pQuantity= document.getElementById("personnelQuantity").value
+        var pSubtotal = document.getElementById("personnelSubtotal").value= pAmount*pQuantity
+           document.getElementById("personnelAmount").onchange = function () {computePersonnel()}
+
+       }
+
+    }
+
+    function computePersonnel(){
+        var pAmount =  document.getElementById("personnelAmount").value
+        var pQuantity= document.getElementById("personnelQuantity").value
+        var pSubtotal = document.getElementById("personnelSubtotal").value= pAmount*pQuantity
+    }
+
+    //TRAVEL AND SURVEY
+     $("#field_button").click(function () {
+        $(".field-field").show()
+        $("#field_button").hide()
+    })
+
+    function getTravelSelect(){
+        if(document.getElementById("fieldSelect").value=="Insurance Fee"){
+              $("#fieldSelect").show()
+            $("#fieldTotal").show()
+            document.getElementById("fieldTotal").setAttribute("readonly","readonly")
+            $("#fieldQuantity").show()
+            $("#fieldAmount").show()
+              $("#field_other_button").hide()
+            $("#field_button_add").show()
+        }
+        else if(document.getElementById("fieldSelect").value=="other"){
+            $("#fieldTotal").show()
+             $("#fieldSelect").hide()
+             $("#field_title_input").show()
+            $("#fieldQuantity").show()
+            $("#fieldAmount").show()
+            $("#field_other_button").show()
+            $("#field_button_add").hide()
+
+        }
+        else{
+              $("#fieldSelect").show()
+              $("#field_other_button").hide()
+            $("#field_button_add").show()
+             $("#fieldTotal").show()
+             document.getElementById("fieldTotal").removeAttribute("readonly")
+            $("#fieldQuantity").hide()
+            $("#fieldAmount").hide()
+
+
+        }
+    }
+
+    function computeField(){
+
+
+            var fTotal =  document.getElementById("fieldTotal").value
+            var fQuantity= document.getElementById("fieldQuantity").value
+            var fAmount= document.getElementById("fieldAmount").value
+            var fSubtotal = document.getElementById("fieldTotal").value= fAmount*fQuantity
+
+
+
+    }
+
+    $(".addField").click(function () {
+
+        budgetVar = budgetRemaining - (document.getElementById("fieldTotal").value*1)
+
+        if(budgetVar>0){
+            $("#fieldtable").show()
+        var fieldTable=document.getElementById("fieldtable")
+
+        var fieldRow = fieldTable.insertRow(1)
+
+        var field= fieldRow.insertCell(0)
+        var fieldQuantity= fieldRow.insertCell(1)
+        var fieldAmount= fieldRow.insertCell(2)
+        var fieldTotal= fieldRow.insertCell(3)
+
+
+        field.innerHTML=document.getElementById("fieldSelect").value
+        fieldQuantity.innerHTML=addCommas(document.getElementById("fieldQuantity").value)
+        fieldAmount.innerHTML=addCommas(document.getElementById("fieldAmount").value)
+        fieldTotal.innerHTML=addCommas(document.getElementById("fieldTotal").value)
+
+
+        alert("Click OK to confirm!")
+
+         fieldAlloc = (fieldAlloc*1)+ (1*document.getElementById("fieldTotal").value)
+        document.getElementById("fieldAlloc").value=fieldAlloc
+        document.getElementById("fieldAlloc").innerHTML=addCommas(fieldAlloc)
+
+
+              projectedExpense=(projectedExpense*1)+((1*document.getElementById("fieldTotal").value))
+                {#var adminExpenses=projectedExpense*0.20#}
+          {#document.getElementById("admintable").rows[0].cells[1].innerHTML=adminExpenses#}
+            totalExpense=projectedExpense
+
+            document.getElementById("projectedExpense").innerHTML=addCommas(totalExpense)
+
+        travelTitlesArray =[document.getElementById("fieldSelect").value]
+          travelTitles.push(travelTitlesArray)
+
+        if(document.getElementById("fieldQuantity").value == ""){
+           travelQuantityArray =[document.getElementById("fieldQuantity").value=0]
+          travelQuatity.push(travelQuantityArray)
+
+        }
+        else if (document.getElementById("fieldQuantity").value!= ""){
+             travelQuantityArray =[document.getElementById("fieldQuantity").value]
+          travelQuatity.push(travelQuantityArray)
+        }
+
+        if(document.getElementById("fieldAmount").value == ""){
+           travelAmountArray =[document.getElementById("fieldAmount").value=0]
+          travelAmounts.push(travelAmountArray)
+        }
+        else if (document.getElementById("fieldAmount").value != ""){
+             travelAmountArray =[document.getElementById("fieldAmount").value]
+          travelAmounts.push(travelAmountArray)
+        }
+
+
+
+           travelSubtotalArray =[document.getElementById("fieldTotal").value]
+          travelSubtotals.push(travelSubtotalArray)
+
+         document.getElementById("fieldSelect").value="Choose travel expense"
+         document.getElementById("field_title_input").value=""
+        document.getElementById("fieldQuantity").value=""
+        document.getElementById("fieldAmount").value=""
+        document.getElementById("fieldTotal").value=""
+          $("#fieldQuantity").hide()
+            $("#fieldAmount").hide()
+         $("#fieldAmount").hide()
+         document.getElementById("fieldTotal").setAttribute("readonly","readonly")
+            budgetRemaining=budgetVar
+              document.getElementById("projectBudgetTitle").innerHTML= "Remaining Budget Amount"
+                  document.getElementById("projectBudgetAmount").innerHTML=addCommas(budgetRemaining)
+
+        }
+        else if(budgetVar<0){
+            lessBudget()
+            budgetVar=budgetRemaining
+        }
+        else if(budgetVar==0){
+            noBudget()
+            $("#fieldtable").show()
+        var fieldTable=document.getElementById("fieldtable")
+
+        var fieldRow = fieldTable.insertRow(1)
+
+        var field= fieldRow.insertCell(0)
+        var fieldQuantity= fieldRow.insertCell(1)
+        var fieldAmount= fieldRow.insertCell(2)
+        var fieldTotal= fieldRow.insertCell(3)
+
+
+        field.innerHTML=document.getElementById("fieldSelect").value
+        fieldQuantity.innerHTML=addCommas(document.getElementById("fieldQuantity").value)
+        fieldAmount.innerHTML=addCommas(document.getElementById("fieldAmount").value)
+        fieldTotal.innerHTML=addCommas(document.getElementById("fieldTotal").value)
+
+
+        alert("Click OK to confirm!")
+
+         fieldAlloc = (fieldAlloc*1)+ (1*document.getElementById("fieldTotal").value)
+        document.getElementById("fieldAlloc").value=fieldAlloc
+        document.getElementById("fieldAlloc").innerHTML=addCommas(fieldAlloc)
+
+
+              projectedExpense=(projectedExpense*1)+((1*document.getElementById("fieldTotal").value))
+                {#var adminExpenses=projectedExpense*0.20#}
+          {#document.getElementById("admintable").rows[0].cells[1].innerHTML=adminExpenses#}
+            totalExpense=projectedExpense
+
+            document.getElementById("projectedExpense").innerHTML=addCommas(totalExpense)
+
+        travelTitlesArray =[document.getElementById("fieldSelect").value]
+          travelTitles.push(travelTitlesArray)
+
+        if(document.getElementById("fieldQuantity").value == ""){
+           travelQuantityArray =[document.getElementById("fieldQuantity").value=0]
+          travelQuatity.push(travelQuantityArray)
+
+        }
+        else if (document.getElementById("fieldQuantity").value!= ""){
+             travelQuantityArray =[document.getElementById("fieldQuantity").value]
+          travelQuatity.push(travelQuantityArray)
+        }
+
+        if(document.getElementById("fieldAmount").value == ""){
+           travelAmountArray =[document.getElementById("fieldAmount").value=0]
+          travelAmounts.push(travelAmountArray)
+        }
+        else if (document.getElementById("fieldAmount").value != ""){
+             travelAmountArray =[document.getElementById("fieldAmount").value]
+          travelAmounts.push(travelAmountArray)
+        }
+
+
+
+           travelSubtotalArray =[document.getElementById("fieldTotal").value]
+          travelSubtotals.push(travelSubtotalArray)
+
+         document.getElementById("fieldSelect").value="Choose travel expense"
+         document.getElementById("field_title_input").value=""
+        document.getElementById("fieldQuantity").value=""
+        document.getElementById("fieldAmount").value=""
+        document.getElementById("fieldTotal").value=""
+          $("#fieldQuantity").hide()
+            $("#fieldAmount").hide()
+         $("#fieldAmount").hide()
+         document.getElementById("fieldTotal").setAttribute("readonly","readonly")
+            budgetRemaining=budgetVar
+              document.getElementById("projectBudgetTitle").innerHTML= "Remaining Budget Amount"
+                  document.getElementById("projectBudgetAmount").innerHTML=addCommas(budgetRemaining)
+        }
+
+
+
+
+
+    })
+
+
+    $("#field_other_button").click(function () {
+        budgetVar = budgetRemaining - (document.getElementById("fieldTotal").value*1)
+        if (budgetVar>0){
+             $("#fieldtable").show()
+        var fieldTable=document.getElementById("fieldtable")
+
+        var fieldRow = fieldTable.insertRow(1)
+
+        var field= fieldRow.insertCell(0)
+        var fieldQuantity= fieldRow.insertCell(1)
+        var fieldAmount= fieldRow.insertCell(2)
+        var fieldTotal= fieldRow.insertCell(3)
+
+
+        field.innerHTML=document.getElementById("field_title_input").value
+        fieldQuantity.innerHTML=addCommas(document.getElementById("fieldQuantity").value)
+        fieldAmount.innerHTML=addCommas(document.getElementById("fieldAmount").value)
+        fieldTotal.innerHTML=addCommas(document.getElementById("fieldTotal").value)
+
+
+        alert("Click OK to confirm!")
+
+         fieldAlloc = (fieldAlloc*1)+ (1*document.getElementById("fieldTotal").value)
+        document.getElementById("fieldAlloc").value=fieldAlloc
+        document.getElementById("fieldAlloc").innerHTML=addCommas(fieldAlloc)
+
+              projectedExpense=(projectedExpense*1)+((1*document.getElementById("fieldTotal").value))
+                {#var adminExpenses=projectedExpense*0.20#}
+          {#document.getElementById("admintable").rows[0].cells[1].innerHTML=adminExpenses#}
+            totalExpense=projectedExpense
+            document.getElementById("projectedExpense").innerHTML=addCommas(totalExpense)
+        $("#field_title_input").hide()
+        $("#fieldSelect").show()
+         travelTitlesArray =[document.getElementById("field_title_input").value]
+          travelTitles.push(travelTitlesArray)
+
+        if(document.getElementById("fieldQuantity").value == ""){
+           travelQuantityArray =[document.getElementById("fieldQuantity").value=0]
+          travelQuatity.push(travelQuantityArray)
+
+        }
+        else if (document.getElementById("fieldQuantity").value!= ""){
+             travelQuantityArray =[document.getElementById("fieldQuantity").value]
+          travelQuatity.push(travelQuantityArray)
+        }
+
+        if(document.getElementById("fieldAmount").value == ""){
+           travelAmountArray =[document.getElementById("fieldAmount").value=0]
+          travelAmounts.push(travelAmountArray)
+        }
+        else if (document.getElementById("fieldAmount").value != ""){
+             travelAmountArray =[document.getElementById("fieldAmount").value]
+          travelAmounts.push(travelAmountArray)
+        }
+
+
+
+           travelSubtotalArray =[document.getElementById("fieldTotal").value]
+          travelSubtotals.push(travelSubtotalArray)
+         document.getElementById("fieldSelect").value="Choose travel expense"
+         document.getElementById("field_title_input").value=""
+        document.getElementById("fieldQuantity").value=""
+        document.getElementById("fieldAmount").value=""
+        document.getElementById("fieldTotal").value=""
+          $("#fieldQuantity").hide()
+            $("#fieldAmount").hide()
+         $("#fieldAmount").hide()
+         document.getElementById("fieldTotal").setAttribute("readonly","readonly")
+            budgetRemaining=budgetVar
+              document.getElementById("projectBudgetTitle").innerHTML= "Remaining Budget Amount"
+                  document.getElementById("projectBudgetAmount").innerHTML=addCommas(budgetRemaining)
+        }
+
+        else if(budgetVar<0){
+            lessBudget()
+            budgetVar=budgetRemaining
+        }
+        else if(budgetVar==0){
+            noBudget()
+            $("#fieldtable").show()
+        var fieldTable=document.getElementById("fieldtable")
+
+        var fieldRow = fieldTable.insertRow(1)
+
+        var field= fieldRow.insertCell(0)
+        var fieldQuantity= fieldRow.insertCell(1)
+        var fieldAmount= fieldRow.insertCell(2)
+        var fieldTotal= fieldRow.insertCell(3)
+
+
+        field.innerHTML=document.getElementById("field_title_input").value
+        fieldQuantity.innerHTML=addCommas(document.getElementById("fieldQuantity").value)
+        fieldAmount.innerHTML=addCommas(document.getElementById("fieldAmount").value)
+        fieldTotal.innerHTML=addCommas(document.getElementById("fieldTotal").value)
+
+
+        alert("Click OK to confirm!")
+
+         fieldAlloc = (fieldAlloc*1)+ (1*document.getElementById("fieldTotal").value)
+        document.getElementById("fieldAlloc").value=fieldAlloc
+        document.getElementById("fieldAlloc").innerHTML=addCommas(fieldAlloc)
+
+              projectedExpense=(projectedExpense*1)+((1*document.getElementById("fieldTotal").value))
+                {#var adminExpenses=projectedExpense*0.20#}
+          {#document.getElementById("admintable").rows[0].cells[1].innerHTML=adminExpenses#}
+            totalExpense=projectedExpense
+            document.getElementById("projectedExpense").innerHTML=addCommas(totalExpense)
+        $("#field_title_input").hide()
+        $("#fieldSelect").show()
+         travelTitlesArray =[document.getElementById("field_title_input").value]
+          travelTitles.push(travelTitlesArray)
+
+        if(document.getElementById("fieldQuantity").value == ""){
+           travelQuantityArray =[document.getElementById("fieldQuantity").value=0]
+          travelQuatity.push(travelQuantityArray)
+
+        }
+        else if (document.getElementById("fieldQuantity").value!= ""){
+             travelQuantityArray =[document.getElementById("fieldQuantity").value]
+          travelQuatity.push(travelQuantityArray)
+        }
+
+        if(document.getElementById("fieldAmount").value == ""){
+           travelAmountArray =[document.getElementById("fieldAmount").value=0]
+          travelAmounts.push(travelAmountArray)
+        }
+        else if (document.getElementById("fieldAmount").value != ""){
+             travelAmountArray =[document.getElementById("fieldAmount").value]
+          travelAmounts.push(travelAmountArray)
+        }
+
+
+
+           travelSubtotalArray =[document.getElementById("fieldTotal").value]
+          travelSubtotals.push(travelSubtotalArray)
+         document.getElementById("fieldSelect").value="Choose travel expense"
+         document.getElementById("field_title_input").value=""
+        document.getElementById("fieldQuantity").value=""
+        document.getElementById("fieldAmount").value=""
+        document.getElementById("fieldTotal").value=""
+          $("#fieldQuantity").hide()
+            $("#fieldAmount").hide()
+         $("#fieldAmount").hide()
+         document.getElementById("fieldTotal").setAttribute("readonly","readonly")
+            budgetRemaining=budgetVar
+              document.getElementById("projectBudgetTitle").innerHTML= "Remaining Budget Amount"
+                  document.getElementById("projectBudgetAmount").innerHTML=addCommas(budgetRemaining)
+        }
+
+
+
+
+    })
+
+    // OPERATING EXPENSE
+     $("#operating_button").click(function () {
+        $(".operating-field").show()
+        $("#operating_button").hide()
+    })
+
+     function getOperatingSelect(){
+
+         if(document.getElementById("operatingSelect").value=="other"){
+            $("#operatingTotal").show()
+             $("#operatingSelect").hide()
+             $("#operating_title_input").show()
+            $("#operatingQuantity").show()
+            $("#operatingAmount").show()
+            $("#operating_other_button").show()
+            $("#operating_button_add").hide()
+
+        }
+        else{
+              $("#operatingSelect").show()
+              $("#operating_other_button").hide()
+            $("#operating_button_add").show()
+             $("#operatingTotal").show()
+             document.getElementById("operatingTotal").removeAttribute("readonly")
+            $("#operatingQuantity").hide()
+            $("#operatingAmount").hide()
+
+
+        }
+    }
+
+      function computeOperating(){
+        var oTotal =  document.getElementById("operatingTotal").value
+        var oQuantity= document.getElementById("operatingQuantity").value
+        var oAmount= document.getElementById("operatingAmount").value
+        var oSubtotal = document.getElementById("operatingTotal").value= oAmount*oQuantity
+
+
+    }
+
+     $(".addOperating").click(function () {
+
+         budgetVar = budgetRemaining - (document.getElementById("operatingTotal").value*1)
+
+         if(budgetVar>0){
+              $("#operatingtable").show()
+        var operatingTable=document.getElementById("operatingtable")
+
+        var operatingRow = operatingTable.insertRow(1)
+
+        var operating= operatingRow.insertCell(0)
+        var operatingQuantity= operatingRow.insertCell(1)
+        var operatingAmount= operatingRow.insertCell(2)
+        var operatingTotal= operatingRow.insertCell(3)
+
+
+        operating.innerHTML=document.getElementById("operatingSelect").value
+        operatingQuantity.innerHTML=addCommas(document.getElementById("operatingQuantity").value)
+        operatingAmount.innerHTML=addCommas(document.getElementById("operatingAmount").value)
+        operatingTotal.innerHTML=addCommas(document.getElementById("operatingTotal").value)
+
+
+        alert("Click OK to confirm!")
+
+         operatingAlloc = (operatingAlloc*1)+ (1*document.getElementById("operatingTotal").value)
+        document.getElementById("operatingAlloc").value=operatingAlloc
+        document.getElementById("operatingAlloc").innerHTML=addCommas(operatingAlloc)
+
+              projectedExpense=(projectedExpense*1)+((1*document.getElementById("operatingTotal").value))
+                {#var adminExpenses=projectedExpense*0.20#}
+          {#document.getElementById("admintable").rows[0].cells[1].innerHTML=adminExpenses#}
+            totalExpense=projectedExpense
+            document.getElementById("projectedExpense").innerHTML=addCommas(totalExpense)
+
+        operatingTitlesArray =[document.getElementById("operatingSelect").value]
+         operatingTitles.push(operatingTitlesArray)
+
+        if(document.getElementById("operatingQuantity").value == ""){
+          operatingQuantityArray =[document.getElementById("operatingQuantity").value=0]
+         operatingQuatity.push(operatingQuantityArray)
+
+        }
+        else if (document.getElementById("operatingQuantity").value!= ""){
+            operatingQuantityArray =[document.getElementById("operatingQuantity").value]
+         operatingQuatity.push(operatingQuantityArray)
+        }
+
+        if(document.getElementById("operatingAmount").value == ""){
+          operatingAmountArray =[document.getElementById("operatingAmount").value=0]
+         operatingAmounts.push(operatingAmountArray)
+        }
+        else if (document.getElementById("operatingAmount").value != ""){
+            operatingAmountArray =[document.getElementById("operatingAmount").value]
+         operatingAmounts.push(operatingAmountArray)
+        }
+
+          operatingSubtotalArray =[document.getElementById("operatingTotal").value]
+         operatingSubtotals.push(operatingSubtotalArray)
+
+         document.getElementById("operatingSelect").value="Choose operating expense"
+         document.getElementById("operating_title_input").value=""
+        document.getElementById("operatingQuantity").value=""
+        document.getElementById("operatingAmount").value=""
+        document.getElementById("operatingTotal").value=""
+          $("#operatingQuantity").hide()
+            $("#operatingAmount").hide()
+         $("#operatingAmount").hide()
+         document.getElementById("operatingTotal").setAttribute("readonly","readonly")
+             budgetRemaining=budgetVar
+               document.getElementById("projectBudgetTitle").innerHTML= "Remaining Budget Amount"
+                  document.getElementById("projectBudgetAmount").innerHTML=addCommas(budgetRemaining)
+         }
+
+         else if(budgetVar<0){
+             lessBudget()
+             budgetVar=budgetRemaining
+         }
+         if(budgetVar==0){
+             noBudget()
+              $("#operatingtable").show()
+        var operatingTable=document.getElementById("operatingtable")
+
+        var operatingRow = operatingTable.insertRow(1)
+
+        var operating= operatingRow.insertCell(0)
+        var operatingQuantity= operatingRow.insertCell(1)
+        var operatingAmount= operatingRow.insertCell(2)
+        var operatingTotal= operatingRow.insertCell(3)
+
+
+        operating.innerHTML=document.getElementById("operatingSelect").value
+        operatingQuantity.innerHTML=addCommas(document.getElementById("operatingQuantity").value)
+        operatingAmount.innerHTML=addCommas(document.getElementById("operatingAmount").value)
+        operatingTotal.innerHTML=addCommas(document.getElementById("operatingTotal").value)
+
+
+        alert("Click OK to confirm!")
+
+         operatingAlloc = (operatingAlloc*1)+ (1*document.getElementById("operatingTotal").value)
+        document.getElementById("operatingAlloc").value=operatingAlloc
+        document.getElementById("operatingAlloc").innerHTML=addCommas(operatingAlloc)
+
+              projectedExpense=(projectedExpense*1)+((1*document.getElementById("operatingTotal").value))
+                {#var adminExpenses=projectedExpense*0.20#}
+          {#document.getElementById("admintable").rows[0].cells[1].innerHTML=adminExpenses#}
+            totalExpense=projectedExpense
+            document.getElementById("projectedExpense").innerHTML=addCommas(totalExpense)
+
+        operatingTitlesArray =[document.getElementById("operatingSelect").value]
+         operatingTitles.push(operatingTitlesArray)
+
+        if(document.getElementById("operatingQuantity").value == ""){
+          operatingQuantityArray =[document.getElementById("operatingQuantity").value=0]
+         operatingQuatity.push(operatingQuantityArray)
+
+        }
+        else if (document.getElementById("operatingQuantity").value!= ""){
+            operatingQuantityArray =[document.getElementById("operatingQuantity").value]
+         operatingQuatity.push(operatingQuantityArray)
+        }
+
+        if(document.getElementById("operatingAmount").value == ""){
+          operatingAmountArray =[document.getElementById("operatingAmount").value=0]
+         operatingAmounts.push(operatingAmountArray)
+        }
+        else if (document.getElementById("operatingAmount").value != ""){
+            operatingAmountArray =[document.getElementById("operatingAmount").value]
+         operatingAmounts.push(operatingAmountArray)
+        }
+
+          operatingSubtotalArray =[document.getElementById("operatingTotal").value]
+         operatingSubtotals.push(operatingSubtotalArray)
+
+         document.getElementById("operatingSelect").value="Choose operating expense"
+         document.getElementById("operating_title_input").value=""
+        document.getElementById("operatingQuantity").value=""
+        document.getElementById("operatingAmount").value=""
+        document.getElementById("operatingTotal").value=""
+          $("#operatingQuantity").hide()
+            $("#operatingAmount").hide()
+         $("#operatingAmount").hide()
+         document.getElementById("operatingTotal").setAttribute("readonly","readonly")
+             budgetRemaining=budgetVar
+               document.getElementById("projectBudgetTitle").innerHTML= "Remaining Budget Amount"
+                  document.getElementById("projectBudgetAmount").innerHTML=addCommas(budgetRemaining)
+         }
+
+
+
+
+
+    })
+
+     $("#operating_other_button").click(function () {
+         budgetVar = budgetRemaining - (document.getElementById("operatingTotal").value*1)
+         if(budgetVar>0){
+             $("#operatingtable").show()
+        var operatingTable=document.getElementById("operatingtable")
+
+        var operatingRow = operatingTable.insertRow(1)
+
+        var operating= operatingRow.insertCell(0)
+        var operatingQuantity= operatingRow.insertCell(1)
+        var operatingAmount= operatingRow.insertCell(2)
+        var operatingTotal= operatingRow.insertCell(3)
+
+
+        operating.innerHTML=document.getElementById("operating_title_input").value
+        operatingQuantity.innerHTML=addCommas(document.getElementById("operatingQuantity").value)
+        operatingAmount.innerHTML=addCommas(document.getElementById("operatingAmount").value)
+        operatingTotal.innerHTML=addCommas(document.getElementById("operatingTotal").value)
+
+
+        alert("Click OK to confirm!")
+
+         operatingAlloc = (operatingAlloc*1)+ (1*document.getElementById("operatingTotal").value)
+        document.getElementById("operatingAlloc").value=operatingAlloc
+        document.getElementById("operatingAlloc").innerHTML=addCommas(operatingAlloc)
+
+              projectedExpense=(projectedExpense*1)+((1*document.getElementById("operatingTotal").value))
+                {#var adminExpenses=projectedExpense*0.20#}
+          {#document.getElementById("admintable").rows[0].cells[1].innerHTML=adminExpenses#}
+            totalExpense=projectedExpense
+            document.getElementById("projectedExpense").innerHTML=addCommas(totalExpense)
+        $("#operating_title_input").hide()
+        $("#operatingSelect").show()
+            operatingTitlesArray =[document.getElementById("operating_title_input").value]
+         operatingTitles.push(operatingTitlesArray)
+
+        if(document.getElementById("operatingQuantity").value == ""){
+          operatingQuantityArray =[document.getElementById("operatingQuantity").value=0]
+         operatingQuatity.push(operatingQuantityArray)
+
+        }
+        else if (document.getElementById("operatingQuantity").value!= ""){
+            operatingQuantityArray =[document.getElementById("operatingQuantity").value]
+         operatingQuatity.push(operatingQuantityArray)
+        }
+
+        if(document.getElementById("operatingAmount").value == ""){
+          operatingAmountArray =[document.getElementById("operatingAmount").value=0]
+         operatingAmounts.push(operatingAmountArray)
+        }
+        else if (document.getElementById("operatingAmount").value != ""){
+            operatingAmountArray =[document.getElementById("operatingAmount").value]
+         operatingAmounts.push(operatingAmountArray)
+        }
+
+          operatingSubtotalArray =[document.getElementById("operatingTotal").value]
+         operatingSubtotals.push(operatingSubtotalArray)
+         document.getElementById("operatingSelect").value="Choose operating expense"
+         document.getElementById("operating_title_input").value=""
+        document.getElementById("operatingQuantity").value=""
+        document.getElementById("operatingAmount").value=""
+        document.getElementById("operatingTotal").value=""
+          $("#operatingQuantity").hide()
+            $("#operatingAmount").hide()
+         $("#operatingAmount").hide()
+         document.getElementById("operatingTotal").setAttribute("readonly","readonly")
+             budgetRemaining=budgetVar
+               document.getElementById("projectBudgetTitle").innerHTML= "Remaining Budget Amount"
+                  document.getElementById("projectBudgetAmount").innerHTML=addCommas(budgetRemaining)
+
+         }
+         else if(budgetVar<0){
+             lessBudget()
+             budgetVar=budgetRemaining
+         }
+         else if(budgetVar==0){
+             noBudget()
+             $("#operatingtable").show()
+        var operatingTable=document.getElementById("operatingtable")
+
+        var operatingRow = operatingTable.insertRow(1)
+
+        var operating= operatingRow.insertCell(0)
+        var operatingQuantity= operatingRow.insertCell(1)
+        var operatingAmount= operatingRow.insertCell(2)
+        var operatingTotal= operatingRow.insertCell(3)
+
+
+        operating.innerHTML=document.getElementById("operating_title_input").value
+        operatingQuantity.innerHTML=addCommas(document.getElementById("operatingQuantity").value)
+        operatingAmount.innerHTML=addCommas(document.getElementById("operatingAmount").value)
+        operatingTotal.innerHTML=addCommas(document.getElementById("operatingTotal").value)
+
+
+        alert("Click OK to confirm!")
+
+         operatingAlloc = (operatingAlloc*1)+ (1*document.getElementById("operatingTotal").value)
+        document.getElementById("operatingAlloc").value=operatingAlloc
+        document.getElementById("operatingAlloc").innerHTML=addCommas(operatingAlloc)
+
+              projectedExpense=(projectedExpense*1)+((1*document.getElementById("operatingTotal").value))
+                {#var adminExpenses=projectedExpense*0.20#}
+          {#document.getElementById("admintable").rows[0].cells[1].innerHTML=adminExpenses#}
+            totalExpense=projectedExpense
+            document.getElementById("projectedExpense").innerHTML=addCommas(totalExpense)
+        $("#operating_title_input").hide()
+        $("#operatingSelect").show()
+            operatingTitlesArray =[document.getElementById("operating_title_input").value]
+         operatingTitles.push(operatingTitlesArray)
+
+        if(document.getElementById("operatingQuantity").value == ""){
+          operatingQuantityArray =[document.getElementById("operatingQuantity").value=0]
+         operatingQuatity.push(operatingQuantityArray)
+
+        }
+        else if (document.getElementById("operatingQuantity").value!= ""){
+            operatingQuantityArray =[document.getElementById("operatingQuantity").value]
+         operatingQuatity.push(operatingQuantityArray)
+        }
+
+        if(document.getElementById("operatingAmount").value == ""){
+          operatingAmountArray =[document.getElementById("operatingAmount").value=0]
+         operatingAmounts.push(operatingAmountArray)
+        }
+        else if (document.getElementById("operatingAmount").value != ""){
+            operatingAmountArray =[document.getElementById("operatingAmount").value]
+         operatingAmounts.push(operatingAmountArray)
+        }
+
+          operatingSubtotalArray =[document.getElementById("operatingTotal").value]
+         operatingSubtotals.push(operatingSubtotalArray)
+         document.getElementById("operatingSelect").value="Choose operating expense"
+         document.getElementById("operating_title_input").value=""
+        document.getElementById("operatingQuantity").value=""
+        document.getElementById("operatingAmount").value=""
+        document.getElementById("operatingTotal").value=""
+          $("#operatingQuantity").hide()
+            $("#operatingAmount").hide()
+         $("#operatingAmount").hide()
+         document.getElementById("operatingTotal").setAttribute("readonly","readonly")
+             budgetRemaining=budgetVar
+               document.getElementById("projectBudgetTitle").innerHTML= "Remaining Budget Amount"
+                  document.getElementById("projectBudgetAmount").innerHTML=addCommas(budgetRemaining)
+
+         }
+
+
+
+
+
+    })
+
+    //ADMINISTRATIVE EXPENSE
+
+    $("#submitPlan").click(function () {
+
+
+        if(budgetVar == 0){
+            for(i=0; i<personnelTitles.length;i++){
+
+              $.ajax({
+             url: "/create-budget-plan/",
+             type: "POST",
+             async:false,
+             data:{
+                 personnel_id:document.getElementById("personnel_category").value,
+                 personnel_title:JSON.stringify(personnelTitles[i]),
+                 personnel_quatity:JSON.stringify(personnelQuatity[i]),
+                 personnel_amount:JSON.stringify(personnelAmounts[i]),
+                 personnel_subtotal:JSON.stringify(personnelSubtotals[i]),
+                 personnel_totalallocated:personnelAlloc,
+                 csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+             },
+
+            success:function (response) {
+
+
+             }
+
+         })
+        }
+
+          for(i=0; i<travelTitles.length;i++){
+              $.ajax({
+             url: "/create-budget-plan/",
+             type: "POST",
+             async:false,
+             data:{
+
+                 travel_id:document.getElementById("travel_category").value,
+                 travel_title:JSON.stringify(travelTitles[i]),
+                 travel_quatity:JSON.stringify(travelQuatity[i]),
+                 travel_amount:JSON.stringify(travelAmounts[i]),
+                 travel_subtotal:JSON.stringify(travelSubtotals[i]),
+                 travel_totalallocated:fieldAlloc,
+                 csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+             },
+
+            success:function (response) {
+
+
+             }
+
+         })
+        }
+           for(i=0; i<operatingTitles.length;i++){
+              $.ajax({
+             url: "/create-budget-plan/",
+             type: "POST",
+             async:false,
+             data:{
+
+                 operating_id:document.getElementById("operating_category").value,
+                 operating_title:JSON.stringify(operatingTitles[i]),
+                 operating_quatity:JSON.stringify(operatingQuatity[i]),
+                 operating_amount:JSON.stringify(operatingAmounts[i]),
+                 operating_subtotal:JSON.stringify(operatingSubtotals[i]),
+                 operating_totalallocated:operatingAlloc,
+                 csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+             },
+
+            success:function (response) {
+
+
+             }
+
+         })
+        }
+        alert("Budget Plan Successfully Created!")
+
+        }
+        else{
+            alert("You still have remaining " + addCommas(budgetVar) + " left")
+        }
+
+
+    })
+
+
+
+
+function addCommas(nStr)
+{
+	nStr += '';
+	x = nStr.split('.');
+	x1 = x[0];
+	x2 = x.length > 1 ? '.' + x[1] : '';
+	var rgx = /(\d+)(\d{3})/;
+	while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + ',' + '$2');
+	}
+	return(x1 + x2) ;
+}
+
+ function lessBudget(){
+ // The main class
+var AlertBox = function(id, option) {
+  this.show = function(msg) {
+    if (msg === ''  || typeof msg === 'undefined' || msg === null) {
+      throw '"msg parameter is empty"';
+    }
+    else {
+      var alertArea = document.querySelector(id);
+      var alertBox = document.createElement('DIV');
+      var alertContent = document.createElement('DIV');
+      var alertClose = document.createElement('A');
+      var alertClass = this;
+      alertContent.classList.add('alert-content');
+      alertContent.innerText = msg;
+      alertClose.classList.add('alert-close');
+      alertClose.setAttribute('href', '#');
+      alertBox.classList.add('alert-box');
+      alertBox.appendChild(alertContent);
+      if (!option.hideCloseButton || typeof option.hideCloseButton === 'undefined') {
+        alertBox.appendChild(alertClose);
+      }
+      alertArea.appendChild(alertBox);
+      alertClose.addEventListener('click', function(event) {
+        event.preventDefault();
+        alertClass.hide(alertBox);
+      });
+      if (!option.persistent) {
+        var alertTimeout = setTimeout(function() {
+          alertClass.hide(alertBox);
+          clearTimeout(alertTimeout);
+        }, option.closeTime);
+      }
+    }
+  };
+
+  this.hide = function(alertBox) {
+    alertBox.classList.add('hide');
+    var disperseTimeout = setTimeout(function() {
+      alertBox.parentNode.removeChild(alertBox);
+      clearTimeout(disperseTimeout);
+    }, 500);
+  };
+};
+
+// Sample invoke
+var alertNonPersistent = document.querySelector('#alertNonPersistent');
+var alertPersistent = document.querySelector('#alertPersistent');
+var alertShowMessage = document.querySelector('#personnelSave');
+var alertHiddenClose = document.querySelector('#alertHiddenClose');
+var alertMessageBox = document.querySelector('#alertMessageBox');
+var alertbox = new AlertBox('#alert-area', {
+  closeTime: 15000,
+  persistent: false,
+  hideCloseButton: false
+});
+var alertboxPersistent = new AlertBox('#alert-area', {
+  closeTime: 15000,
+  persistent: true,
+  hideCloseButton: false
+});
+var alertNoClose = new AlertBox('#alert-area', {
+  closeTime: 15000,
+  persistent: false,
+  hideCloseButton: true
+});
+
+  alertbox.show('You exceed your budget limit! Your Remaining Budget is only: '+ 'P '+ addCommas(budgetRemaining));
+
+ }
+
+
+function noBudget(){
+// The main class
+var AlertBox = function(id, option) {
+  this.show = function(msg) {
+    if (msg === ''  || typeof msg === 'undefined' || msg === null) {
+      throw '"msg parameter is empty"';
+    }
+    else {
+      var alertArea = document.querySelector(id);
+      var alertBox = document.createElement('DIV');
+      var alertContent = document.createElement('DIV');
+      var alertClose = document.createElement('A');
+      var alertClass = this;
+      alertContent.classList.add('alert-content1');
+      alertContent.innerText = msg;
+      alertClose.classList.add('alert-close1');
+      alertClose.setAttribute('href', '#');
+      alertBox.classList.add('alert-box1');
+      alertBox.appendChild(alertContent);
+      if (!option.hideCloseButton || typeof option.hideCloseButton === 'undefined') {
+        alertBox.appendChild(alertClose);
+      }
+      alertArea.appendChild(alertBox);
+      alertClose.addEventListener('click', function(event) {
+        event.preventDefault();
+        alertClass.hide(alertBox);
+      });
+      if (!option.persistent) {
+        var alertTimeout = setTimeout(function() {
+          alertClass.hide(alertBox);
+          clearTimeout(alertTimeout);
+        }, option.closeTime);
+      }
+    }
+  };
+
+  this.hide = function(alertBox) {
+    alertBox.classList.add('hide');
+    var disperseTimeout = setTimeout(function() {
+      alertBox.parentNode.removeChild(alertBox);
+      clearTimeout(disperseTimeout);
+    }, 500);
+  };
+};
+
+// Sample invoke
+
+var alertShowMessage = document.querySelector('#alertShowMessage');
+
+var alertbox = new AlertBox('#alert-area1', {
+  closeTime: 15000,
+  persistent: false,
+  hideCloseButton: false
+});
+var alertboxPersistent = new AlertBox('#alert-area1', {
+  closeTime: 15000,
+  persistent: true,
+  hideCloseButton: false
+});
+var alertNoClose = new AlertBox('#alert-area1', {
+  closeTime: 15000,
+  persistent: false,
+  hideCloseButton: true
+});
+
+
+
+  alertbox.show('You have reached your budget limit! Your Remaining Budget:' + ' P' + 0 );
+
+
+}
+$("#printPlan").click(function () {
+    var myWindow = window.open('/print-budget-plan/');
+    myWindow.print();
+    myWindow.close;
+});
+
+
+
+
+
+
+    </script>
+{% endblock %}

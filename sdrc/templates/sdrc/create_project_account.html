@@ -1,0 +1,270 @@
+{% extends "sdrc/base.html" %}
+
+{% block style %}
+   <style>
+        #create-forms{
+            width:300px;
+        }
+     #account-no-form{
+            width:100px;
+        }
+.input-icon {
+  position: relative;
+}
+
+.input-icon > i {
+  position: absolute;
+  display: block;
+  transform: translate(0, -50%);
+  top: 55%;
+  pointer-events: none;
+  width: 25px;
+  text-align: center;
+  font-style: normal;
+}
+
+.input-icon > input {
+  padding-left: 25px;
+  padding-right: 0;
+}
+
+.input-icon-right > i {
+  right: 0px;
+}
+
+.input-icon-right > input {
+  padding-left: 0;
+  padding-right: 25px;
+  text-align: right;
+}
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% if request.user.is_staff %}
+
+     <div class="x_panel">
+
+                  <div class="x_title">
+                    <h2>Create new project account <small>Please fill out the following</small></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+                      </div>
+                    <br>
+                    <form class="form-horizontal form-label-left input_mask" onsubmit="projectCreated()" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                         <div class="form-group" >
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Account Number: <span class="requird red">*</span> </label>
+                        <div class="col-md-9 col-sm-9 col-xs-12" id="account-no-form">
+                          <input type="number" class="form-control" name = "accountNumber" id="accountNumber" required="required">
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Project Title <span class="requird red">*</span>
+                        </label>
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                          <input class="date-picker form-control col-md-7 col-xs-12" name="projectTitle" id="title" required="required" type="text">
+                        </div>
+                      </div>
+
+                          <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Project Lead / Manager <span class="requird red">*</span>
+                        </label>
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                         <select name="principalInvestigator" class="form-control col-md-7 col-xs-12">
+
+                        {% for entry in user %}
+                            <div class="col-4">
+                                <div class="input-group">
+                        <option value="{{ entry.id }}">{{ entry.first_name }} {{ entry.last_name }}</option>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        </select>
+                        </div>
+                      </div>
+
+
+                          <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Funding Agency <span class="requird red">*</span>
+                        </label>
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                          <input class="date-picker form-control col-md-7 col-xs-12" name="fundingAgency" id="agencyName" required="required" type="text">
+                        </div>
+                      </div>
+
+                        <div class="row">
+
+
+                         <div class="form-group">
+
+                             <div class="col-md-6" style="margin-left: 103px;">
+                        <label class="control-label col-md-4 col-sm-4 col-xs-12">Start Date<span class="requird red">*</span>
+                        </label>
+
+                                  <fieldset>
+                          <div class="control-group">
+                            <div class="controls">
+                              <div class="col-md-12">
+                                <input type="date" class="form-control has-feedback-left"  name="startDate" placeholder="">
+                                <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                              </div>
+                            </div>
+                          </div>
+                        </fieldset>
+
+                             </div>
+                             <div class="col-md-6"  style="margin-left: -106px;">
+
+                               <label class="control-label col-md-4">End Date <span class="requird red">*</span>
+                        </label>
+
+                                  <fieldset>
+                          <div class="control-group">
+                            <div class="controls">
+                              <div class="col-md-12">
+                                <input type="date" class="form-control has-feedback-left"  name="endDate" placeholder="">
+                                <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                              </div>
+                            </div>
+                          </div>
+                        </fieldset>
+
+                             </div>
+                      </div>
+                    </div>
+                           <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Project Cost: <span class="requird red">*</span>
+                        </label></label>
+                        <div class="col-md-9 col-sm-9 col-xs-12" id="create-forms">
+                            <div class="input-icon">
+                                <input type="text" class="form-control" placeholder="Input the amount in numbers" name="projectCost" id="projectCost" required="required">
+                                <i><b>₱</b></i>
+                            </div>
+                        </div>
+
+                      </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Has Tranche <span class="requird red">*</span>
+                        </label></label>
+                        <div class="col-md-9 col-sm-9 col-xs-12" id="create-forms">
+                            <label for="">Yes</label>
+                            <input type="radio" name="hasTranche" value="Yes" checked>
+
+                            <label for="">No</label>
+                            <input type="radio" name="hasTranche" value="No">
+                        </div>
+
+                      </div>
+
+                        <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Project Description <span class="required red">*</span>
+                        </label>
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                          <textarea class="form-control" required=required rows="3" placeholder="" name="projectOverview" id="description"></textarea>
+                        </div>
+                      </div>
+                        <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Project Contract File <span class="required red">*</span>
+                        </label>
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                         <div class="btn-group">
+                      <input type="file" required=required name= "files" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage">
+                    </div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Amount Received<span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <div class="input-icon">
+                                <input type="text" class="form-control" placeholder="Input the amount in numbers" name="trancheAmount" id="approvedAmount" required="required">
+                                <i><b>₱</b></i>
+                            </div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Date Received
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                         <input type="date" class="form-control has-feedback-left"  name="dateReceived" placeholder="">
+                                <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                        </div>
+                      </div>
+                      <div class="ln_solid"></div>
+                      <div class="form-group">
+                        <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
+                          <button type="button" class="btn btn-primary">Cancel</button>
+                          <button type="submit" class="btn btn-success">Submit</button>
+                        </div>
+                      </div>
+
+                    </form>
+                  </div>
+                </div>
+    </div>
+
+        {% else %}
+
+        <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+     <h2>Restricted access!</h2>
+                </div>
+        </div>
+
+    {% endif %}
+
+
+{% endblock %}
+
+{% block script%}
+     <script>
+   function projectCreated(){
+     alert('Project successfully created!')
+
+    };
+    </script>
+    <script>
+    $('#projectCost').keyup(function(event) {
+
+      // format number
+      $(this).val(function(index, value) {
+        return value
+        .replace(/\D/g, "")
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        ;
+      });
+    });
+    $('#approvedAmount').keyup(function(event) {
+
+      // format number
+      $(this).val(function(index, value) {
+        return value
+        .replace(/\D/g, "")
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        ;
+      });
+    });
+    </script>
+
+{% endblock %}

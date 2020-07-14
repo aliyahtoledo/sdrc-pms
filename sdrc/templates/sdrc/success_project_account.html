@@ -1,0 +1,15 @@
+{% extends 'sdrc/base.html' %}
+{% block content %}
+     {% if messages %}
+                          <div class="row">
+                              <div class="col-sm-6 col-sm-offset ">
+                                  {% for message in messages %}
+                                  <p {% if message.tags == "success" %} class="alert alert-success alert-dismissible fade in" role="alert" {% endif %}> {{ message }}</p>
+                              {% endfor %}
+                              </div>
+                          </div>
+                      {% endif %}
+
+
+    <a href=/{{ project.id }}/tor><h6><span><i class="fa fa-arrow-circle-right"></i> Click here to proceed in creating project contract</span></h6></a>
+{% endblock %}

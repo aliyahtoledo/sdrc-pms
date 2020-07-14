@@ -1,0 +1,1706 @@
+{% extends 'sdrc/base.html' %}
+
+{% block style %}
+
+{% endblock %}
+{% load humanize %}
+{% block content %}
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://geodata.solutions/includes/countrystatecity.js"></script>
+    <div class="x_panel">
+    <!--DIV TITLE-->
+    <div class="x_title">
+        <h2>Request for Procurement</h2>
+        <div class="clearfix"></div>
+    </div>
+    <!--END DIV TITLE-->
+    <div class="x_content">
+        {% if milestone %}
+            <h4>Request for procurement will only be available once milestone {{ milestone.milestoneName }} has been
+                finished. Thank you.</h4>
+        {% else %}
+            <!--FORM FOR PROCUREMENT-->
+            {% if project.hasTranche == True %}
+
+                <form class="form-horizontal" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group input-group col-md-12">
+                        <h1>{{ milestones.milestoneName }}
+                            <small class="green">(Tranche Amount: {{ milestones.trancheAmount|intcomma }})</small>
+                        </h1>
+                        <input style="display: none;" type="number" name="trancheAmount" value="{{ milestones.trancheAmount }}"
+                               id="trancheAmount">
+                        <!--FOR SELECTING ITEM TYPE-->
+                        <div class="form-group input-group col-md-12 divLeft" style="margin-top:7px">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="item-type">Item Type</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12" style="margin-top:7px">
+                                <select class="form-control" name="itemType" id="itemType" onchange="showDiv()">
+                                    <option value="0" selected="selected" disabled>Select Item Type</option>
+                                    <option value="Hotel Booking">Hotel Bookings</option>
+                                    <option value="Flight Ticket">Flight Tickets</option>
+                                    <option value="Specialized Scientific/Laboratory Services">Specialized
+                                        Scientific/Laboratory Services
+                                    </option>
+                                    <!--<option value="4">Scientific Software and Databases</option>-->
+                                    <!--<option value="5">Scientific Literature</option>-->
+                                    <!--<option value="6">Research Dissemination Expenses</option>-->
+                                    <!--<option value="7">Field Expenses without Receipt</option>-->
+                                    <option value="Equipment and Supplies">Equipment and Supplies</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!--END SELECTING ITEM TYPE-->
+
+                        <!--PROCUREMENT FOR HOTEL BOOKING-->
+                        <div id="forHotel" class="form-group input-group col-md-12 divLeft" style="display: none;">
+                            <div class="row">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                                <div class="animated flipInY col-lg-6 col-md-6 col-sm-7 col-xs-12">
+                                    <div class="tile-stats" style="padding: 10px;">
+                                        <h3>Budget Left</h3>
+                                        <h2 style="margin-left: 10px;" id="hotelbudgetleft">Lorem ipsum psdea itgum
+                                            rixt.</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group input-group col-md-12">
+
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelDate">Country</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <select name="hotelcountry" class="countries form-control" id="countryId">
+                                        <option value="">Select Country</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group input-group col-md-12">
+
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="hotelDate">State/Region</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <select name="state" class="states form-control" id="stateId">
+                                        <option value="">Select State</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelDate">City</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <select name="hotelcity" class="cities form-control" id="cityId">
+                                        <option value="">Select City</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelDate">Check-in
+                                    Date</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" type="date" name="fromDate" id="check_in"
+                                           onchange="cal()">
+                                </div>
+                            </div>
+
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelDate">Check-out
+                                    Date</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12" style="margin-top:7px">
+                                    <input class="form-control" type="date" name="toDate" id="check_out"
+                                           onchange="cal()">
+                                </div>
+                            </div>
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelNights"><b>No. of
+                                    Nights: </b></label>
+                                <div class="col-md-6 col-sm-6 col-xs-12" style="margin-top:7px">
+                                    <input class="form-control" type="text" name="hotelNights" id="nights" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelPax">Pax</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" type="text" name="hotelPax">
+                                </div>
+                            </div>
+
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelBudget">Budget per
+                                    night</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" type="text" name="hotelBudget" id="hotelBudget"
+                                           onchange="GetTotalBudget()">
+                                </div>
+                            </div>
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelBudget">Total
+                                    budget</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" type="text" name="hotelTotal" id="hotelTotal">
+                                </div>
+                            </div>
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="hotelBudget">Description</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <textarea class="form-control" name="hotelDescription"
+                                              id="hotelDescription"></textarea>
+                                </div>
+                            </div>
+                            <!--<div class="form-group input-group col-md-12" style="margin-top:7px">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="item-type">Currency</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12" style="margin-top:7px">
+                                    <select class="form-control" name="selectcurrency" id="selectcurrency" onchange="yesNoCheck(this); GetTotalBudget()">
+                                          <option value="0" selected="selected" disabled>Select Currency</option>
+                                        <option value="PHP">Philippine Peso</option>
+                                        <option value="USD">US Dollar</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="forPHP" class="form-group input-group col-md-12" style="display: none;">
+                                    <div class="form-group input-group col-md-12">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelTotal">Total Budget in PHP:</label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input class="form-control" type="text" name="hotelTotal" id="hotelTotal" disabled>
+                                        </div>
+                                    </div>
+                            </div>
+                            <div id="forUSD" class="form-group input-group col-md-12" style="display: none;">
+                                    <div class="form-group input-group col-md-12">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelTotal">Total Budget in USD:</label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input class="form-control" type="text" name="hotelTotalUSD" id="hotelTotalUSD" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="form-group input-group col-md-12">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelTotalConvert">Total Budget in PHP:</label>
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <input class="form-control" type="text" name="hotelTotalConvert" id="hotelTotalConvert" disabled>
+                                            </div>
+                                    </div>
+                            </div> -->
+                            <!--REQUEST PROCUREMENT BUTTON-->
+                            <div class="ln_solid"></div>
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3" style="margin-left: 350px;">
+                                    <input type="submit" onclick="expenseAlert();" value="Submit"
+                                           class="btn btn-primary">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!--END PROCUREMENT FOR HOTEL BOOKINGS-->
+
+                    <!--PROCUREMENT FOR FLIGHTS-->
+                    <div id="forFlights" class="form-group input-group col-md-12 divLeft" style="display: none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="  margin-left: 10px;" id="flightbudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelDate">Country</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <select name="flightcountry" class="countries form-control" id="countryId">
+                                    <option value="">Select Country</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                   for="hotelDate">State/Region</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <select name="flightcity" class="states form-control" id="stateId">
+                                    <option value="">Select State</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                   for="flightDeparture">Departure</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input class="form-control" type="date" name="flightDeparture" id="flightDeparture">
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="flightArrival">Arrival</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input class="form-control" type="date" name="flightArrival" id="flightArrival">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="flightPax">Pax</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input class="form-control" id="otherquantity" type="text" name="flightPax">
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                   for="hotelBudget">Description</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea class="form-control" name="flightDescription"
+                                          id="hotelDescription"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                   for="first-name">Budget<span class="required"></span>
+                            </label>
+                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                <input class="form-control col-md-3 col-xs-12" name="flightBudget" id="otherprice"
+                                       placeholder="Amount"
+                                       type="number">
+                            </div>
+                        </div>
+
+                        <!--REQUEST PROCUREMENT BUTTON-->
+                        <div class="ln_solid"></div>
+                        <div class="form-group">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3" style="margin-left: 350px;">
+                                <input type="submit" onclick="return flightAlert();" value="Submit"
+                                       class="btn btn-primary">
+                            </div>
+                        </div>
+                    </div>
+                    <!--END PROCUREMENT FOR FLIGHT BOOKINGS-->
+
+                    <!--PROCUREMENT FOR SPECIALIZED SCIENTIFIC/LABORATORY SERVICES-->
+                    <div id="forSpecialService" class="form-group input-group col-md-12 divLeft" style="display: none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="margin-left: 10px;" id="repairbudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="serviceName">Service
+                                Name</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input class="form-control" type="text" name="serviceName">
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="serviceDate">Date
+                                Needed</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input class="form-control" type="date" name="serviceDate" id="serviceDate">
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="serviceBudget">Total
+                                Budget</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input class="form-control" type="text" id="serviceBudget" name="serviceBudget"
+                                       onchange="changeCard()">
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                   for="hotelBudget">Description</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea class="form-control" name="serviceDescription"
+                                          id="hotelDescription"></textarea>
+                            </div>
+                        </div>
+                        <!--REQUEST PROCUREMENT BUTTON-->
+                        <div class="ln_solid"></div>
+                        <div class="form-group">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3" style="margin-left: 350px;">
+                                <input type="submit" onclick="return equipmentAlert();" value="Submit"
+                                       class="btn btn-primary">
+                            </div>
+                        </div>
+                    </div>
+                    <!--END PROCUREMENT FOR SPECIALIZED SCIENTIFIC/LABORATORY SERVICES-->
+
+                    <!--PROCUREMENT FOR EQUIPMENT AND SUPPLIES-->
+                    <div id="forEquipment" class="form-group input-group col-md-12 divLeft" style="display: none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="margin-left: 10px;" id="equipmentbudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="equipmentName">Equipment/Supply
+                                Name</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input class="form-control" type="text" name="equipmentName" placeholder="Eg.: Laptop">
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="serviceDate">Date
+                                Needed</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input class="form-control" type="date" name="equipmentDate" id="equipmentDate">
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="equipmentQty">Quantity</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input class="form-control" type="text" name="equipmentQty" id="equipQty">
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="equipmentBudget">Budget per
+                                item</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input class="form-control" type="text" name="equipmentBudget" id="equipBudget"
+                                       onchange="GetEquipBudget()">
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelTotal"><b>Total
+                                Budget:</b></label>
+                            <div class="col-md-6 col-sm-6 col-xs-12" style="margin-top:7px">
+                                <input class="form-control" type="text" name="equipTotal" id="equipTotal"
+                                       onchange="changeCard()" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                   for="hotelBudget">Description</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea class="form-control" name="equipDescription" id="hotelDescription"></textarea>
+                            </div>
+                        </div>
+                        <!--REQUEST PROCUREMENT BUTTON-->
+                        <div class="ln_solid"></div>
+                        <div class="form-group">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3" style="margin-left: 350px;">
+                                <input type="submit" onclick="return equipmentAlert();" value="Submit"
+                                       class="btn btn-primary">
+                            </div>
+                        </div>
+                    </div>
+                    <!--END PROCUREMENT FOR EQUIPMENT-->
+
+
+                </form>
+            {% else %}
+				 {% if milestone %}
+                                <h4>Request for reimbursement will only be available once
+                                    milestone {{ milestone.milestoneName }} has been finished. Thank you.</h4>
+                            {% else %}
+                <form class="form-horizontal" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group input-group col-md-12">
+                        <!--FOR SELECTING ITEM TYPE-->
+                        <div class="form-group input-group col-md-12 divLeft" style="margin-top:7px">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="item-type">Item Type</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12" style="margin-top:7px">
+                                <select class="form-control" name="itemType" id="itemType" onchange="showDiv()">
+                                    <option value="0" selected="selected" disabled>Select Item Type</option>
+                                    <option value="Hotel Booking">Hotel Bookings</option>
+                                    <option value="Flight Ticket">Flight Tickets</option>
+                                    <option value="Specialized Scientific/Laboratory Services">Specialized
+                                        Scientific/Laboratory Services
+                                    </option>
+                                    <!--<option value="4">Scientific Software and Databases</option>-->
+                                    <!--<option value="5">Scientific Literature</option>-->
+                                    <!--<option value="6">Research Dissemination Expenses</option>-->
+                                    <!--<option value="7">Field Expenses without Receipt</option>-->
+                                    <option value="Equipment and Supplies">Equipment and Supplies</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!--END SELECTING ITEM TYPE-->
+
+                        <!--PROCUREMENT FOR HOTEL BOOKING-->
+                        <div id="forHotel" class="form-group input-group col-md-12 divLeft" style="display: none;">
+                            <div class="row">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                                <div class="animated flipInY col-lg-6 col-md-6 col-sm-7 col-xs-12">
+                                    <div class="tile-stats" style="padding: 10px;">
+                                        <h3>Budget Left</h3>
+                                        <h2 style="margin-left: 10px;" id="hotelbudgetleft">Lorem ipsum psdea itgum
+                                            rixt.</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group input-group col-md-12">
+
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelDate">Country</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <select name="hotelcountry" class="countries form-control" id="countryId">
+                                        <option value="">Select Country</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group input-group col-md-12">
+
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="hotelDate">State/Region</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <select name="state" class="states form-control" id="stateId">
+                                        <option value="">Select State</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelDate">City</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <select name="hotelcity" class="cities form-control" id="cityId">
+                                        <option value="">Select City</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelDate">Check-in
+                                    Date</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" type="date" name="fromDate" id="check_in"
+                                           onchange="cal()">
+                                </div>
+                            </div>
+
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelDate">Check-out
+                                    Date</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12" style="margin-top:7px">
+                                    <input class="form-control" type="date" name="toDate" id="check_out"
+                                           onchange="cal()">
+                                </div>
+                            </div>
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelNights"><b>No. of
+                                    Nights: </b></label>
+                                <div class="col-md-6 col-sm-6 col-xs-12" style="margin-top:7px">
+                                    <input class="form-control" type="text" name="hotelNights" id="nights" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelPax">Pax</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" type="text" name="hotelPax">
+                                </div>
+                            </div>
+
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelBudget">Budget per
+                                    night</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" type="text" name="hotelBudget" id="hotelBudget"
+                                           onchange="GetTotalBudget()">
+                                </div>
+                            </div>
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelBudget">Total
+                                    budget</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <input class="form-control" type="text" name="hotelTotal" id="hotelTotal">
+                                </div>
+                            </div>
+                            <div class="form-group input-group col-md-12">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                       for="hotelBudget">Description</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <textarea class="form-control" name="hotelDescription"
+                                              id="hotelDescription"></textarea>
+                                </div>
+                            </div>
+                            <!--<div class="form-group input-group col-md-12" style="margin-top:7px">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="item-type">Currency</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12" style="margin-top:7px">
+                                    <select class="form-control" name="selectcurrency" id="selectcurrency" onchange="yesNoCheck(this); GetTotalBudget()">
+                                          <option value="0" selected="selected" disabled>Select Currency</option>
+                                        <option value="PHP">Philippine Peso</option>
+                                        <option value="USD">US Dollar</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="forPHP" class="form-group input-group col-md-12" style="display: none;">
+                                    <div class="form-group input-group col-md-12">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelTotal">Total Budget in PHP:</label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input class="form-control" type="text" name="hotelTotal" id="hotelTotal" disabled>
+                                        </div>
+                                    </div>
+                            </div>
+                            <div id="forUSD" class="form-group input-group col-md-12" style="display: none;">
+                                    <div class="form-group input-group col-md-12">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelTotal">Total Budget in USD:</label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input class="form-control" type="text" name="hotelTotalUSD" id="hotelTotalUSD" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="form-group input-group col-md-12">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelTotalConvert">Total Budget in PHP:</label>
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <input class="form-control" type="text" name="hotelTotalConvert" id="hotelTotalConvert" disabled>
+                                            </div>
+                                    </div>
+                            </div> -->
+                            <!--REQUEST PROCUREMENT BUTTON-->
+                            <div class="ln_solid"></div>
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3" style="margin-left: 350px;">
+                                    <input type="submit" onclick="expenseAlert();" value="Submit"
+                                           class="btn btn-primary">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!--END PROCUREMENT FOR HOTEL BOOKINGS-->
+
+                    <!--PROCUREMENT FOR FLIGHTS-->
+                    <div id="forFlights" class="form-group input-group col-md-12 divLeft" style="display: none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="  margin-left: 10px;" id="flightbudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelDate">Country</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <select name="flightcountry" class="countries form-control" id="countryId">
+                                    <option value="">Select Country</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                   for="hotelDate">State/Region</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <select name="flightcity" class="states form-control" id="stateId">
+                                    <option value="">Select State</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                   for="flightDeparture">Departure</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input class="form-control" type="date" name="flightDeparture" id="flightDeparture">
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="flightArrival">Arrival</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input class="form-control" type="date" name="flightArrival" id="flightArrival">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="flightPax">Pax</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input class="form-control" id="otherquantity" type="text" name="flightPax">
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                   for="hotelBudget">Description</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea class="form-control" name="flightDescription"
+                                          id="hotelDescription"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                   for="first-name">Budget<span class="required"></span>
+                            </label>
+                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                <input class="form-control col-md-3 col-xs-12" name="flightBudget" id="otherprice"
+                                       placeholder="Amount"
+                                       type="number">
+                            </div>
+                        </div>
+
+                        <!--REQUEST PROCUREMENT BUTTON-->
+                        <div class="ln_solid"></div>
+                        <div class="form-group">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3" style="margin-left: 350px;">
+                                <input type="submit" onclick="return flightAlert();" value="Submit"
+                                       class="btn btn-primary">
+                            </div>
+                        </div>
+                    </div>
+                    <!--END PROCUREMENT FOR FLIGHT BOOKINGS-->
+
+                    <!--PROCUREMENT FOR SPECIALIZED SCIENTIFIC/LABORATORY SERVICES-->
+                    <div id="forSpecialService" class="form-group input-group col-md-12 divLeft" style="display: none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="margin-left: 10px;" id="repairbudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="serviceName">Service
+                                Name</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input class="form-control" type="text" name="serviceName">
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="serviceDate">Date
+                                Needed</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input class="form-control" type="date" name="serviceDate" id="serviceDate">
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="serviceBudget">Total
+                                Budget</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input class="form-control" type="text" id="serviceBudget" name="serviceBudget"
+                                       onchange="changeCard()">
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                   for="hotelBudget">Description</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea class="form-control" name="serviceDescription"
+                                          id="hotelDescription"></textarea>
+                            </div>
+                        </div>
+                        <!--REQUEST PROCUREMENT BUTTON-->
+                        <div class="ln_solid"></div>
+                        <div class="form-group">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3" style="margin-left: 350px;">
+                                <input type="submit" onclick="return equipmentAlert();" value="Submit"
+                                       class="btn btn-primary">
+                            </div>
+                        </div>
+                    </div>
+                    <!--END PROCUREMENT FOR SPECIALIZED SCIENTIFIC/LABORATORY SERVICES-->
+
+                    <!--PROCUREMENT FOR EQUIPMENT AND SUPPLIES-->
+                    <div id="forEquipment" class="form-group input-group col-md-12 divLeft" style="display: none;">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                            <div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="tile-stats" style="padding: 10px;">
+                                    <h3>Budget Left</h3>
+                                    <h2 style="margin-left: 10px;" id="equipmentbudgetleft">Lorem ipsum psdea itgum
+                                        rixt.</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="equipmentName">Equipment/Supply
+                                Name</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input class="form-control" type="text" name="equipmentName" placeholder="Eg.: Laptop">
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="serviceDate">Date
+                                Needed</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input class="form-control" type="date" name="equipmentDate" id="equipmentDate">
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="equipmentQty">Quantity</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input class="form-control" type="text" name="equipmentQty" id="equipQty">
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="equipmentBudget">Budget per
+                                item</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input class="form-control" type="text" name="equipmentBudget" id="equipBudget"
+                                       onchange="GetEquipBudget()">
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="hotelTotal"><b>Total
+                                Budget:</b></label>
+                            <div class="col-md-6 col-sm-6 col-xs-12" style="margin-top:7px">
+                                <input class="form-control" type="text" name="equipTotal" id="equipTotal"
+                                       onchange="changeCard()" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group input-group col-md-12">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                   for="hotelBudget">Description</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <textarea class="form-control" name="equipDescription" id="hotelDescription"></textarea>
+                            </div>
+                        </div>
+                        <!--REQUEST PROCUREMENT BUTTON-->
+                        <div class="ln_solid"></div>
+                        <div class="form-group">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3" style="margin-left: 350px;">
+                                <input type="submit" onclick="return equipmentAlert();" value="Submit"
+                                       class="btn btn-primary">
+                            </div>
+                        </div>
+                    </div>
+                    <!--END PROCUREMENT FOR EQUIPMENT-->
+
+
+                </form>
+            {% endif %}
+        {% endif %}
+	{% endif %}
+    </div>
+{% endblock %}
+
+<!--START SCRIPTS-->
+{% block script %}
+
+    <!--ALERT MESSAGE AFTER FORWARDING REQUEST TO ADMIN-->
+
+    <!--END ALERT MESSAGE AFTER FORWARDING REQUEST TO ADMIN-->
+
+    <!--DISPLAYING INPUT DIVS BASED ON SELECTED ITEM TYPE-->
+    <script type='text/javascript'>
+        function showDiv() {
+            if (document.getElementById('itemType').value == 'Hotel Booking') {
+                document.getElementById('forHotel').style.display = "block";
+                document.getElementById('forFlights').style.display = "none";
+                document.getElementById('forSpecialService').style.display = "none";
+                document.getElementById('forEquipment').style.display = "none";
+                document.getElementById("hotelbudgetleft").innerHTML =
+                {{ accomodations.subtotal|safe }}
+            } else if (document.getElementById('itemType').value == 'Flight Ticket') {
+                document.getElementById('forFlights').style.display = "block";
+                document.getElementById('forHotel').style.display = "none";
+                document.getElementById('forSpecialService').style.display = "none";
+                document.getElementById('forEquipment').style.display = "none";
+                document.getElementById("flightbudgetleft").innerHTML =
+                {{ transportation.subtotal|safe }}
+            } else if (document.getElementById('itemType').value == 'Specialized Scientific/Laboratory Services') {
+                document.getElementById('forSpecialService').style.display = "block";
+                document.getElementById('forHotel').style.display = "none";
+                document.getElementById('forFlights').style.display = "none";
+                document.getElementById('forEquipment').style.display = "none";
+                document.getElementById("repairbudgetleft").innerHTML =
+                {{ equipment.subtotal|safe }}
+            } else if (document.getElementById('itemType').value == 'Equipment and Supplies') {
+                document.getElementById('forEquipment').style.display = "block";
+                document.getElementById('forHotel').style.display = "none";
+                document.getElementById('forFlights').style.display = "none";
+                document.getElementById('forSpecialService').style.display = "none";
+                document.getElementById("equipmentbudgetleft").innerHTML =
+                {{ equipment.subtotal|safe }}
+            }
+        }
+
+        //GET NUMBER OF NIGHTS AND DISPLAY
+        function GetDays() {
+            var checkin = new Date(document.getElementById("check_in").value);
+            var checkout = new Date(document.getElementById("check_out").value);
+            return parseInt((checkout - checkin) / (24 * 3600 * 1000));
+        }
+
+        function cal() {
+            if (document.getElementById("check_out")) {
+                document.getElementById("nights").value = GetDays();
+            }
+        }
+
+        //GET TOTAL BUDGET AND DISPLAY
+        function GetTotalBudget() {
+            var nights = document.getElementById("nights").value;
+            var hotelBudget = document.getElementById("hotelBudget").value;
+
+            var hoteltotal = (nights * hotelBudget);
+
+            document.getElementById("hotelTotal").value = hoteltotal;
+        }
+
+        //GET TOTAL BUDGET FOR EQUIPMENT
+        function GetEquipBudget() {
+            var qty = document.getElementById("equipQty").value;
+            var equipBudget = document.getElementById("equipBudget").value;
+
+            var equipTotal = (qty * equipBudget);
+
+            document.getElementById("equipTotal").value = equipTotal;
+        }
+
+        function changeCard() {
+            if (document.getElementById('itemType').value == 'Hotel Booking') {
+                amount = document.getElementById("hotelTotal").value
+                document.getElementById("hotelbudgetleft").innerHTML = {{ accomodations.subtotal|safe }} -amount
+
+            }
+            if (document.getElementById('itemType').value == 'Flight Ticket') {
+                amount = document.getElementById("flightBudget").value
+                document.getElementById("flightbudgetleft").innerHTML = {{ transportation.subtotal|safe }} -amount
+            }
+            if (document.getElementById('itemType').value == 'Equipment and Supplies') {
+                amount = document.getElementById("equipTotal").value
+                document.getElementById("equipmentbudgetleft").innerHTML = {{ equipment.subtotal|safe }} -amount
+            }
+            if (document.getElementById('itemType').value == 'Specialized') {
+                amount = document.getElementById("serviceBudget").value
+                document.getElementById("repairbudgetleft").innerHTML = {{ equipment.subtotal|safe }} -amount
+            }
+
+
+        }
+
+        function yesNoCheck(select) {
+
+            if (select.value == "PHP") {
+                document.getElementById("forPHP").style.display = "block";
+                document.getElementById("forUSD").style.display = "none";
+            } else if (select.value == "USD") {
+                document.getElementById("forPHP").style.display = "none";
+                document.getElementById("forUSD").style.display = "block";
+            }
+        }
+    </script>
+    <script>
+        function expenseAlert() {
+            var amount = document.getElementById('hotelBudget').value;
+            var nights = document.getElementById('nights').value;
+            var total = (amount * nights);
+            budgetleft = {{ accomodations.subtotal|safe }};
+
+            if (total > budgetleft) {
+                alert('You have exceeded the budget allocated for this item type')
+                return false;
+            } else {
+                alert('Request forwarded!')
+            }
+
+        };
+
+        function flightAlert() {
+            amount = document.getElementById('otherprice').value;
+            budgetleft =
+            {{ transportation.subtotal|safe }}
+
+            if (document.getElementById('itemType').value == 'Flight Ticket') {
+                if (amount > budgetleft) {
+                    alert('You have exceeded the budget allocated for this item type')
+                    return false;
+                } else {
+                    alert('Request forwarded!')
+                }
+            }
+
+        };
+
+        function equipmentAlert() {
+            equipment = {{ equipment.subtotal|safe }}
+                supplies = {{ supplies.subtotal|safe }}
+                    training = {{ training.subtotal|safe }}
+                        service = document.getElementById('serviceBudget').value;
+            equip = document.getElementById('equipTotal').value;
+            itemtype = document.getElementById('itemType').value;
+
+            if (itemtype == 'Specialized Scientific/Laboratory Services') {
+                if (service > equipment) {
+                    alert('You have exceeded the budget allocated for this item type')
+                    return false;
+                } else {
+                    alert('Request forwarded!')
+                }
+            } else if (itemtype == 'Equipment and Supplies') {
+                if (equip > supplies) {
+
+                    alert('You have exceeded the budget allocated for this item type')
+                    return false;
+                } else {
+                    alert('Request forwarded!')
+                }
+            }
+
+
+        };
+    </script>
+    <script>
+        $('#check_in').change(function () {
+            var formatstart = new Date("{{ project.startDate.isoformat }}");
+            var twostartMonth = ((formatstart.getMonth().length + 1) === 1) ? (formatstart.getMonth() + 1) : (formatstart.getMonth() + 1);
+
+            var formatend = new Date("{{ project.endDate.isoformat }}");
+            var twoendMonth = ((formatend.getMonth().length + 1) === 1) ? (formatend.getMonth() + 1) : (formatend.getMonth() + 1);
+
+            var fullDate = new Date();
+            var twoDigitMonth = ((fullDate.getMonth().length + 1) === 1) ? (fullDate.getMonth() + 1) : (fullDate.getMonth() + 1);
+
+
+            if (formatstart.getDate() > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+                if ($('#check_in').val() < startDate) {
+
+                }
+            } else if (twostartMonth > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#check_in').val() < startDate) {
+
+                }
+            } else if (formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + '0' + formatstart.getDate();
+
+                if ($('#check_in').val() < startDate) {
+
+                }
+            } else if (twostartMonth < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#check_in').val() < startDate) {
+
+                }
+            } else if (twostartMonth < 10 && formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + '0' + formatstart.getDate();
+
+
+                if ($('#check_in').val() < startDate) {
+
+                }
+            }
+
+            if (formatend.getDate() > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#check_in').val() > endDate) {
+
+                }
+            } else if (twoendMonth > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#check_in').val() > endDate) {
+
+                }
+            } else if (formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + '0' + formatend.getDate();
+
+
+                if ($('#check_in').val() > endDate) {
+
+                }
+            } else if (twoendMonth < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#check_in').val() > endDate) {
+
+                }
+            } else if (twoendMonth < 10 && formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + '0' + formatend.getDate();
+
+
+                if ($('#check_in').val() > endDate) {
+
+                }
+            }
+            if (fullDate.getDate() > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#check_in').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (twoDigitMonth > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#check_in').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+                if ($('#check_in').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (twoDigitMonth < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#check_in').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (twoDigitMonth < 10 && fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+
+                if ($('#check_in').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            }
+
+
+        });
+        $('#check_out').change(function () {
+            var formatstart = new Date("{{ project.startDate.isoformat }}");
+            var twostartMonth = ((formatstart.getMonth().length + 1) === 1) ? (formatstart.getMonth() + 1) : (formatstart.getMonth() + 1);
+
+            var formatend = new Date("{{ project.endDate.isoformat }}");
+            var twoendMonth = ((formatend.getMonth().length + 1) === 1) ? (formatend.getMonth() + 1) : (formatend.getMonth() + 1);
+
+            var fullDate = new Date();
+            var twoDigitMonth = ((fullDate.getMonth().length + 1) === 1) ? (fullDate.getMonth() + 1) : (fullDate.getMonth() + 1);
+
+
+            if (formatstart.getDate() > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+                if ($('#check_out').val() < startDate) {
+
+                }
+            } else if (twostartMonth > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#check_out').val() < startDate) {
+
+                }
+            } else if (formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + '0' + formatstart.getDate();
+
+                if ($('#check_out').val() < startDate) {
+
+                }
+            } else if (twostartMonth < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#check_out').val() < startDate) {
+
+                }
+            } else if (twostartMonth < 10 && formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + '0' + formatstart.getDate();
+
+
+                if ($('#check_out').val() < startDate) {
+
+                }
+            }
+
+            if (formatend.getDate() > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+                if ($('#check_out').val() > endDate) {
+
+                }
+            } else if (twoendMonth > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#check_out').val() > endDate) {
+
+                }
+            } else if (formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + '0' + formatend.getDate();
+
+                if ($('#check_out').val() > endDate) {
+
+                }
+            } else if (twoendMonth < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#check_out').val() > endDate) {
+
+                }
+            } else if (twoendMonth < 10 && formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + '0' + formatend.getDate();
+
+
+                if ($('#check_out').val() > endDate) {
+
+                }
+            }
+            if (fullDate.getDate() > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#check_out').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (twoDigitMonth > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#check_out').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+                if ($('#check_out').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (twoDigitMonth < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#check_out').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (twoDigitMonth < 10 && fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+
+                if ($('#check_out').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            }
+
+
+            if ($('#check_in').val() > $('#check_out').val()) {
+                alert('Check-in date cannot be later than the check-out date!')
+            }
+
+
+        });
+        $('#flightDeparture').change(function () {
+            var formatstart = new Date("{{ project.startDate.isoformat }}");
+            var twostartMonth = ((formatstart.getMonth().length + 1) === 1) ? (formatstart.getMonth() + 1) : (formatstart.getMonth() + 1);
+
+            var formatend = new Date("{{ project.endDate.isoformat }}");
+            var twoendMonth = ((formatend.getMonth().length + 1) === 1) ? (formatend.getMonth() + 1) : (formatend.getMonth() + 1);
+            var fullDate = new Date();
+            var twoDigitMonth = ((fullDate.getMonth().length + 1) === 1) ? (fullDate.getMonth() + 1) : (fullDate.getMonth() + 1);
+
+
+            if (formatstart.getDate() > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+                if ($('#flightDeparture').val() < startDate) {
+
+                }
+            } else if (twostartMonth > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#flightDeparture').val() < startDate) {
+
+                }
+            } else if (formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + '0' + formatstart.getDate();
+
+                if ($('#flightDeparture').val() < startDate) {
+
+                }
+            } else if (twostartMonth < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#flightDeparture').val() < startDate) {
+
+                }
+            } else if (twostartMonth < 10 && formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + '0' + formatstart.getDate();
+
+
+                if ($('#flightDeparture').val() < startDate) {
+
+                }
+            }
+
+            if (formatend.getDate() > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+                if ($('#flightDeparture').val() > endDate) {
+
+                }
+            } else if (twoendMonth > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#flightDeparture').val() > endDate) {
+
+                }
+            } else if (formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + '0' + formatend.getDate();
+
+                if ($('#flightDeparture').val() > endDate) {
+
+                }
+            } else if (twoendMonth < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#flightDeparture').val() > endDate) {
+
+                }
+            } else if (twoendMonth < 10 && formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + '0' + formatend.getDate();
+
+
+                if ($('#flightDeparture').val() > endDate) {
+
+                }
+            }
+            if (fullDate.getDate() > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#flightDeparture').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (twoDigitMonth > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#flightDeparture').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+                if ($('#flightDeparture').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (twoDigitMonth < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#flightDeparture').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (twoDigitMonth < 10 && fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+
+                if ($('#flightDeparture').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            }
+
+
+        });
+        $('#flightArrival').change(function () {
+            var formatstart = new Date("{{ project.startDate.isoformat }}");
+            var twostartMonth = ((formatstart.getMonth().length + 1) === 1) ? (formatstart.getMonth() + 1) : (formatstart.getMonth() + 1);
+
+            var formatend = new Date("{{ project.endDate.isoformat }}");
+            var twoendMonth = ((formatend.getMonth().length + 1) === 1) ? (formatend.getMonth() + 1) : (formatend.getMonth() + 1);
+            var fullDate = new Date();
+            var twoDigitMonth = ((fullDate.getMonth().length + 1) === 1) ? (fullDate.getMonth() + 1) : (fullDate.getMonth() + 1);
+
+
+            if (formatstart.getDate() > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+                if ($('#flightArrival').val() < startDate) {
+
+                }
+            } else if (twostartMonth > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#flightArrival').val() < startDate) {
+
+                }
+            } else if (formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + '0' + formatstart.getDate();
+
+                if ($('#flightArrival').val() < startDate) {
+
+                }
+            } else if (twostartMonth < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#flightArrival').val() < startDate) {
+
+                }
+            } else if (twostartMonth < 10 && formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + '0' + formatstart.getDate();
+
+
+                if ($('#flightArrival').val() < startDate) {
+
+                }
+            }
+
+            if (formatend.getDate() > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+                if ($('#flightArrival').val() > endDate) {
+
+                }
+            } else if (twoendMonth > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#flightArrival').val() > endDate) {
+
+                }
+            } else if (formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + '0' + formatend.getDate();
+
+                if ($('#flightArrival').val() > endDate) {
+
+                }
+            } else if (twoendMonth < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#flightArrival').val() > endDate) {
+
+                }
+            } else if (twoendMonth < 10 && formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + '0' + formatend.getDate();
+
+
+                if ($('#flightArrival').val() > endDate) {
+
+                }
+            }
+            if (fullDate.getDate() > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#flightArrival').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (twoDigitMonth > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#flightArrival').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+                if ($('#flightArrival').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (twoDigitMonth < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#flightArrival').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (twoDigitMonth < 10 && fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+
+                if ($('#flightArrival').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            }
+
+
+            if ($('#flightDeparture').val() > $('#flightArrival').val()) {
+                alert('Check-in date cannot be later than the check-out date!')
+            }
+
+
+        });
+        $('#serviceDate').change(function () {
+            var formatstart = new Date("{{ project.startDate.isoformat }}");
+            var twostartMonth = ((formatstart.getMonth().length + 1) === 1) ? (formatstart.getMonth() + 1) : (formatstart.getMonth() + 1);
+
+            var formatend = new Date("{{ project.endDate.isoformat }}");
+            var twoendMonth = ((formatend.getMonth().length + 1) === 1) ? (formatend.getMonth() + 1) : (formatend.getMonth() + 1);
+            var fullDate = new Date();
+            var twoDigitMonth = ((fullDate.getMonth().length + 1) === 1) ? (fullDate.getMonth() + 1) : (fullDate.getMonth() + 1);
+
+
+            if (formatstart.getDate() > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+                if ($('#serviceDate').val() < startDate) {
+
+                }
+            } else if (twostartMonth > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#serviceDate').val() < startDate) {
+
+                }
+            } else if (formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + '0' + formatstart.getDate();
+
+                if ($('#serviceDate').val() < startDate) {
+
+                }
+            } else if (twostartMonth < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#serviceDate').val() < startDate) {
+
+                }
+            } else if (twostartMonth < 10 && formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + '0' + formatstart.getDate();
+
+
+                if ($('#serviceDate').val() < startDate) {
+
+                }
+            }
+
+            if (formatend.getDate() > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+                if ($('#serviceDate').val() > endDate) {
+
+                }
+            } else if (twoendMonth > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#serviceDate').val() > endDate) {
+
+                }
+            } else if (formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + '0' + formatend.getDate();
+
+                if ($('#serviceDate').val() > endDate) {
+
+                }
+            } else if (twoendMonth < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#serviceDate').val() > endDate) {
+
+                }
+            } else if (twoendMonth < 10 && formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + '0' + formatend.getDate();
+
+
+                if ($('#serviceDate').val() > endDate) {
+
+                }
+            }
+            if (fullDate.getDate() > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#serviceDate').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (twoDigitMonth > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#serviceDate').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+                if ($('#serviceDate').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (twoDigitMonth < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#serviceDate').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (twoDigitMonth < 10 && fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+
+                if ($('#serviceDate').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            }
+
+
+        });
+        $('#equipmentDate').change(function () {
+            var formatstart = new Date("{{ project.startDate.isoformat }}");
+            var twostartMonth = ((formatstart.getMonth().length + 1) === 1) ? (formatstart.getMonth() + 1) : (formatstart.getMonth() + 1);
+
+            var formatend = new Date("{{ project.endDate.isoformat }}");
+            var twoendMonth = ((formatend.getMonth().length + 1) === 1) ? (formatend.getMonth() + 1) : (formatend.getMonth() + 1);
+
+            var fullDate = new Date();
+            var twoDigitMonth = ((fullDate.getMonth().length + 1) === 1) ? (fullDate.getMonth() + 1) : (fullDate.getMonth() + 1);
+
+
+            if (formatstart.getDate() > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+                if ($('#equipmentDate').val() < startDate) {
+
+                }
+            } else if (twostartMonth > 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#equipmentDate').val() < startDate) {
+
+                }
+            } else if (formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + twostartMonth + "-" + '0' + formatstart.getDate();
+
+                if ($('#equipmentDate').val() < startDate) {
+
+                }
+            } else if (twostartMonth < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + formatstart.getDate();
+
+
+                if ($('#equipmentDate').val() < startDate) {
+
+                }
+            } else if (twostartMonth < 10 && formatstart.getDate() < 10) {
+                var startDate = formatstart.getFullYear() + "-" + '0' + twostartMonth + "-" + '0' + formatstart.getDate();
+
+
+                if ($('#equipmentDate').val() < startDate) {
+
+                }
+            }
+
+            if (formatend.getDate() > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+                if ($('#equipmentDate').val() > endDate) {
+
+                }
+            } else if (twoendMonth > 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#equipmentDate').val() > endDate) {
+
+                }
+            } else if (formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + twoendMonth + "-" + '0' + formatend.getDate();
+
+                if ($('#equipmentDate').val() > endDate) {
+
+                }
+            } else if (twoendMonth < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + formatend.getDate();
+
+
+                if ($('#equipmentDate').val() > endDate) {
+
+                }
+            } else if (twoendMonth < 10 && formatend.getDate() < 10) {
+                var endDate = formatend.getFullYear() + "-" + '0' + twoendMonth + "-" + '0' + formatend.getDate();
+
+
+                if ($('#equipmentDate').val() > endDate) {
+
+                }
+            }
+            if (fullDate.getDate() > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#equipmentDate').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (twoDigitMonth > 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#equipmentDate').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+                if ($('#equipmentDate').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (twoDigitMonth < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + fullDate.getDate();
+
+
+                if ($('#equipmentDate').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            } else if (twoDigitMonth < 10 && fullDate.getDate() < 10) {
+                var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + '0' + fullDate.getDate();
+
+
+                if ($('#equipmentDate').val() < currentDate) {
+                    alert('Only requests for future dates can be accepted.')
+                }
+
+            }
+
+
+            x
+
+        });
+    </script>
+    <script>
+        function computeFlight() {
+            x = document.getElementById('pax').value;
+            y = document.getElementById('price').value;
+            z = document.getElementById('times').value;
+            document.getElementById('subtotal').value = x * y * z;
+        }
+
+    </script>
+    <script>
+
+    </script>
+    <!--END DISPLAYING INPUT DIVS BASED ON SELECTED ITEM TYPE-->
+{% endblock %}

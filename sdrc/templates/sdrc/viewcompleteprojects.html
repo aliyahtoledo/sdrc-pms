@@ -1,0 +1,60 @@
+{% extends 'sdrc/base.html' %}
+
+{% block content %}
+    <!-- page content -->
+          <div class="x_panel" style="height: 570px;">
+            <div class="page-title">
+              <div class="title_left">
+                <h3>Final Reports</h3>
+              </div>
+
+              <div class="title_right">
+                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+
+                </div>
+              </div>
+            </div>
+
+            <div class="clearfix"></div>
+              <div class="x_content">
+                <!-- Table -->
+                   <table id="datatable-fixed-header" class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>Project Name</th>
+                          <th>Principal Investigator</th>
+                          <th>Funding Agency</th>
+                            <th>Project Overview</th>
+                            <th>Date Finished</th>
+                          <th>Final Report</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for p in project %}
+                        <tr>
+                            <td>{{ p.projectTitle }}</td>
+                        <td>{{ p.get_name }}</td>
+                        <td>{{ p.fundingAgency }}</td>
+                        <td>{{ p.projectOverview }}</td>
+                            <td>{{ p.dateFinished }}</td>
+                        <td><a href="{{ p.finalReport.url }}"><span class="fa fa-file-pdf-o"></span></a></td>
+
+                        </tr>
+{% endfor %}
+                      </tbody>
+                    </table>
+                    <!-- End of table -->
+          </div>
+        </div>
+    <script>
+function searchBtn(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#myTable tbody tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+};
+</script>
+        <!-- /page content -->
+{% endblock %}

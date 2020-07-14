@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>Progress Report</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <style>
+        @media print {
+            #printReport {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+{% load mathfilters %}
+{% load humanize %}
+</body>
+<div style="text-align: center;"><img src="https://www.dlsu.edu.ph/wp-content/uploads/2018/10/sdrc-logo-300x300.png"
+                                      width="100" height="80" \></div>
+<div style="text-align: center;"><b>Social Development Research Center</div>
+
+<div style="text-align: center;">Progress Report</div>
+<div style="text-align: center;">As of {{ currentdate }}</div>
+</b>
+<br>
+<div style="margin-left: 10px">
+    <b>1. Project Title:</b> {{ project.projectTitle }}<br>
+    <b>2. Main Proponents:</b> {% for members in project.projectmember_set.all %}{{ members.member.first_name }}
+    {{ members.member.last_name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+    <br>
+    <b>3. Time Frame</b><br>
+    <li><b>Date Project Implemented: </b>{{ project.startDate }}<br></li>
+    <li><b>Expected Date of Completion:</b> {{ project.endDate }}<br></li>
+    <b>4. Project-Related Activities Done:</b>
+    <br>{% for task in project.task_set.all %}
+    {% if task.taskStatus == 'Completed' %}
+        <li>{{ task.taskName }}</li>
+    {% endif %}
+{% endfor %}
+    <b>5. Problem/s Encountered and corresponding action undertaken:</b>
+
+    <table class="table table-bordered" style="margin-top: 30px;">
+        <thead>
+        <tr>
+            <th style="">Issue Encountered</th>
+            <th style="">Description</th>
+            <th style="">Resolution</th>
+
+        </tr>
+        </thead>
+        {% for issue in project.incidentreport_set.all %}
+            {% if issue.issueStatus %}
+                <tbody>
+
+
+                <td>{{ issue.issueEncountered }}</td>
+                <td>{{ issue.issueDescription }}</td>
+                <td>{{ issue.issueResolution }}</td>
+
+                </tbody>
+            {% endif %}
+        {% endfor %}
+    </table>
+    <br>
+    <b>6. Project Status<br>
+        {% if milestone_list %}
+            {{ milestone_list|length }} milestone/s delayed
+        {% else %}
+            On Track
+        {% endif %}<br></b>
+    <table class="table table-bordered" style="margin-top: 30px;">
+        <thead>
+        <tr>
+            <th>Schedule of Critical Activities</th>
+            <th>Deadline</th>
+            <th>Status</th>
+
+        </tr>
+        </thead>
+        {% for milestone in project.milestone_set.all %}
+
+            <tbody>
+
+
+            <td>{{ milestone.milestoneName }}
+                {% for task in milestone.task_set.all %}
+                    <li>
+                        {{ task.taskName }}
+                    </li>
+                {% endfor %}</td>
+            <td>{{ milestone.milestoneendDate }}</td>
+            <td>{% if milestone.get_finished_task == 100 %}Completed
+            {% elif milestone.not_started_task == 100 %}Not Started
+            {% elif milestone.in_progress_task > 0 %}In Progress
+            {% endif %}<br>{% if milestone.milestoneendDate < currentdate and not milestone.get_finished_task == 100 %}
+                Delayed
+            {% endif %}</td>
+
+            </tbody>
+
+        {% endfor %}
+    </table>
+    <br>
+    <b>Upcoming Tasks:</b>
+    {% for task in project.task_set.all %}
+        {% if not task.taskStatus == 'Completed' %}
+            <li>{{ task.taskName }} (Deadline: {{ task.taskendDate }})</li>
+        {% endif %}
+    {% endfor %}
+
+    <button onclick="myFunction()" id="printReport" class="btn btn-primary" style="margin-left: 0px; margin-top: 50px;">
+        <span class="fa fa-print"></span> Print
+    </button>
+    <div style="margin-top: 40px"><b>Prepared by:</b></div>
+    <hr width="15%;" style="border: 1px solid black; margin-left: 0px; margin-top: 50px;">
+    <div style="margin-top: 10px; margin-left: 0px; margin-bottom: 30px;">
+        <b>{{ request.user.first_name }} {{ request.user.last_name }}</b></div>
+</div>
+<script>
+    function myFunction() {
+        window.print();
+    }
+
+
+</script>
+<script>
+    google.charts.load('current', {'packages': ['gantt']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Task ID');
+        data.addColumn('string', 'Task Name');
+        data.addColumn('string', 'Assigned To');
+        data.addColumn('date', 'Start Date');
+        data.addColumn('date', 'End Date');
+        data.addColumn('number', 'Duration');
+        data.addColumn('number', 'Percent Complete');
+        data.addColumn('string', 'Dependencies');
+
+        array =
+        {{ array|safe }}
+
+
+        for (var i = 0; i < {{ array|length }}; i++) {
+            var arr = {{ array|safe }}[0];
+
+            var milestone = {{ array|safe }}[i][0]
+            var name = milestone + ": " + {{ array|safe }}[i][1]
+
+            var resource = {{ array|safe }}[i][2]
+
+
+            var selected_date_1 = {{ array|safe }}[i][3];
+
+
+            var selected_date_2 = {{ array|safe }}[i][4];
+            var status = {{ array|safe }}[i][5]
+
+
+            data.addRows([
+                [name,
+                    name,
+                    resource,
+                    new Date(selected_date_1),
+                    new Date(selected_date_2),
+                    null,
+                    status,
+                    null]
+            ]);
+
+
+        }
+
+        var options = {
+
+            gantt: {
+                trackHeight: 40,
+                percentEnabled: false
+            }
+        };
+
+        var chart = new google.visualization.Gantt(document.getElementById('chart_div'));
+
+        chart.draw(data, options);
+    }
+</script>
+</body>
+</html>

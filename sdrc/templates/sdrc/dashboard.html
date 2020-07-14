@@ -1,0 +1,423 @@
+{% extends 'sdrc/base.html' %}
+{% block style %}
+    <style>
+    .flex-container{
+        display: flex;
+
+    }
+    .x_panel{
+        height: 400px;
+    }
+    </style>
+
+{% endblock %}
+{% block content %}
+{% load humanize %}
+      {% if request.user.is_staff %}
+
+
+        <div id="dashboardbody">
+
+
+
+             <div class="row">
+                      <div class="animated flipInY col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                        <div class="tile-stats" style="height: 200px;">
+                          <div class="icon"><i class="glyphicon glyphicon-tasks" style="color: #355691;" aria-hidden="true"></i>
+                          </div>
+                          <div class="count" style="font-size: 50px; color: black;">{{ allprojects|length }}</div>
+
+                            <h3 class="metricsheader" style="margin-top: 5px; color: #355691;"><strong>On-going Projects</strong></h3>
+                             <button type="button" class="btn btn-primary" style="margin-top: 20px; margin-left: 10px;" data-toggle="modal" id="metricsmodal" data-target=".bs-example-modal-lg-1">More details</button>
+                        <div class="modal fade bs-example-modal-lg-1" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+                        <div class="modal-dialog modal-lg">
+                          <div class="modal-content">
+
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                              </button>
+                              <h4 class="modal-title" id="myModalLabel">Ongoing Projects</h4>
+                            </div>
+                            <div class="modal-body">
+
+                   <!-- Table -->
+                   <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>Project Name</th>
+                          <th>Principal Investigator</th>
+                          <th>Funding Agency</th>
+                            <th>Project Progress</th>
+                          <th>Starting Date</th>
+                          <th>Deadline</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for project in allprojects %}
+                        <tr>
+                          <td>{{ project.projectTitle }}</td>
+                          <td>{{ project.get_name }}</td>
+                          <td>{{ project.fundingAgency }}</td>
+                          <td class="project_progress">
+                            <div class="progress progress_sm">
+                              <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="{{ project.get_percentage_completed|floatformat:"0" }}"></div>
+                            </div>
+                            <small>{{ project.get_percentage_completed|floatformat:"0" }}% Complete</small>
+                          </td>
+                          <td>{{ project.startDate }}</td>
+                          <td>{{ project.endDate }}</td>
+                        </tr>
+                      {% endfor %}
+
+                      </tbody>
+                    </table>
+                    <!-- End of table -->
+
+                              </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+
+                            </div>
+                        </div>
+                        </div>
+                        </div>
+                      </div>
+                      <div class="animated flipInY col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                        <div class="tile-stats" style="height: 200px;">
+                          <div class="icon"><i class="glyphicon glyphicon-time" style="color: #960200;" aria-hidden="true"></i>
+                          </div>
+                          <div class="count" style="font-size: 50px; color: black;">{{ deadline.count }}</div>
+
+                            <h3 class="metricsheader" style="margin-top: 5px; color: #960200;"><strong>Projects Delayed</strong></h3>
+                             <button type="button" class="btn btn-primary" style="margin-top: 20px; margin-left: 10px;" data-toggle="modal" id="metricsmodal" data-target=".bs-example-modal-lg-2">More details</button>
+                        <div class="modal fade bs-example-modal-lg-2" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+                        <div class="modal-dialog modal-lg">
+                          <div class="modal-content">
+
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                              </button>
+                              <h4 class="modal-title" id="myModalLabel">Projects Delayed</h4>
+                            </div>
+                            <div class="modal-body">
+
+               <!-- Table -->
+                   <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>Project Name</th>
+                          <th>Principal Investigator</th>
+                          <th>Funding Agency</th>
+                          <th>Deadline</th>
+                            <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                         {% for project in deadline %}
+                        <tr>
+                          <td>{{ project.projectTitle }}</td>
+                              <td>{{ project.get_name }}</td>
+                          <td>{{ project.fundingAgency }}</td>
+                            <td>{{ project.endDate }}</td>
+                            <td><a href="#" id="hover" class="btn btn-primary btn-xs" data-toggle="modal"
+                                               data-target="#bs-example-modal-sm-notify-{{ project.id }}" id="budget-breakdown"
+                                               title="Notify Project Lead"><i class="fa fa-bell"></i> </a></td>
+
+                        </tr>
+                         <div class="modal fade bs-example-modal-sm-resolution"
+                                             style="width:600px; margin-left: 300px; margin-top: 20px;"
+                                             id="bs-example-modal-sm-notify-{{ project.id }}" tabindex="-1" role="dialog"
+                                             aria-hidden="true">
+
+                                            <div class="modal-content">
+
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close"><span aria-hidden="true">×</span>
+                                                    </button>
+                                                    <h4 class="modal-title" id="myModalLabel2">Notify Principal Investigator</h4>
+
+                                                </div>
+                                                <form method="POST">
+                                                    {% csrf_token %}
+                                                    <div class="modal-body" style="height: 100px;">
+                                                        <div>
+                                                        <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                                   for="first-name">Subject<span
+                                                                    class="required"></span>
+                                                            </label>
+                                                            {% if project.endDate <= currentdate %}
+                                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                <input type="text" name="projectSubject"
+                                                                       value="[SDRC] Project Delayed"
+                                                                       class="form-control col-md-7 col-xs-12" style="width: 100%; margin-bottom: 10px;">
+                                                            </div>
+                                                                {% elif project.get_daysLeft <= 14 %}
+                                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                <input type="text" name="projectSubject"
+                                                                       value="[SDRC] Project Approaching Deadline"
+                                                                       class="form-control col-md-7 col-xs-12" style="width: 100%; margin-bottom: 10px;">
+                                                            </div>
+                                                            {% endif %}
+                                                        </div>
+                                                        </div>
+                                                        <div>
+                                                             <input type="text" name="projectID"
+                                                                       value="{{ project.id }}" style="display: none">
+                                                            <div class="row">
+                                                            <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                                   for="first-name">Message<span
+                                                                    class="required"></span>
+                                                            </label>
+                                                                {% if project.endDate <= currentdate %}
+                                                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                <textarea rows="3" style="width: 100%;" name="projectMessage">Good day!
+
+The project assigned to you entitled: {{ project.projectTitle }} has already reached its deadline.
+
+Kind regards,
+SDRC
+                                                                </textarea>
+                                                            </div>
+                                                                {% elif project.get_daysLeft <= 14 %}
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                         <textarea rows="3" style="width: 100%;" name="projectMessage">Good day!
+
+The project assigned to you entitled: {{ project.projectTitle }} is approaching deadline in {{ project.get_daysLeft }} day/s..
+
+Kind regards,
+                                                                SDRC
+                                                                </textarea>
+
+                                                            </div>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="modal-footer" style="margin-top: 30px;">
+                                                        <button type="submit" class="btn btn-primary">Send</button>
+                                                        <button type="button" class="btn btn-default"
+                                                                data-dismiss="modal">Cancel
+                                                        </button>
+
+                                                    </div>
+
+                                                </form>
+
+                                            </div>
+                                        </div>
+                      {% endfor %}
+                      </tbody>
+                    </table>
+                    <!-- End of table -->
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+
+                            </div>
+                        </div>
+                        </div>
+                        </div>
+                      </div>
+                      <div class="animated flipInY col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                        <div class="tile-stats"  style="height: 200px;">
+                          <div class="icon"><i class="fa fa-money" aria-hidden="true" style="height: 5px; color: #2A9134;"></i>
+                          </div>
+                          <div class="count" style="font-size: 50px; color: black; font-weight: bold;">{{ all_budget|length }}</div>
+
+                            <h3 class="metricsheader" style="margin-top: 5px; color: #2A9134;"><strong>Projects Over Budget</strong></h3>
+                          <button type="button" class="btn btn-primary" style="margin-top: 20px; margin-left: 10px;" data-toggle="modal" data-target=".bs-example-modal-lg-3">More details</button>
+                        <div class="modal fade bs-example-modal-lg-3" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+                        <div class="modal-dialog modal-lg">
+                          <div class="modal-content">
+
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                              </button>
+                              <h4 class="modal-title" id="myModalLabel">Projects Over Budget</h4>
+                            </div>
+                            <div class="modal-body">
+                                <table class="table table-bordered">
+                                  <thead>
+
+                                    <tr>
+                                      <th>Project Name</th>
+                                      <th>Principal Investigator</th>
+                                      <th>Funding Agency</th>
+                                      <th>Project Budget</th>
+                                      <th>Total Expenses</th>
+                                        <th>Budget Overrun Percentage</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                  {% for project in all_budget %}
+                                    <tr>
+                                      <td>{{ project.projectTitle }}</td>
+                                      <td>{{ project.get_name }}</td>
+                                      <td>{{ project.fundingAgency }}</td>
+                                        <td>₱ {{ project.projectCost|intcomma }}</td>
+                                        <td>₱ {{ project.totalExpense|intcomma }}</td>
+                                        <th scope="row">{{ project.getBudgetOverrun|floatformat:2 }}%</th>
+                                    </tr>
+                                  {% endfor %}
+
+                                  </tbody>
+                                </table>
+                               </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+
+                            </div>
+                        </div>
+                        </div>
+                        </div>
+                      </div>
+            <br />
+
+
+            <div class="row">
+              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <div class="x_panel" style="height: auto;">
+                  <div class="x_title">
+                    <h2>Project Status</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content" style="height: auto;">
+                      <h4 style="margin-top: -2px; margin-bottom: 20px;">Based on milestones finished</h4>
+                   {% for i, j in zipped_data %}
+
+                            <div class="widget_summary">
+                              <div class="w_left w_25">
+                                <span>{{ i.projectTitle }}</span>
+                              </div>
+
+                              <div class="w_center w_55">
+                                <div class="progress">
+                                  <div class="progress-bar bg-green" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: {{ j|floatformat:"0" }}%;">
+                                    <span class="sr-only">60% Complete</span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="w_right w_20">
+                                <span>{{ j|floatformat:"0" }}%</span>
+                              </div>
+                              <div class="clearfix"></div>
+                            </div>
+
+
+                   {% endfor %}
+
+                  </div>
+                </div>
+              </div>
+
+              <!-- bar charts group -->
+              <div class="col-md-6 col-sm-6 col-xs-12">
+               <div class="x_panel">
+                  <div class="x_title">
+                    <h2>Project Budget Tracker <small>Sessions</small></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content2">
+<div id="container" style="width: 470px; height: 330px; margin: 0 auto"></div>
+                  </div>
+               </div>
+              </div>
+              </div>
+
+    {% endif %}
+
+<div style="display:none;">
+<table id="datatable" style="display:none;">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Budget</th>
+            <th>Expenses</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for project in projects %}
+        <tr>
+            <th>{{ project.projectTitle|safe }}</th>
+            <td>{{ project.budgetRemaining|safe }}</td>
+            <td>{{ project.budgetSpent|safe }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+    </div>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script>
+Highcharts.chart('container', {
+    data: {
+        table: 'datatable'
+    },
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Project Budget Tracker'
+    },
+    yAxis: {
+        allowDecimals: true,
+        title: {
+            text: 'Amount'
+        }
+    },
+    tooltip: {
+        formatter: function () {
+            return '<b>' + this.series.name + '</b><br/>' +
+                '₱ ' + this.point.y;
+        }
+    }
+});
+</script>
+{% endblock %}
+
+
+{% block script %}
+
+
+
+
+{% endblock %}

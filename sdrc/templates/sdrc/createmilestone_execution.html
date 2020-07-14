@@ -1,0 +1,197 @@
+{% extends 'sdrc/base.html' %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+          <div class="">
+
+
+            <div class="row">
+
+              <div class="col-md-12 col-sm-12 col-xs-12">
+
+
+
+              <!-- Execution -->
+                 <div class="x_panel" style="">
+                  <div class="x_title">
+                      <h2>Create Tasks for <b>Execution Milestone</b></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+
+
+                    <!-- Smart Wizard -->
+
+                    <form class="form-horizontal" method="POST" action="">
+                        {% csrf_token %}
+                        {% for entry in projects %}
+                            <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Project Name
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" name="project" disabled value="{{ entry.projectTitle }}" required="required" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                             <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Milestone Name
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" name="milestoneName" value="Execution" required="required" class="form-control col-md-7 col-xs-12" readonly />
+                        </div>
+                      </div>
+                         {% endfor %}
+
+                    {{ formset.management_form }}
+                        {% for form in formset %}
+                            <div class="form-row spacer">
+                            <div class="form-group input-group col-md-12">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Task Name <span id="taskcounter"></span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                           {{form.taskName}} <div class="input-group-append" >
+                            <button type="button" onclick="cloneMore(true)" class="add-form-row btn btn-success" style="margin-left: 440px; margin-top: -60px;">+</button>
+                         </div>
+                        </div>
+                      </div>
+                            <div class="form-group input-group col-md-12" style="margin-top: -15px;" >
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Assigned To
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                           {{form.assignedTo}}
+                        </div>
+                      </div>
+                            <div class="form-group input-group col-md-12">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Start Date
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                           {{form.milestonestartDate}}
+                        </div>
+                      </div>
+                            <div class="form-group input-group col-md-12">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">End Date
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                           {{form.milestoneendDate}}
+                        </div>
+                      </div>
+                            </div>
+                    {% endfor %}
+
+          <div class="ln_solid"></div>
+                      <div class="form-group">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                        <input type="submit" class="btn btn-success">
+
+                        </div>
+                      </div>
+
+</form>
+                  </div>
+                  </div>
+
+
+
+
+
+                  </div>
+                </div>
+                  </div>
+                </div>
+
+{% endblock %}
+{% block script %}
+    <script type='text/javascript'>
+function updateElementIndex(el, prefix, ndx) {
+    var id_regex = new RegExp('(' + prefix + '-\\d+)');
+    var replacement = prefix + '-' + ndx;
+    if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex, replacement));
+    if (el.id) el.id = el.id.replace(id_regex, replacement);
+    if (el.taskName) el.taskName = el.taskName.replace(id_regex, replacement);
+    if (el.assignedTo) el.assignedTo = el.assignedTo.replace(id_regex, replacement);
+    if (el.milestoneDate) el.milestoneDate = el.milestoneDate.replace(id_regex, replacement);
+
+}
+function cloneMore(selector, prefix) {
+    var newElement = $(selector).clone(true);
+    var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
+     newElement.find(':input').each(function() {
+        var taskName = $(this).attr('taskName')
+        var assignedTo = $(this).attr('assignedTo')
+        var milestoneDate = $(this).attr('milestoneDate')
+
+
+        if(taskName) {
+            taskName = taskName.replace('-' + (total-1) + '-', '-' + total + '-')
+            var id = 'id_' + taskName;
+            $(this).attr({'taskName': taskName, 'id': id}).val('').removeAttr('checked');
+
+        }
+        else if(assignedTo) {
+            assignedTo = assignedTo.replace('-' + (total-1) + '-', '-' + total + '-');
+            var id = 'id_' + assignedTo;
+            $(this).attr({'assignedTo': assignedTo, 'id': id}).val('').removeAttr('checked');
+
+        }
+        else if(milestoneDate) {
+            milestoneDate = milestoneDate.replace('-' + (total-1) + '-', '-' + total + '-');
+            var id = 'id_' + milestoneDate;
+
+           $(this).attr({'milestoneDate': milestoneDate, 'id': id}).val('').removeAttr('checked');
+
+        }})
+console.log(total)
+
+    total++;
+    $('#id_' + prefix + '-TOTAL_FORMS').val(total);
+    $(selector).after(newElement);
+    var conditionRow = $('.form-row:not(:last)');
+    conditionRow.find('.btn.add-form-row')
+    .removeClass('btn-success').addClass('btn-danger')
+    .removeClass('add-form-row').addClass('remove-form-row')
+    .html('<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>');
+    return false;
+}
+function deleteForm(prefix, btn) {
+    var total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+    if (total > 1){
+        btn.closest('.form-row').remove();
+        var forms = $('.form-row');
+        $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+        for (var i=0, formCount=forms.length; i<formCount; i++) {
+            $(forms.get(i)).find(':input').each(function() {
+                updateElementIndex(this, prefix, i);
+            });
+        }
+    }
+    return false;
+}
+$(document).on('click', '.add-form-row', function(e){
+    e.preventDefault();
+    cloneMore('.form-row:last', 'form');
+    return false;
+});
+$(document).on('click', '.remove-form-row', function(e){
+    e.preventDefault();
+    deleteForm('form', $(this));
+    return false;
+});
+</script>
+
+{% endblock %}

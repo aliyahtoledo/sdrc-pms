@@ -1,0 +1,93 @@
+{% extends 'sdrc/base.html' %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+
+
+
+        <div class="clearfix"></div>
+
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Resolved Issues</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#">Settings 1</a>
+                                    </li>
+                                    <li><a href="#">Settings 2</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+
+                        <table id="datatable-fixed-header" class="table table-striped table-bordered">
+                            <thead>
+
+                            <tr>
+                                <th>Project</th>
+                                <th>Project Overview</th>
+                                <th>Principal Investigator</th>
+                                <th>Issue Encountered</th>
+                                <th>Description</th>
+                                <th>Priority Level</th>
+                                <th>Date Encountered</th>
+                                <th>Status</th>
+                                <th>Resolution</th>
+                            </tr>
+
+                            </thead>
+                            <tbody>
+
+                                {% for incident in all_incident_report %}
+                                    <tr>
+                                        <td>{{ incident.project }}</td>
+                                        <td>{{ incident.project.projectOverview }}</td>
+                                        <td>{{ incident.project.get_name }}</td>
+                                        <td>{{ incident.issueEncountered }}  </td>
+                                        <td>{{ incident.issueDescription }}</td>
+                                        {% if incident.issuePriority == "High" %}
+                                        <td><button class="btn btn-xs btn-danger">{{ incident.issuePriority }}</button></td>
+                                        {% elif incident.issuePriority == "Medium" %}
+                                        <td><button class="btn btn-xs btn-warning">{{ incident.issuePriority }}</button></td>
+                                        {% elif incident.issuePriority == "Low" %}
+                                        <td><button class="btn btn-xs btn-info">{{ incident.issuePriority }}</button></td>
+                                        {% endif %}
+                                        <td>{{ incident.dateEncountered }}</td>
+                                        {% if incident.issueStatus == True %}
+                                            <td>Resolved</td>
+                                        {% else %}
+                                            <td>For Review</td>
+                                        {% endif %}
+                                        <td>{{ incident.issueResolution }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+
+                    </table>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    </div>
+
+{% endblock %}

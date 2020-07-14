@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JavaScriptLibraryMappings">
+    <file url="file://$PROJECT_DIR$" libraries="{78d1e57168, Chart, countrystatecity, export-data, exporting, highcharts, highcharts-gantt, index, jquery-1.11.1, jquery-1.12.4, jquery-1.7.1, jquery-3.1.1.slim, jquery-3.2.1.slim, jquery-3.3.1, jquery.canvasjs, jsgantt, loader, moment, popper, tether}" />
+  </component>
+</project>

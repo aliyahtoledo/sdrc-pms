@@ -1,0 +1,45 @@
+def add_members(request):
+    members = BudgetCategory.objects.filter(project=Project.objects.get(principalInvestigator=request.user.id), category='Personnel')
+    print(members)
+
+    if request.method == 'POST':
+        for role in request.POST.getlist('role'):
+            for first_name in request.POST.getlist('first_name'):
+                for last_name in request.POST.getlist('last_name'):
+                    for email in request.POST.getlist('email'):
+                        member = ProjectMember(project=Project.objects.get(principalInvestigator=request.user.id),
+                                           first_name=first_name, last_name=last_name, email=email, role=role)
+                        member.save()
+                        return HttpResponseRedirect('/addmembers/')
+
+    memberUpdate = request.POST.get('memberUpdate')
+    if memberUpdate == 'Update':
+        memberID = request.POST.get('memberID')
+        member = ProjectMember.objects.get(project=Project.objects.get(principalInvestigator=request.user.id),
+                                           id=memberID)
+        new_first_name = request.POST.get('new_first_name')
+        new_last_name = request.POST.get('new_last_name')
+        new_email = request.POST.get('new_email')
+        new_role = request.POST.get('new_role')
+        if new_first_name:
+            member.first_name = new_first_name
+            member.save(update_fields=['first_name'])
+        if new_last_name:
+            member.last_name = new_last_name
+            member.save(update_fields=['last_name'])
+        if new_email:
+            member.email = new_email
+            member.save(update_fields=['email'])
+        if new_role:
+            member.role = new_role
+            member.save(update_fields=['role'])
+    elif memberUpdate == 'Delete':
+        memberID = request.POST.get('memberID')
+        member = ProjectMember.objects.get(project=Project.objects.get(principalInvestigator=request.user.id),
+                                           id=memberID).delete()
+
+        return HttpResponseRedirect('/addmembers/')
+
+    context = {'projectmembers': members, 'notifications': get_notifications(request), 'members': ProjectMember.objects.filter(
+        project=Project.objects.get(principalInvestigator=request.user.id))}
+    return render(request, 'sdrc/addmembers.html', context)

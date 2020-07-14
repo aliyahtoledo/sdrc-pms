@@ -1,0 +1,1235 @@
+{% extends 'sdrc/base.html' %}
+
+{% block style %}
+    <style>
+        .table-row{
+            cursor:pointer;
+        }
+
+    </style>
+{% endblock %}
+{% block content %}
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    {% load humanize %}
+    <div class="x_panel">
+    {% if projects.hasTranche == True %}
+
+
+          <div class="x_title">
+            <h2>Expense Tracker</h2>
+            <div class="clearfix"></div>
+        </div>
+
+        <h1>Project Name: {{ projects.projectTitle }}</h1>
+            <br>
+
+
+        <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                      <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                          {% for milestone in milestones %}
+                              <li role="presentation"><a href="#{{ milestone.id }}" id="#{{ milestone.id }}" role="tab" data-toggle="tab" aria-expanded="true">{{ milestone.milestoneName }}</a>
+                        </li>
+                          {% endfor %}
+
+                      </ul>
+                      <div id="myTabContent" class="tab-content">
+                          {% for milestone in milestones %}
+                               <div role="tabpanel" class="tab-pane fade" id="{{ milestone.id }}" aria-labelledby="{{ milestone.id }}">
+                                 <!-- PERSONNEL EXPENSS -->
+                    <!-- PERSONNEL EXPENSS -->
+                    <table class="table table-basic">
+
+                        <thead>
+                        <tr>
+                            <th> Personnel Expenses</th>
+                            <th>Quantity</th>
+                            <th>Amount</th>
+                            <th>Subtotal</th>
+                        </tr>
+
+                        </thead>
+
+                        {% for c in categories %}
+                            {% if c.project == projects %}
+                                {% if c.category == 'Personnel' %}
+                                    <tbody>
+
+
+                                    {% if projects.projectmember_set.all %}
+
+                                            {% for pm in projectmembers %}
+                                                {% if pm.category == c.id %}
+                                                    <tr>
+                                                        <td>{{ pm.expenseName }}</td>
+                                                        <td>{{ pm.sum }}</td>
+                                                        <td>{{ c.amount }}</td>
+                                                        <td>{{ c.subtotal }}</td>
+                                                    </tr>
+                                                {% else %}
+                                                {% endif %}
+                                            {% endfor %}
+
+                                    {% else %}
+                                        <tr>
+                                            <td>NO MEMBERS ADDED</td>
+                                            <td>NO MEMBERS ADDED</td>
+                                            <td>NO MEMBERS ADDED</td>
+
+                                        </tr>
+                                    {% endif %}
+
+
+                                    </tbody>
+                                {% endif %}
+                            {% endif %}
+
+                        {% endfor %}
+
+                    </table>
+                                   <!-- TRAVEL XPENES -->
+
+                    <table class="table table-basic">
+
+                        <thead>
+                        <tr>
+                            <th> Travel and Survey Expenses</th>
+                            {% for c in categories %}
+                                {% if c.project == projects %}
+                                    {% if c.projectexpense_set.all %}
+                                        {% if c.category == 'Travel and Survey Cost' %}
+                                            {% if c.title == 'Accomodations' %}
+                                                <tbody>
+                                                  <tr id="accomodation-row{{ milestone.id }}" onclick="getAccomodation({{ milestone.id }})" class="table-row">
+                                                    {% for te in totalexpense %}
+                                                       {% if te.category == c.id and te.milestone == milestone.id  and te.project == projects.id and te.status == 'Approved' %}
+                                                           <td><b>{{ c.title }}</b><br>Total Expense:  {{ te.sum|intcomma}} <br>Remaining Budget: {{ c.subtotal|intcomma }}</td>
+                                                             <td><button id="accomodation_realloc" type="button" data-toggle="modal" data-target=".modal_details{{ c.id }}" class="btn btn-warning btn-xs view_btn">Reallocate</button></td>
+
+                                                        {% endif %}
+
+                                                    {% endfor %}
+                                                     </tr>
+                                                <tr id="accomodation-row-open{{ milestone.id }}" onclick="closeAccomodation({{ milestone.id }})" style="display: none" class="table-row">
+                                                    <td>{{ c.title }}</td>
+
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+
+                                                    <th>Total Expense:{% for te in totalexpense %}
+                                                        {% if te.category == c.id and te.project == projects.id and te.status == 'Approved' %}
+                                                            {{ te.sum|intcomma}}
+                                                        {% endif %}
+                                                    {% endfor %}</th>
+                                                    <th></th>
+                                                </tr>
+                                                <tr class="accomodation-details-row-open{{ milestone.id }}"  style="display: none">
+                                                    <th>Expense Type</th>
+                                                    <th>Expense Name</th>
+                                                    <th>No. of Days</th>
+                                                    <th>No. of Pax</th>
+                                                    <th>Amount</th>
+                                                    <th>Expense Date</th>
+
+                                                </tr>
+                                                {% for exp in expenses %}
+                                                    {% if exp.project == projects and exp.category == c and exp.status == 'Approved' %}
+                                                       {% if exp.milestone == milestone %}
+                                                            <tr class="accomodation-details-row-open{{ milestone.id }}" style="display:none">
+                                                            <td>{{ exp.expenseType }}</td>
+                                                            <td>{{ exp.expenseName }}</td>
+                                                            <td>{{ exp.days }}</td>
+                                                            <td>{{ exp.expenseQuantity }}</td>
+                                                            <td>P {{ exp.expenseTotal|intcomma }}</td>
+
+                                                            <th>{{ exp.expenseDate }}</th>
+                                                        </tr>
+                                                       {% endif %}
+
+                                                    {% endif %}
+                                                {% endfor %}
+                                                </tbody>
+                                            {% elif c.title == 'Transportation' %}
+                                                <tbody>
+                                                <tr class="table-row" id="flight-row{{ milestone.id }}" onclick="openTransportation({{ milestone.id }})">
+                                                     {% for te in totalexpense %}
+                                                        {% if te.category == c.id and te.milestone == milestone.id  and te.project == projects.id and te.status == 'Approved' %}
+                                                           <td><b>{{ c.title }}</b><br>Total Expense:  {{ te.sum|intcomma}} <br>Remaining Budget: {{ c.subtotal|intcomma }}</td>
+
+                                                            <td><button id="accomodation_realloc" type="button" data-toggle="modal" data-target=".modal_details{{ c.id }}" class="btn btn-warning btn-xs view_btn">Reallocate</button></td>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </tr>
+                                                <tr id="flight-row-open{{ milestone.id }}" onclick="closeTransportation({{ milestone.id }})" style="display: none" class="table-row">
+                                                    <td>{{ c.title }}</td>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+
+                                                    <th>Total Expense:{% for te in totalexpense %}
+                                                        {% if te.category == c.id and te.milestone == milestone.id and te.project == projects.id and te.status == 'Approved' %}
+                                                            {{ te.sum|intcomma }}
+                                                        {% endif %}
+                                                    {% endfor %}</th>
+                                                    {#                                                              <th>Remaining Budget:{{ c.subtotal }}</th>#}
+                                                    <th></th>
+                                                </tr>
+                                                <tr class="flight-details-row-open{{ milestone.id }}" style="display: none">
+                                                    <th>Expense Type</th>
+                                                    <th>Expense Name</th>
+                                                    <th>Location</th>
+                                                    <th>No. of Pax</th>
+                                                    <th>Amount</th>
+                                                    <th>Expense Date</th>
+
+                                                </tr>
+                                                {% for exp in expenses %}
+                                                    {% if exp.project == projects and exp.category == c and exp.status == 'Approved' %}
+                                                         {% if exp.milestone == milestone %}
+                                                            <tr class="flight-details-row-open{{ milestone.id }}" style="display:none">
+                                                            <td>{{ exp.expenseType }}</td>
+                                                            <td>{{ exp.expenseName }}</td>
+                                                            <td>{{ exp.expenseLocation }}</td>
+                                                            <td>{{ exp.expenseQuantity }}</td>
+                                                            <td>{{ exp.expenseTotal }}</td>
+                                                            <th>{{ exp.expenseDate }}</th>
+                                                        </tr>
+                                                       {% endif %}
+
+                                                    {% endif %}
+                                                {% endfor %}
+                                                </tbody>
+
+                                            {% endif %}
+
+                                        {% endif %}
+                                    {% endif %}
+
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+
+                        </thead>
+
+                    </table>
+
+                               <!-- OPERATING XPENES -->
+                    <table class="table table-basic">
+
+                        <thead>
+                        <tr>
+                            <th> Operating Expenses</th>
+                            {% for c in categories %}
+                                {% if c.project == projects %}
+                                    {% if c.projectexpense_set.all %}
+                                        {% if c.category == 'Operating Expense' %}
+                                            {% if c.title == 'Equipment' %}
+                                                <tbody>
+                                                <tr id="equipment-row{{ milestone.id }}" onclick="openEquipment({{ milestone.id }})" class="table-row">
+                                                     {% for te in totalexpense %}
+                                                        {% if te.category == c.id and te.milestone == milestone.id and te.project == projects.id and te.status == 'Approved' %}
+                                                           <td><b>{{ c.title }}</b><br>Total Expense:  {{ te.sum|intcomma}} <br>Remaining Budget: {{ c.subtotal|intcomma }}</td>
+
+                                                        <td><button id="accomodation_realloc" type="button" data-toggle="modal" data-target=".modal_details{{ c.id }}" class="btn btn-warning btn-xs view_btn">Reallocate</button></td>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </tr>
+                                                <tr id="equipment-row-open{{ milestone.id }}" onclick="closeEquipment({{ milestone.id }})" style="display: none" class="table-row">
+                                                    <td>{{ c.title }}</td>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+
+                                                    <th>Total Expense:   {% for te in totalexpense %}
+                                                        {% if te.category == c.id and te.milestone == milestone.id and te.project == projects.id and te.status == 'Approved'  %}
+                                                            {{ te.sum|intcomma }}
+                                                        {% endif %}
+                                                    {% endfor %}</th>
+
+                                                </tr>
+                                                <tr class="equipment-details-row-open{{ milestone.id }}" style="display: none">
+                                                     <th>Expense Type</th>
+                                                    <th>Item Type</th>
+                                                    <th>Expense Name</th>
+                                                    <th>Quantity</th>
+                                                    <th>Amount</th>
+                                                    <th>Expense Date</th>
+
+                                                </tr>
+                                                {% for exp in expenses %}
+                                                    {% if exp.project == projects and exp.category == c and exp.status == 'Approved' %}
+                                                        {% if exp.milestone == milestone %}
+                                                            <tr class="equipment-details-row-open{{ milestone.id }}" style="display:none">
+                                                         <td>{{ exp.expenseType }}</td>
+                                                            <td>{{ exp.itemType }}</td>
+                                                            <td>{{ exp.expenseName }}</td>
+                                                            <td>{{ exp.expenseQuantity }}</td>
+                                                            <td>{{ exp.expenseTotal }}</td>
+                                                            <td>{{ exp.expenseDate }}</td>
+                                                        </tr>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                                </tbody>
+                                            {% elif c.title == 'Supplies and Materials' %}
+                                                <tbody>
+
+                                                 <tr id="supplies-row{{ milestone.id }}" onclick="openSupplies({{ milestone.id }})" class="table-row">
+                                                     {% for te in totalexpense %}
+                                                        {% if te.category == c.id and te.milestone == milestone.id and te.project == projects.id and te.status == 'Approved' %}
+                                                           <td><b>{{ c.title }}</b><br>Total Expense:  {{ te.sum|intcomma}} <br>Remaining Budget: {{ c.subtotal|intcomma }}</td>
+
+                                                            <td><button id="accomodation_realloc" type="button" data-toggle="modal" data-target=".modal_details{{ c.id }}" class="btn btn-warning btn-xs view_btn">Reallocate</button></td>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </tr>
+                                                <tr id="supplies-row-open{{ milestone.id }}" onclick="closeSupplies({{ milestone.id }})" class="table-row" style="display:none">
+                                                    <td>{{ c.title }}</td>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th>Total Expense:{% for te in totalexpense %}
+                                                        {% if te.category == c.id and te.milestone == milestone.id and te.project == projects.id and te.status == 'Approved' %}
+                                                            {{ te.sum|intcomma}}
+                                                        {% endif %}
+                                                    {% endfor %}</th>
+
+                                                </tr>
+
+                                                <tr class="supplies-details-row-open{{ milestone.id }}" style="display: none">
+                                                    <th>Expense Type</th>
+                                                    <th>Item Type</th>
+                                                    <th>Expense Name</th>
+                                                    <th>Quantity</th>
+                                                    <th>Amount</th>
+                                                    <th>Expense Date</th>
+
+                                                </tr>
+                                                {% for exp in expenses %}
+                                                    {% if exp.project == projects and exp.category == c and exp.status == 'Approved' %}
+                                                       {% if exp.milestone == milestone %}
+                                                            <tr class="supplies-details-row-open{{ milestone.id }}" style="display:none">
+                                                         <td>{{ exp.expenseType }}</td>
+                                                            <td>{{ exp.itemType }}</td>
+                                                            <td>{{ exp.expenseName }}</td>
+                                                            <td>{{ exp.expenseQuantity }}</td>
+                                                            <td>{{ exp.expenseTotal }}</td>
+                                                            <td>{{ exp.expenseDate }}</td>
+                                                        </tr>
+                                                       {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                                </tbody>
+                                            {% elif c.title == 'Training' %}
+                                                <tbody>
+                                                 <tr id="training-row{{ milestone.id }}" onclick="openTraining({{ milestone.id }})" class="table-row">
+                                                     {% for te in totalexpense %}
+                                                        {% if te.category == c.id and te.milestone == milestone.id and te.project == projects.id and te.status == 'Approved' %}
+                                                           <td><b>{{ c.title }}</b><br>Total Expense:  {{ te.sum|intcomma}} <br>Remaining Budget: {{ c.subtotal|intcomma }}</td>
+
+                                                            <td><button id="accomodation_realloc" type="button" data-toggle="modal" data-target=".modal_details{{ c.id }}" class="btn btn-warning btn-xs view_btn">Reallocate</button></td>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </tr>
+                                                <tr id="training-open{{ milestone.id }}" onclick="closeTraining({{ milestone.id }})" style="display:none;" class="table-row">
+                                                    <td>{{ c.title }}</td>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+
+                                                    <th>Total Expense:{% for te in totalexpense %}
+                                                        {% if te.category == c.id and te.milestone == milestone.id and te.project == projects.id and te.status == 'Approved'  %}
+                                                            {{ te.sum|intcomma}}
+                                                        {% endif %}
+                                                    {% endfor %}</th>
+                                                    <th></th>
+                                                </tr>
+
+                                                <tr class="training-details-row-open{{ milestone.id }}" style="display: none">
+                                                     <th>Expense Type</th>
+                                                    <th>Item Type</th>
+                                                    <th>Expense Name</th>
+                                                    <th>Quantity</th>
+                                                    <th>Amount</th>
+                                                    <th>Expense Date</th>
+
+                                                </tr>
+                                                {% for exp in expenses %}
+                                                    {% if exp.project == projects and exp.category == c and exp.status == 'Approved' %}
+                                                       {% if exp.milestone == milestone %}
+                                                            <tr class="training-details-row-open{{ milestone.id }}" style="display:none">
+                                                        <td>{{ exp.expenseType }}</td>
+                                                            <td>{{ exp.itemType }}</td>
+                                                            <td>{{ exp.expenseName }}</td>
+                                                            <td>{{ exp.expenseQuantity }}</td>
+                                                            <td>{{ exp.expenseTotal }}</td>
+                                                            <td>{{ exp.expenseDate }}</td>
+                                                        </tr>
+                                                            {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                                </tbody>
+                                            {% elif c.title == 'Other Expense' %}
+                                                <tbody>
+                                                <tr id="others{{ milestone.id }}" onclick="openOther({{ milestone.id }})" class="table-row">
+                                                     {% for te in totalexpense %}
+                                                        {% if te.category == c.id and te.milestone == milestone.id and te.project == projects.id and te.status == 'Approved' %}
+                                                           <td><b>{{ c.title }}</b><br>Total Expense:  {{ te.sum|intcomma}} <br>Remaining Budget: {{ c.subtotal|intcomma }}</td>
+
+                                                            <td><button id="accomodation_realloc" type="button" data-toggle="modal" data-target=".modal_details{{ c.id }}" class="btn btn-warning btn-xs view_btn">Reallocate</button></td>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </tr>
+                                                <tr id="others-open{{ milestone.id }}" onclick="closeOther({{ milestone.id }})" style="display: none" class="table-row">
+                                                    <td>{{ c.title }}</td>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+
+                                                    <th>Total Expense:{% for te in totalexpense %}
+                                                        {% if te.category == c.id and te.milestone == milestone and te.project == projects.id and te.status == 'Approved' %}
+                                                            {{ te.sum|intcomma}}
+                                                        {% endif %}
+                                                    {% endfor %}</th>
+                                                    <th></th>
+                                                </tr>
+
+                                                <tr class="others-details-row-open{{ milestone.id }}" style="display: none">
+                                                      <th>Expense Type</th>
+                                                    <th>Item Type</th>
+                                                    <th>Expense Name</th>
+                                                    <th>Quantity</th>
+                                                    <th>Amount</th>
+                                                    <th>Expense Date</th>
+
+                                                </tr>
+                                                {% for exp in expenses %}
+                                                    {% if exp.project == projects and exp.category == c and exp.status == 'Approved' %}
+                                                       {% if exp.milestone == milestone %}
+                                                            <tr class="others-details-row-open{{ milestone.id }}" style="display:none">
+                                                        <td>{{ exp.expenseType }}</td>
+                                                            <td>{{ exp.itemType }}</td>
+                                                            <td>{{ exp.expenseName }}</td>
+                                                            <td>{{ exp.expenseQuantity }}</td>
+                                                            <td>{{ exp.expenseTotal }}</td>
+                                                            <td>{{ exp.expenseDate }}</td>
+                                                        </tr>
+                                                       {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                                </tbody>
+                                            {% endif %}
+
+                                        {% endif %}
+                                    {% endif %}
+
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+
+                        </thead>
+
+                    </table>
+
+                               </div>
+
+                 {% endfor %}
+
+
+
+               </div>
+                      </div>
+                    </div>
+
+
+{#        IF PROJECT HAS NO TRANCHE #}
+        {% else %}
+         <!--DIV TITLE-->
+        <div class="x_title">
+            <h2>Expense Tracker</h2>
+            <div class="clearfix"></div>
+        </div>
+        <!--END DIV TITLE-->
+        <div class="x_content">
+            <h1>Project Name: {{ projects.projectTitle }}</h1>
+            <br>
+            <div class="animated flipInY col-lg-4 col-md-3 col-sm-6 col-xs-12">
+                <div class="tile-stats">
+                    <h3 class="projectBudgetTitle" id="projectBudgetTitle">Total Project Budget</h3>
+                    <div class="count projectBudgetAmount" id="projectBudgetAmount">P {{projects.budgetSpent|intcomma}}</div>
+
+
+                </div>
+            </div>
+
+            <div class="animated flipInY col-lg-4 col-md-3 col-sm-6 col-xs-12">
+                <div class="tile-stats">
+                    <h3 class="projectBudgetTitle" id="projectBudgetTitle">Total Expense Amount</h3>
+                    <div class="count projectBudgetAmount" id="projectBudgetAmount">P {{projects.budgetSpent|intcomma}}</div>
+
+                </div>
+            </div>
+
+{#            {% if projects.budgetSpent == 0 %}#}
+{#                <div class="animated flipInY col-lg-4 col-md-3 col-sm-6 col-xs-12">#}
+{#                    <div class="tile-stats" style="background: #D2241F">#}
+{#                        <h3 class="projectBudgetTitle" id="projectBudgetTitle" style="color:#360604">Budget Left</h3>#}
+{#                        <div class="count projectBudgetAmount" id="projectBudgetAmount" style="color:#360604">P {{projects.budgetRemaining|intcomma}}<p>({{ projects.getBudgetStatus|floatformat }} % of total budget)</p></div>#}
+{##}
+{##}
+{#                    </div>#}
+{#                </div>#}
+{#            {% elif projects.getBudgetStatus >= 0 and projects.getBudgetStatus < 50   %}#}
+{#                <div class="animated flipInY col-lg-4 col-md-3 col-sm-6 col-xs-12">#}
+{#                    <div class="tile-stats" style="background: #E5930D">#}
+{#                        <h3 class="projectBudgetTitle" id="projectBudgetTitle" style="color:#613F07">Budget Left</h3>#}
+{#                        <div class="count projectBudgetAmount" id="projectBudgetAmount" style="color:#613F07">P {{projects.budgetRemaining|intcomma}}<p>({{ projects.getBudgetStatus|floatformat }} % of total budget)</p></div>#}
+{##}
+{##}
+{##}
+{#                    </div>#}
+{#                </div>#}
+{#            {% elif projects.getBudgetSpent >= 50%}#}
+{#                <div class="animated flipInY col-lg-4 col-md-3 col-sm-6 col-xs-12">#}
+{#                    <div class="tile-stats" style="background: #4C8B14">#}
+{#                        <h3 class="projectBudgetTitle" id="projectBudgetTitle" style="color:#1A3105">Budget Left</h3>#}
+{#                        <div class="count projectBudgetAmount" id="projectBudgetAmount" style="color:#1A3105">P {{projects.budgetRemaining|intcomma}}<p>({{ projects.getBudgetStatus|floatformat }} % of total budget)</p></div>#}
+{##}
+{##}
+{##}
+{#                    </div>#}
+{#                </div>#}
+{#            {% endif %}#}
+
+            <!-- START OF CONTENT -->
+            {% if projects.budgetcategory_set %}
+                <div class="modal-body">
+                    <!-- PERSONNEL EXPENSS -->
+                    <!-- PERSONNEL EXPENSS -->
+                    <table class="table table-basic">
+
+                        <thead>
+                        <tr>
+                            <th> Personnel Expenses</th>
+                            <th>Quantity</th>
+                            <th>Amount</th>
+                            <th>Subtotal</th>
+                        </tr>
+
+                        </thead>
+
+                        {% for c in categories %}
+                            {% if c.project == projects %}
+                                {% if c.category == 'Personnel' %}
+                                    <tbody>
+
+
+                                    {% if projects.projectmember_set.all %}
+
+                                            {% for pm in projectmembers %}
+                                                {% if pm.category == c.id %}
+                                                    <tr>
+                                                        <td>{{ pm.expenseName }}</td>
+                                                        <td>{{ pm.sum }}</td>
+                                                        <td>{{ c.amount }}</td>
+                                                        <td>{{ c.subtotal }}</td>
+                                                    </tr>
+                                                {% else %}
+                                                {% endif %}
+                                            {% endfor %}
+
+                                    {% else %}
+                                        <tr>
+                                            <td>NO MEMBERS ADDED</td>
+                                            <td>NO MEMBERS ADDED</td>
+                                            <td>NO MEMBERS ADDED</td>
+
+                                        </tr>
+                                    {% endif %}
+
+
+                                    </tbody>
+                                {% endif %}
+                            {% endif %}
+
+                        {% endfor %}
+
+                    </table>
+
+
+                    <!-- TRAVEL XPENES -->
+
+                    <table class="table table-basic">
+
+                        <thead>
+                        <tr>
+                            <th> Travel and Survey Expenses</th>
+                            {% for c in categories %}
+                                {% if c.project == projects %}
+                                    {% if c.projectexpense_set.all %}
+                                        {% if c.category == 'Travel and Survey Cost' %}
+                                            {% if c.title == 'Accomodations' %}
+                                                <tbody>
+                                                  <tr id="accomodation-row" class="table-row">
+                                                    {% for te in totalexpense %}
+                                                        {% if te.category == c.id and te.project == projects.id and te.status == 'Approved' %}
+                                                           <td><b>{{ c.title }}</b><br>Total Expense:  {{ te.sum|intcomma}} <br>Remaining Budget: {{ c.subtotal|intcomma }}</td>
+                                                             <td><button id="accomodation_realloc" type="button" data-toggle="modal" data-target=".modal_details{{ c.id }}" class="btn btn-warning btn-xs view_btn">Reallocate</button></td>
+
+                                                        {% endif %}
+
+                                                    {% endfor %}
+                                                     </tr>
+                                                <tr id="accomodation-row-open" style="display: none" class="table-row">
+                                                    <td>{{ c.title }}</td>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                <th></th>
+                                                    <th>Total Expense:{% for te in totalexpense %}
+                                                        {% if te.category == c.id and te.project == projects.id and te.status == 'Approved' %}
+                                                            {{ te.sum|intcomma}}
+                                                        {% endif %}
+                                                    {% endfor %}</th>
+                                                    <th></th>
+                                                </tr>
+                                                <tr class="accomodation-details-row-open" style="display: none">
+                                                    <th>Expense Type</th>
+                                                    <th>Item Type</th>
+                                                    <th>Expense Name</th>
+                                                    <th>Location</th>
+                                                    <th>No. of Days</th>
+                                                    <th>Quantity</th>
+                                                    <th>Amount</th>
+                                                    <th>Expense Date</th>
+
+                                                </tr>
+                                                {% for exp in expenses %}
+                                                    {% if exp.project == projects and exp.category == c and exp.status == 'Approved' %}
+                                                        <tr class="accomodation-details-row-open" style="display:none">
+                                                            <td>{{ exp.expenseType }}</td>
+                                                             <td>{{ exp.itemType }}</td>
+                                                            <td>{{ exp.expenseName }}</td>
+                                                            <td>{{ exp.expenseLocation }}</td>
+                                                            <td>{{ exp.days }}</td>
+                                                            <td>{{ exp.expenseQuantity }}</td>
+                                                            <td>{{ exp.expenseTotal }}</td>
+                                                            <th>{{ exp.expenseDate }}</th>
+                                                        </tr>
+
+                                                    {% endif %}
+                                                {% endfor %}
+                                                </tbody>
+                                            {% elif c.title == 'Transportation' %}
+                                                <tbody>
+                                                <tr id="flight-row" class="table-row">
+                                                     {% for te in totalexpense %}
+                                                        {% if te.category == c.id and te.project == projects.id and te.status == 'Approved' %}
+                                                           <td><b>{{ c.title }}</b><br>Total Expense:  {{ te.sum|intcomma}} <br>Remaining Budget: {{ c.subtotal|intcomma }}</td>
+
+                                                            <td><button id="accomodation_realloc" type="button" data-toggle="modal" data-target=".modal_details{{ c.id }}" class="btn btn-warning btn-xs view_btn">Reallocate</button></td>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </tr>
+                                                <tr id="flight-row-open" style="display: none" class="table-row">
+                                                    <td>{{ c.title }}</td>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                <th></th>
+                                                    <th></th>
+                                                    <th>Total Expense:{% for te in totalexpense %}
+                                                        {% if te.category == c.id and te.project == projects.id and te.status == 'Approved' %}
+                                                            {{ te.sum|intcomma}}
+                                                        {% endif %}
+                                                    {% endfor %}</th>
+                                                    {#                                                              <th>Remaining Budget:{{ c.subtotal }}</th>#}
+                                                    <th></th>
+                                                </tr>
+                                                <tr class="flight-details-row-open" style="display: none">
+                                                    <th>Expense Type</th>
+                                                    <th>Item Type</th>
+                                                    <th>Expense Name</th>
+                                                    <th>Location</th>
+                                                    <th>No. of Days</th>
+                                                    <th>Quantity</th>
+                                                    <th>Amount</th>
+                                                    <th>Expense Date</th>
+
+                                                </tr>
+                                                {% for exp in expenses %}
+                                                    {% if exp.project == projects and exp.category == c and exp.status == 'Approved' %}
+                                                        <tr class="flight-details-row-open" style="display:none">
+                                                            <td>{{ exp.expenseType }}</td>
+                                                              <td>{{ exp.itemType }}</td>
+                                                            <td>{{ exp.expenseName }}</td>
+                                                            <td>{{ exp.expenseLocation }}</td>
+                                                            <td>{{ exp.days }}</td>
+                                                            <td>{{ exp.expenseQuantity }}</td>
+                                                            <td>{{ exp.expenseTotal }}</td>
+                                                            <td>{{ exp.expenseDate }}</td>
+                                                        </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                </tbody>
+
+                                            {% endif %}
+
+                                        {% endif %}
+                                    {% endif %}
+
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+
+                        </thead>
+
+                    </table>
+
+                    <!-- OPERATING XPENES -->
+                    <table class="table table-basic">
+
+                        <thead>
+                        <tr>
+                            <th> Operating Expenses</th>
+                            {% for c in categories %}
+                                {% if c.project == projects %}
+                                    {% if c.projectexpense_set.all %}
+                                        {% if c.category == 'Operating Expense' %}
+                                            {% if c.title == 'Equipment' %}
+                                                <tbody>
+                                                <tr id="equipment-row" class="table-row">
+                                                     {% for te in totalexpense %}
+                                                        {% if te.category == c.id and te.project == projects.id and te.status == 'Approved' %}
+                                                           <td><b>{{ c.title }}</b><br>Total Expense:  {{ te.sum|intcomma}} <br>Remaining Budget: {{ c.subtotal|intcomma }}</td>
+
+                                                        <td><button id="accomodation_realloc" type="button" data-toggle="modal" data-target=".modal_details{{ c.id }}" class="btn btn-warning btn-xs view_btn">Reallocate</button></td>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </tr>
+                                                <tr id="equipment-row-open" style="display: none" class="table-row">
+                                                    <td>{{ c.title }}</td>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                <th></th>
+                                                    <th>Total Expense:   {% for te in totalexpense %}
+                                                        {% if te.category == c.id and te.project == projects.id and te.status == 'Approved'  %}
+                                                            {{ te.sum|intcomma }}
+                                                        {% endif %}
+                                                    {% endfor %}</th>
+
+                                                </tr>
+                                                <tr class="equipment-details-row-open" style="display: none">
+                                                     <th>Expense Type</th>
+                                                    <th>Item Type</th>
+                                                    <th>Expense Name</th>
+                                                    <th>Location</th>
+                                                    <th>Quantity</th>
+                                                    <th>Amount</th>
+                                                    <th>Expense Date</th>
+
+                                                </tr>
+                                                {% for exp in expenses %}
+                                                    {% if exp.project == projects and exp.category == c and exp.status == 'Approved' %}
+                                                        <tr class="equipment-details-row-open" style="display:none">
+                                                         <td>{{ exp.expenseType }}</td>
+                                                            <td>{{ exp.itemType }}</td>
+                                                            <td>{{ exp.expenseName }}</td>
+                                                            <td>{{ exp.expenseLocation }}</td>
+                                                            <td>{{ exp.expenseQuantity }}</td>
+                                                            <td>{{ exp.expenseTotal }}</td>
+                                                            <td>{{ exp.expenseDate }}</td>
+                                                        </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                </tbody>
+                                            {% elif c.title == 'Supplies and Materials' %}
+                                                <tbody>
+
+                                                 <tr id="supplies-row" class="table-row">
+                                                     {% for te in totalexpense %}
+                                                        {% if te.category == c.id and te.project == projects.id and te.status == 'Approved' %}
+                                                           <td><b>{{ c.title }}</b><br>Total Expense:  {{ te.sum|intcomma}} <br>Remaining Budget: {{ c.subtotal|intcomma }}</td>
+
+                                                            <td><button id="accomodation_realloc" type="button" data-toggle="modal" data-target=".modal_details{{ c.id }}" class="btn btn-warning btn-xs view_btn">Reallocate</button></td>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </tr>
+                                                <tr id="supplies-row-open" class="table-row" style="display:none">
+                                                    <td>{{ c.title }}</td>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th>Total Expense:{% for te in totalexpense %}
+                                                        {% if te.category == c.id and te.project == projects.id and te.status == 'Approved' %}
+                                                            {{ te.sum|intcomma}}
+                                                        {% endif %}
+                                                    {% endfor %}</th>
+
+                                                </tr>
+
+                                                <tr class="supplies-details-row-open" style="display: none">
+                                                    <th>Expense Type</th>
+                                                    <th>Item Type</th>
+                                                    <th>Expense Name</th>
+                                                    <th>Location</th>
+                                                    <th>Quantity</th>
+                                                    <th>Amount</th>
+                                                    <th>Expense Date</th>
+
+                                                </tr>
+                                                {% for exp in expenses %}
+                                                    {% if exp.project == projects and exp.category == c and exp.status == 'Approved' %}
+                                                        <tr class="supplies-details-row-open" style="display:none">
+                                                         <td>{{ exp.expenseType }}</td>
+                                                            <td>{{ exp.itemType }}</td>
+                                                            <td>{{ exp.expenseName }}</td>
+                                                            <td>{{ exp.expenseLocation }}</td>
+                                                            <td>{{ exp.expenseQuantity }}</td>
+                                                            <td>{{ exp.expenseTotal }}</td>
+                                                            <td>{{ exp.expenseDate }}</td>
+                                                        </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                </tbody>
+                                            {% elif c.title == 'Training' %}
+                                                <tbody>
+                                                 <tr id="training-row" class="table-row">
+                                                     {% for te in totalexpense %}
+                                                        {% if te.category == c.id and te.project == projects.id and te.status == 'Approved' %}
+                                                           <td><b>{{ c.title }}</b><br>Total Expense:  {{ te.sum|intcomma}} <br>Remaining Budget: {{ c.subtotal|intcomma }}</td>
+
+                                                            <td><button id="accomodation_realloc" type="button" data-toggle="modal" data-target=".modal_details{{ c.id }}" class="btn btn-warning btn-xs view_btn">Reallocate</button></td>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </tr>
+                                                <tr id="training-open" style="display:none;" class="table-row">
+                                                    <td>{{ c.title }}</td>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th>Total Expense:{% for te in totalexpense %}
+                                                        {% if te.category == c.id and te.project == projects.id and te.status == 'Approved'  %}
+                                                            {{ te.sum|intcomma}}
+                                                        {% endif %}
+                                                    {% endfor %}</th>
+                                                    <th></th>
+                                                </tr>
+
+                                                <tr class="training-details-row-open" style="display: none">
+                                                     <th>Expense Type</th>
+                                                    <th>Item Type</th>
+                                                    <th>Expense Name</th>
+                                                    <th>Location</th>
+                                                    <th>Quantity</th>
+                                                    <th>Amount</th>
+                                                    <th>Expense Date</th>
+
+                                                </tr>
+                                                {% for exp in expenses %}
+                                                    {% if exp.project == projects and exp.category == c and exp.status == 'Approved' %}
+                                                        <tr class="training-details-row-open" style="display:none">
+                                                        <td>{{ exp.expenseType }}</td>
+                                                            <td>{{ exp.itemType }}</td>
+                                                            <td>{{ exp.expenseName }}</td>
+                                                            <td>{{ exp.expenseLocation }}</td>
+                                                            <td>{{ exp.expenseQuantity }}</td>
+                                                            <td>{{ exp.expenseTotal }}</td>
+                                                            <td>{{ exp.expenseDate }}</td>
+                                                        </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                </tbody>
+                                            {% elif c.title == 'Other Expense' %}
+                                                <tbody>
+                                                <tr id="others" class="table-row">
+                                                     {% for te in totalexpense %}
+                                                        {% if te.category == c.id and te.project == projects.id and te.status == 'Approved' %}
+                                                           <td><b>{{ c.title }}</b><br>Total Expense:  {{ te.sum|intcomma}} <br>Remaining Budget: {{ c.subtotal|intcomma }}</td>
+
+                                                            <td><button id="accomodation_realloc" type="button" data-toggle="modal" data-target=".modal_details{{ c.id }}" class="btn btn-warning btn-xs view_btn">Reallocate</button></td>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </tr>
+                                                <tr id="others-open" style="display: none" class="table-row">
+                                                    <td>{{ c.title }}</td>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th>Total Expense:{% for te in totalexpense %}
+                                                        {% if te.category == c.id and te.project == projects.id and te.status == 'Approved' %}
+                                                            {{ te.sum|intcomma}}
+                                                        {% endif %}
+                                                    {% endfor %}</th>
+                                                    <th></th>
+                                                </tr>
+
+                                                <tr class="others-details-row-open" style="display: none">
+                                                      <th>Expense Type</th>
+                                                    <th>Item Type</th>
+                                                    <th>Expense Name</th>
+                                                    <th>Location</th>
+                                                    <th>Quantity</th>
+                                                    <th>Amount</th>
+                                                    <th>Expense Date</th>
+
+                                                </tr>
+                                                {% for exp in expenses %}
+                                                    {% if exp.project == projects and exp.category == c and exp.status == 'Approved' %}
+                                                        <tr class="others-details-row-open" style="display:none">
+                                                        <td>{{ exp.expenseType }}</td>
+                                                            <td>{{ exp.itemType }}</td>
+                                                            <td>{{ exp.expenseName }}</td>
+                                                            <td>{{ exp.expenseLocation }}</td>
+                                                            <td>{{ exp.expenseQuantity }}</td>
+                                                            <td>{{ exp.expenseTotal }}</td>
+                                                            <td>{{ exp.expenseDate }}</td>
+                                                        </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                </tbody>
+                                            {% endif %}
+
+                                        {% endif %}
+                                    {% endif %}
+
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+
+                        </thead>
+
+                    </table>
+
+
+                </div>
+
+
+
+                <div class="modal-footer">
+                    <a href="/request_procurement/"><button type="submit" class="btn btn-primary" data-dismiss="modal">Request for Procurement</button></a>
+                    <a href="/request_cashadvance/">  <button type="submit" class="btn btn-primary" data-dismiss="modal">Request for Cash Advance</button></a>
+                    <a href="/request_reimbursement/"> <button type="submit" class="btn btn-primary" data-dismiss="modal">Request for Reimbursement</button></a>
+                </div>
+                </div>
+
+                </div>
+                </div>
+                <!--END VIEW DETAILS MODAL-->
+            {% endif %}
+
+    </div>
+    <!--END X_CONTENT-->
+    {% endif %}
+
+    </div>
+    <!--END X_PANEL-->
+
+    <!-- MODAL -->
+    <form class="form-horizontal form-label-left input_mask" method="POST">
+     {% csrf_token %}
+    {% for c in categories %}
+        {% if c.project == projects %}
+
+                 <!--VIEW DETAILS MODAL-->
+					<div class="modal fade modal_details{{ c.id }}" role="dialog">
+						<div class="modal-dialog">
+						<!-- Modal content-->
+						<div class="modal-content">
+						  <div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title">Budget Category: <b> {{ c.title }}</b></h4>
+                              <h4 class="modal-title">Remaining Budget: <b> {{ c.subtotal|intcomma }}</b></h4>
+                              <input id="category_requested{{ c.id }}" value="{{ c.title }}" style="display: none">
+						  </div>
+
+                             <div class="modal-body">
+                                <label>Reallocate from:</label>
+                             <input id="category_to_be_reallocated{{ c.id }}" style="display: none">
+                                 <select onchange="getCategory({{ c.id }})" style="margin-left: 5%" id="categoryTitle{{ c.id }}"  >
+                                 <option selected="selected" disabled>Choose a category</option>
+                                    {% for cat in categories %}
+                                        {% if cat.category != 'Personnel' and cat.title != c.title %}
+                                            <option value={{ cat.subtotal }} data-title="{{ cat.title }}">{{ cat.title }} : ( Remaining Budget: {{ cat.subtotal|intcomma }} )</option>
+                                        {% endif %}
+                                     {% endfor %}
+                                 </select>
+                                 <label>Remaining amount of selected category (if approved): </label>
+                             <input id="selectedCategory{{ c.id }}"  disabled>
+                             <input id="originalAmount{{ c.id }}" style="display: none;"  placeholder="originalAMount" disabled>
+                              <p class="red "><b>Maximum allowable amount for reallocation: <span id="availableAmount{{ c.id }}"></span></b> </p>
+                             <hr>
+                             <div id="getAmount{{ c.id }}" style="display: none;">
+                                 <input value="{{ c.subtotal }}" id="category{{ c.id }}" style="display: none">
+                                   <label>Amount to Reallocate</label>
+                                  <input onchange="getNewAmount({{ c.id }})" type="text" style="width:50%; margin-left: 3%" placeholder="Input amount to reallocate" id="allocated_amount{{ c.id }}">
+                                 <br><br>
+                                 <label>New Budget (if approved)</label>
+                                  <input type="number" disabled style="width:50%; margin-left: 12%" id="new_allocated{{ c.id }}">
+                             </div>
+
+                        </div>
+
+
+
+						  <div class="modal-footer">
+							<button onclick="requestsubmit({{ c.id }})" type="button" class="btn btn-primary" data-dismiss="modal"  id="requetsend{{ c.id }}">Request for Reallocation</button>
+						  </div>
+						</div>
+
+					  </div>
+					</div>
+					<!--END VIEW DETAILS MODAL-->
+
+ {% endif %}
+    {% endfor %}
+    </form>
+
+
+
+
+{% endblock %}
+{% block script %}
+       <script>
+
+
+        $('#accomodation-row').click(function () {
+
+            $('.accomodation-details-row-open').show().css('background','#FCF58B')
+            $('#accomodation-row-open').show().css('background','yellow')
+            $('#accomodation-row').hide()
+        });
+        $('#accomodation-row-open').click(function () {
+
+            $('.accomodation-details-row-open').hide()
+            $('#accomodation-row-open').hide()
+            $('#accomodation-row').show()
+        });
+
+        $('#flight-row').click(function () {
+
+            $('.flight-details-row-open').show().css('background','#FCF58B')
+            $('#flight-row-open').show().css('background','yellow')
+            $('#flight-row').hide()
+        });
+        $('#flight-row-open').click(function () {
+
+            $('.flight-details-row-open').hide()
+            $('#flight-row-open').hide()
+            $('#flight-row').show()
+        });
+
+        $('#equipment-row').click(function () {
+
+            $('.equipment-details-row-open').show().css('background','#FCF58B')
+            $('#equipment-row-open').show().css('background','yellow')
+            $('#equipment-row').hide()
+        });
+        $('#equipment-row-open').click(function () {
+
+            $('.equipment-details-row-open').hide()
+            $('#equipment-row-open').hide()
+            $('#equipment-row').show()
+        });
+
+        $('#supplies-row').click(function () {
+
+            $('.supplies-details-row-open').show().css('background','#FCF58B')
+            $('#supplies-row-open').show().css('background','yellow')
+            $('#supplies-row').hide()
+
+
+        });
+        $('#supplies-row-open').click(function () {
+
+            $('.supplies-details-row-open').hide()
+            $('#supplies-row-open').hide()
+            $('#supplies-row').show()
+
+
+        });
+
+        $('#training').click(function () {
+
+            $('.training-details-row-open').show().css('background','#FCF58B')
+            $('#training-open').show().css('background','yellow')
+            $('#training').hide()
+        });
+        $('#training-open').click(function () {
+
+            $('.training-details-row-open').hide()
+            $('#training-open').hide()
+            $('#training').show()
+        });
+
+        $('#others').click(function () {
+
+            $('.others-details-row-open').show().css('background','#FCF58B')
+            $('#others-open').show().css('background','yellow')
+            $('#others').hide()
+        });
+        $('#others-open').click(function () {
+
+            $('.others-details-row-open').hide()
+            $('#others-open').hide()
+            $('#others').show()
+        });
+
+        function getCategory(id) {
+             $('#getAmount'+id).show()
+            var category = document.getElementById("categoryTitle"+id).value;
+              var selected = document.getElementById("selectedCategory"+id).value=category
+            var originalAmount = document.getElementById("originalAmount"+id).value = category
+            var budgetTobeAllocated = originalAmount * 0.10
+            {#var title = document.getElementById("categoryTitle"+id).getAttribute("title")#}
+            {#alert(title)#}
+            var category_to_be_realloc = ($("#categoryTitle"+id).find(':selected').data('title'));
+            document.getElementById("category_to_be_reallocated"+id).value=category_to_be_realloc
+            document.getElementById("availableAmount"+id).innerHTML = budgetTobeAllocated + ""
+
+        }
+
+        function getNewAmount(id){
+
+            var amountRealloc = document.getElementById("allocated_amount"+id).value;
+            var categoryOriginal = document.getElementById("category"+id).value
+            var selected = document.getElementById("originalAmount"+id).value
+               var budgetTobeAllocated = selected * 0.10
+
+            if(amountRealloc<=budgetTobeAllocated){
+                var newBudget = document.getElementById("new_allocated"+id).value =(1*amountRealloc) +(1*categoryOriginal)
+            document.getElementById("selectedCategory"+id).value = selected-amountRealloc
+            }
+            else{
+                alert("You exceed the available amount for reallocation!")
+                  var selected = document.getElementById("originalAmount"+id).value
+                 document.getElementById("selectedCategory"+id).value=selected
+                document.getElementById("new_allocated"+id).value = ""
+            }
+
+
+        }
+
+        function requestsubmit (id) {
+           if (document.getElementById("new_allocated"+id).value != ""){
+               $.ajax({
+             url: "/expensetracking/",
+             type: "POST",
+             data:{
+                 requested_amount:document.getElementById("allocated_amount"+id).value,
+                 category_requested:document.getElementById("category_requested"+id).value,
+                 category_reallocated:document.getElementById("category_to_be_reallocated"+id).value,
+                 csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+             },
+
+            success:function (response) {
+                 alert("Request forwarded to the administrative assistant!")
+
+             }
+
+         })
+           }
+           else{
+               alert("Please input other amount")
+
+           }
+        }
+
+        function getAccomodation(id){
+             $('.accomodation-details-row-open'+id).show().css('background','#FCF58B')
+            $('#accomodation-row-open'+id).show().css('background','yellow')
+            $('#accomodation-row'+id).hide()
+        }
+
+        function closeAccomodation(id){
+
+            $('.accomodation-details-row-open'+id).hide()
+            $('#accomodation-row-open'+id).hide()
+            $('#accomodation-row'+id).show()
+        }
+
+        function openTransportation(id){
+             $('.flight-details-row-open'+id).show().css('background','#FCF58B')
+            $('#flight-row-open'+id).show().css('background','yellow')
+            $('#flight-row'+id).hide()
+        }
+
+        function closeTransportation(id){
+
+            $('.flight-details-row-open'+id).hide()
+            $('#flight-row-open'+id).hide()
+            $('#flight-row'+id).show()
+
+
+        }
+
+        function openEquipment(id){
+             $('.equipment-details-row-open'+id).show().css('background','#FCF58B')
+            $('#equipment-row-open'+id).show().css('background','yellow')
+            $('#equipment-row'+id).hide()
+
+        }
+        function closeEquipment(id){
+
+            $('.equipment-details-row-open'+id).hide()
+            $('#equipment-row-open'+id).hide()
+            $('#equipment-row'+id).show()
+        }
+
+         function openSupplies(id){
+
+            $('.supplies-details-row-open'+id).show().css('background','#FCF58B')
+            $('#supplies-row-open'+id).show().css('background','yellow')
+            $('#supplies-row'+id).hide()
+
+        }
+        function closeSupplies(id){
+
+
+            $('.supplies-details-row-open'+id).hide()
+            $('#supplies-row-open'+id).hide()
+            $('#supplies-row'+id).show()
+        }
+
+        function openTraining(id){
+
+            $('.training-details-row-open'+id).show().css('background','#FCF58B')
+            $('#training-open'+id).show().css('background','yellow')
+            $('#training'+id).hide()
+
+        }
+        function closeTraining(id){
+
+            $('.training-details-row-open'+id).hide()
+            $('#training-open'+id).hide()
+            $('#training'+id).show()
+        }
+
+        function openOther(id){
+            $('.others-details-row-open'+id).show().css('background','#FCF58B')
+            $('#others-open'+id).show().css('background','yellow')
+            $('#others'+id).hide()
+
+        }
+        function closeOther(id){
+
+            $('.others-details-row-open'+id).hide()
+            $('#others-open'+id).hide()
+            $('#others'+id).show()
+        }
+
+
+
+
+
+    </script>
+{% endblock %}
+

@@ -1,0 +1,73 @@
+{% extends 'sdrc/base.html' %}
+
+{% block content %}
+    <!-- page content -->
+          <div class="x_panel">
+            <div class="page-title">
+              <div class="title_left">
+                <h3>Inventory Report</h3>
+                  <p>List of procured equipments</p>
+                  <hr>
+              </div>
+
+            </div>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Item Name</th>
+        <th>Quantity</th>
+
+    </tr>
+
+    {% for pr in procured %}
+
+
+        {% if project.id == pr.project  %}
+
+{#                    {% if c.title == 'Equipment' %}#}
+                         <tr>
+                             <td>{{ pr.expenseName }}</td>
+                             <td>{{ pr.sum }}</td>
+                         </tr>
+{##}
+{#                    {% endif %}#}
+
+{#            <tr>#}
+{#            <td>{{ pr.expenseName }}</td>#}
+{#           <td>{{ pr.sum }}</td>#}
+{#            </tr>#}
+        {% endif %}
+{#       {% for c in category %}#}
+{#           {% if c.title == 'Equipment' %}#}
+{#               {% if c.id == pr.category %}#}
+{#                   {% if p.id == pr.project %}#}
+{#                       <td>{{ pr.expenseName }}</td>#}
+{#                       <td>{{ pr.sum }}</td>#}
+{#                    {% endif %}#}
+{#                   {% endif %}#}
+{#           {% endif %}#}
+{#           {% endfor %}#}
+    {% endfor %}
+
+{#    {% for p in project %}#}
+{#        {% for pr in procured %}#}
+{#            {% if p == pr.id %}#}
+{#                <tr>#}
+{#                <td>{{ pr.expenseName }}</td>#}
+{#                </tr>#}
+{#            {% endif %}#}
+{#        {% endfor %}#}
+{#    {% endfor %}#}
+
+</table>
+        </div>
+        </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- /page content -->
+{% endblock %}

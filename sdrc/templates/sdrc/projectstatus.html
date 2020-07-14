@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <title>Progress Report</title>
+
+     <style>
+        @media print {
+  #printReport {
+    display: none;
+  }
+}
+    </style>
+</head>
+<body>
+
+<div style="text-align: center;"><img src="https://www.dlsu.edu.ph/wp-content/uploads/2018/10/sdrc-logo-300x300.png"
+                                      width="100" height="80" \></div>
+<div style="text-align: center;"><b>Social Development Research Center</div>
+
+<div style="text-align: center;">Project Status Report</div>
+<div style="text-align: center;">As of {{ currentdate }}</div></b>
+<button onclick="myFunction()" id="printReport" class="btn btn-primary" style="margin-left: 1100px; margin-top: -50px;"><span class="fa fa-print"></span> Print</button>
+<hr>
+
+{% for p in project %}
+    <div style="margin-top: 30px; margin-left: 20px; margin-right: 30px;">
+        <div><b>{{ forloop.counter }}. {{ p.projectTitle }}</b></div>
+        <div><b>Funding Agency:</b> {{ p.fundingAgency }}</div>
+        <div><b>Principal Investigator:</b> {{ p.get_name }}</div>
+        <div><b>Status:</b> {% if p.get_daysLeft < 0 and p.get_percentage_completed < 100 %}
+                                            <span class="label label-danger">  DELAYED</span>
+
+                                        {% elif p.get_daysLeft > 0 and p.get_percentage_completed < 100 %}
+                                            <span class="label label-warning"> IN PROGRESS  </span>
+
+                                        {% elif p.get_daysLeft == 0  and p.get_percentage_completed < 100 %}
+                                            <span class="label label-danger"> INCOMPLETE  </span>
+
+                                        {% elif p.get_percentage_completed >= 100 %}
+                                            <span class="label label-success"> COMPLETED </span>
+                                        {% endif %}</div>
+        <div><b>Deadline:</b> {{ p.endDate }}</div>
+        <div>{{ p.projectOverview }}</div>
+    </div>
+
+{% endfor %}
+<hr>
+<div style="margin-top: 40px; margin-left: 30px;"><b>Prepared by:</b> </div>
+<hr width="15%;" style="border: 1px solid black; margin-left: 30px; margin-top: 50px;">
+<div style="margin-top: 10px; margin-left: 30px; margin-bottom: 30px;"><b>{{ request.user.first_name }} {{ request.user.last_name }}</b></div>
+
+<script>
+    function myFunction()
+    {
+        window.print();
+    }
+
+
+</script>
+
+
+
+</body>
+</html>

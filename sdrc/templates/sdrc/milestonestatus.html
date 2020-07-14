@@ -1,0 +1,1044 @@
+{% extends 'sdrc/base.html' %}{% block content %}<!-- page content -->
+<div class="">
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="x_panel">
+                <div class="x_title"><h2>Milestone Status Monitoring</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                                aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Settings 1</a></li>
+                                <li><a href="#">Settings 2</a></li>
+                            </ul>
+                        </li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+
+                    <div class="x_content">
+                        {% if project.task_set.all.count == completed_task %}
+                            <div id="buttons" style="margin-left: 455px; margin-bottom: 20px;">
+                                <button type="button" id="generateReport" class="btn btn-primary"
+                                        style="margin-right: 10px;">Generate Accomplishment Report
+                                </button>
+                                <button type="button" id="financialReport" class="btn btn-primary"
+                                        style="margin-right: 10px;">Generate Financial Report
+                                </button>
+                                <button type="button" id="uploadReport" class="btn btn-primary" style="">Upload Final
+                                    Report
+                                </button>
+                            </div>
+                        {% endif %}
+                        {% for ms in milestones %}
+
+                            <!--first row-->
+
+
+                            <div class="panel-group">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+
+                                            <b>{{ ms.milestoneName }}</b>
+
+
+                                            <h3 id="personnelTitle"></h3>
+
+
+                                            <table class="table table-striped" id="personnelTB">
+
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Task Name</th>
+                                                            <th>Assigned To</th>
+                                                            <th>Start Date</th>
+                                                            <th>Due Date</th>
+                                                            <th>Status</th>
+                                                            <th>Date Finished</th>
+                                                            <th>File</th>
+                                                            <th>Issues Encountered</th>
+                                                            <th></th>
+                                                            <th></th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+{% for task in ms.task_set.all %}
+                                                    {% if request.user.profile.principal_investigator %}
+                                                        <tr>
+
+                                                            <td class="col-md-2">{{ task.taskName }}</td>
+                                                            <td class="col-md-2">{{ task.assignedTo }}</td>
+                                                            <td class="col-md-2">{{ task.taskstartDate }}</td>
+                                                            <td class="col-md-2">{{ task.taskendDate }}</td>
+                                                            <td class="col-md-1">
+                                                                {% if 'Completed' in task.taskStatus %}
+                                                                    <button type="button"
+                                                                            class="btn btn-success btn-xs">
+                                                                        Completed
+                                                                    </button>
+
+                                                                {% elif task.taskStatus == "In Progress" and task.taskstartDate >= currentdate and task.taskendDate <= currentdate %}
+                                                                    <button type="button"
+                                                                            class="btn btn-primary btn-xs">
+                                                                        Ongoing
+                                                                    </button>
+                                                                {% elif task.taskStatus == 'Not Started' and task.taskstartDate > currentdate and task.taskendDate > currentdate %}
+                                                                    <button type="button" class="btn btn-dark btn-xs">
+                                                                        Not
+                                                                        Started
+                                                                    </button>
+                                                                {% elif task.taskstartDate < currentdate and task.taskStatus == 'Not Started' %}
+                                                                    <button type="button" class="btn btn-danger btn-xs">
+                                                                        Needs Progress
+                                                                    </button>
+                                                                {% elif task.taskendDate < currentdate and task.taskStatus == 'In Progress' %}
+                                                                    <button type="button" class="btn btn-danger btn-xs">
+                                                                        Delayed
+                                                                    </button>
+                                                                    <button type="button"
+                                                                            class="btn btn-primary btn-xs">
+                                                                        Ongoing
+                                                                    </button>
+                                                                {% endif %}
+
+
+                                                            </td>
+                                                            {% if not task.taskFinished %}
+                                                                <td class="col-md-1">N/A</td>
+                                                            {% else %}
+                                                                <td class="col-md-1">{{ task.taskFinished }}</td>
+                                                            {% endif %}
+                                                            {% if task.taskFile %}
+                                                                <td class="col-md-1"><a
+                                                                        href="{{ task.taskFile.url }}">{{ task.taskFile }}</a>
+                                                                </td>
+                                                            {% else %}
+                                                                <td class="col-md-1">N/A</td>
+                                                            {% endif %}
+                                                            <td class="col-md-1">
+                                                                {% if not task.incidentreport_set.all %}
+                                                                    N/A {% else %}
+                                                                    <button type="button" data-toggle="modal"
+                                                                            class="btn btn-danger btn-xs"
+                                                                            data-target=".bs-example-modal-incident-{{ task.id }}">{{ task.incidentreport_set.all.count }}</button> {% endif %}
+                                                            </td>
+
+                                                            <td class="col-md-1">
+
+                                                                <a href="#" class="btn btn-info btn-xs"
+                                                                   data-toggle="modal"
+                                                                   data-target=".bs-example-modal-sm-{{ task.id }}"><i
+                                                                        class="fa fa-pencil"></i> Update </a>
+                                                            </td>
+                                                            <td class="col-md-1">
+                                                                <a href="#" class="btn btn-warning btn-xs"
+                                                                   data-toggle="modal"
+                                                                   data-target=".bs-example-modal-issue-{{ task.id }}"><i
+                                                                        class="fa fa-exclamation-triangle"></i> Input
+                                                                    Issue </a>
+                                                            </td>
+
+                                                        </tr>
+
+
+                                                        <div class="modal fade bs-example-modal-issue-{{ task.id }}"
+                                                             tabindex="-1" role="dialog" aria-hidden="true">
+                                                            <div class="modal-dialog modal-lg">
+                                                                <div class="modal-content">
+
+                                                                    <div class="modal-header">
+                                                                        <button type="button" class="close"
+                                                                                data-dismiss="modal"
+                                                                                aria-label="Close"><span
+                                                                                aria-hidden="true">×</span>
+                                                                        </button>
+                                                                        <h4 class="modal-title" id="myModalLabel2">
+                                                                            Create
+                                                                            Incident Report</h4>
+                                                                    </div>
+                                                                    <form method="POST">
+                                                                        {% csrf_token %}
+                                                                        <div class="modal-body">
+
+                                                                         <div class="form-group"
+                                                                                     style="display: none;">
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Milestone
+                                                                                        Name</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input name="taskid"
+                                                                                               value="{{ task.id }}"
+                                                                                               class="form-control col-md-7 col-xs-12"
+                                                                                               readonly/>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group"
+                                                                                     style="display: none;">
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Milestone
+                                                                                        Name</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input name="milestoneid"
+                                                                                               value="{{ ms.id }}"
+                                                                                               class="form-control col-md-7 col-xs-12"
+                                                                                               readonly/>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group" style="display:none;">
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Milestone
+                                                                                        Name</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input name="milestoneName"
+                                                                                               value="{{ ms.milestoneName }}"
+                                                                                               class="form-control col-md-7 col-xs-12"
+                                                                                               readonly/>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group" style="display:none;">
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Task
+                                                                                        Name</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input name="taskName"
+                                                                                               value="{{ task.taskName }}"
+                                                                                               class="form-control col-md-7 col-xs-12"
+                                                                                               readonly/>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div class="form-group"
+                                                                                     style="display: none;">
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                                                           for="first-name">Task
+                                                                                        Name<span
+                                                                                                class="required"></span>
+                                                                                    </label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input type="text" name="taskID"
+                                                                                               value="{{ task.id }}"
+                                                                                               class="form-control col-md-7 col-xs-12">
+                                                                                    </div>
+                                                                                </div>
+                                                                                 <div class="form-group">
+                                                                                     <label class="control-label col-md-3 col-sm-3 col-xs-12">Category</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <select class="form-control"
+                                                                                                name="issueCategory">
+                                                                                            <option value="Budget">Project Budget
+                                                                                            </option>
+                                                                                            <option value="Milestone/Task">
+                                                                                                Milestone/Task
+                                                                                            </option>
+                                                                                            <option value="Data Gathering">Data Gathering
+                                                                                            </option>
+                                                                                            <option value="Project Member">Project Member
+                                                                                            </option>
+                                                                                            <option value="Deadline">Deadline
+                                                                                            </option>
+                                                                                            <option value="Funding Agency">Funding Agency
+                                                                                            </option>
+                                                                                             <option value="Others">Others
+                                                                                            </option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Issue
+                                                                                        Encountered</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input type="text"
+                                                                                               name="issueEncountered"
+                                                                                               class="form-control col-md-9 col-sm-9 col-xs-12">
+
+
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group">
+
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Description
+                                                                                        of the Issue</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                         <textarea class="form-control col-md-9 col-sm-9 col-xs-12" name="issueDescription"></textarea>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Select
+                                                                                        Status</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <select class="form-control"
+                                                                                                name="issuePriority">
+                                                                                            <option value="Low">Low
+                                                                                            </option>
+                                                                                            <option value="Medium">
+                                                                                                Medium
+                                                                                            </option>
+                                                                                            <option value="High">High
+                                                                                            </option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group">
+
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Date
+                                                                                        when the issue was
+                                                                                        encountered</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input type="date"
+                                                                                               id="dateEncountered-{{ task.id }}"
+                                                                                               name="dateEncountered"
+                                                                                               class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+
+
+
+                                                                        <div class="modal-footer"
+                                                                             style="margin-top: 180px;">
+
+                                                                            <input type="submit" class="btn btn-primary"
+                                                                                   onclick="return compareDate({{ task.id }})">
+                                                                        </div>
+
+                                                                    </form>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="modal fade bs-example-modal-sm-{{ task.id }}"
+                                                             tabindex="-1"
+                                                             role="dialog" aria-hidden="true">
+                                                            <div class="modal-dialog modal-lg">
+                                                                <div class="modal-content">
+
+                                                                    <div class="modal-header">
+                                                                        <button type="button" class="close"
+                                                                                data-dismiss="modal"
+                                                                                aria-label="Close"><span
+                                                                                aria-hidden="true">×</span>
+                                                                        </button>
+                                                                        <h4 class="modal-title" id="myModalLabel2">Edit
+                                                                            Status
+                                                                            and Date</h4>
+                                                                    </div>
+                                                                    <form method="POST" enctype="multipart/form-data">
+                                                                        {% csrf_token %}
+                                                                        <div class="modal-body">
+                                                                             <h4 style="margin-top: -5px; margin-bottom: 20px;">Note: If you have multiple file uploads, please upload it in a zip file.</h4>
+                                                                            <div class="form-group">
+                                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12">Milestone
+                                                                                    Name</label>
+                                                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                    <input name="milestoneName"
+                                                                                           value="{{ ms.milestoneName }}"
+                                                                                           class="form-control col-md-7 col-xs-12"
+                                                                                           readonly/>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12">Task
+                                                                                    Name</label>
+                                                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                    <input name="taskName"
+                                                                                           value="{{ task.taskName }}"
+                                                                                           class="form-control col-md-7 col-xs-12"
+                                                                                           readonly/>
+                                                                                </div>
+                                                                            </div>
+                                                                            <input name="taskID"
+                                                                                   value="{{ task.id }}"
+                                                                                   class="form-control col-md-7 col-xs-12"
+                                                                                   readonly style="display: none;"/>
+                                                                            <div class="form-group" id="selectstatus">
+                                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12">Select
+                                                                                    Status</label>
+                                                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                    <select class="form-control"
+                                                                                            id="taskStatus-{{ task.id }}"
+                                                                                            name="taskStatus"
+                                                                                            onchange='yesNoCheck({{ task.id }})'>
+                                                                                        <option value="In Progress">In
+                                                                                            Progress
+                                                                                        </option>
+                                                                                        <option value="Completed">
+                                                                                            Completed
+                                                                                        </option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <div id="dateFinished-{{ task.id }}"
+                                                                                     style="display: none;">
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Date
+                                                                                        Finished</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                  <input type="date" name="taskFinished" id="taskFinished-{{ task.id }}" onchange="compareDateFinished({{ task.id }})"
+                                                                       class="form-control col-md-9 col-xs-12">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group"
+                                                                                 id="receipt-{{ task.id }}"
+                                                                                 style="display: none">
+                                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                                                       for="first-name">File<span
+                                                                                        class="required"></span>
+                                                                                </label>
+                                                                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                    <input type="file"
+                                                                                           class="form-control col-md-2 col-xs-12"
+                                                                                           name="receipt"
+                                                                                           placeholder="Receipt"
+                                                                                           id="receipt"
+                                                                                           data-role="magic-overlay"
+                                                                                           data-target="#pictureBtn"
+                                                                                           data-edit="insertImage">
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="modal-footer"
+                                                                                 style="margin-top: 80px;">
+
+                                                                                <input type="submit"
+                                                                                       style="margin-top: 10px;   "
+                                                                                       class="btn btn-primary">
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                        {# TODO: Modal #}
+
+
+                                                        </tbody>
+
+
+                                                    {% elif not request.user.profile.principal_investigator %}
+
+                                                        {% if task.assignedTo == name %}
+
+                                                            <tbody>
+
+                                                            <tr>
+
+                                                                <td class="col-md-2">{{ task.taskName }}</td>
+                                                                <td class="col-md-2">{{ task.assignedTo }}</td>
+                                                                <td class="col-md-2">{{ task.taskstartDate }}</td>
+                                                                <td class="col-md-2">{{ task.taskendDate }}</td>
+                                                                <td class="col-md-1">
+                                                                    {% if 'Completed' in task.taskStatus %}
+                                                                        <button type="button"
+                                                                                class="btn btn-success btn-xs">
+                                                                            Completed
+                                                                        </button>
+
+                                                                    {% elif task.taskStatus == "In Progress" and task.taskstartDate >= currentdate or task.taskendDate <= currentdate %}
+                                                                        <button type="button"
+                                                                                class="btn btn-primary btn-xs">
+                                                                            Ongoing
+                                                                        </button>
+                                                                    {% elif task.taskStatus == 'Not Started' and task.taskstartDate > currentdate and task.taskendDate > currentdate %}
+                                                                        <button type="button"
+                                                                                class="btn btn-dark btn-xs">
+                                                                            Not
+                                                                            Started
+                                                                        </button>
+                                                                    {% elif task.taskstartDate < currentdate and task.taskStatus == 'Not Started' %}
+                                                                        <button type="button"
+                                                                                class="btn btn-danger btn-xs">
+                                                                            Needs Progress
+                                                                        </button>
+                                                                    {% elif task.taskendDate < currentdate and task.taskStatus == 'In Progress' %}
+                                                                        <button type="button"
+                                                                                class="btn btn-danger btn-xs">
+                                                                            Delayed
+                                                                        </button>
+                                                                        <button type="button"
+                                                                                class="btn btn-primary btn-xs">
+                                                                            Ongoing
+                                                                        </button>
+                                                                    {% endif %}
+
+
+                                                                </td>
+                                                                {% if not task.taskFinished %}
+                                                                    <td class="col-md-1">N/A</td>
+                                                                {% else %}
+                                                                    <td class="col-md-1">{{ task.taskFinished }}</td>
+                                                                {% endif %}
+                                                                {% if task.taskFile %}
+                                                                    <td class="col-md-1"><a
+                                                                            href="{{ task.taskFile.url }}">{{ task.taskFile }}</a>
+                                                                    </td>
+                                                                {% else %}
+                                                                    <td class="col-md-1">N/A</td>
+                                                                {% endif %}
+                                                                <td class="col-md-1">
+                                                                    {% if not task.incidentreport_set.all %}
+                                                                        N/A {% else %}
+                                                                        <button type="button" data-toggle="modal"
+                                                                                class="btn btn-danger btn-xs"
+                                                                                data-target=".bs-example-modal-incident-{{ task.id }}">{{ task.incidentreport_set.all.count }}</button> {% endif %}
+                                                                </td>
+
+                                                                <td class="col-md-1">
+
+                                                                    <a href="#" class="btn btn-info btn-xs"
+                                                                       data-toggle="modal"
+                                                                       data-target=".bs-example-modal-sm-{{ task.id }}"><i
+                                                                            class="fa fa-pencil"></i> Update </a>
+                                                                </td>
+                                                                <td class="col-md-1">
+                                                                    <a href="#" class="btn btn-warning btn-xs"
+                                                                       data-toggle="modal"
+                                                                       data-target=".bs-example-modal-issue-{{ task.id }}"><i
+                                                                            class="fa fa-exclamation-triangle"></i>
+                                                                        Input
+                                                                        Issue </a>
+                                                                </td>
+
+                                                            </tr>
+
+
+                                                            <div class="modal fade bs-example-modal-issue-{{ task.id }}"
+                                                                 tabindex="-1" role="dialog" aria-hidden="true">
+                                                                <div class="modal-dialog modal-lg">
+                                                                    <div class="modal-content">
+
+                                                                        <div class="modal-header">
+                                                                            <button type="button" class="close"
+                                                                                    data-dismiss="modal"
+                                                                                    aria-label="Close"><span
+                                                                                    aria-hidden="true">×</span>
+                                                                            </button>
+                                                                            <h4 class="modal-title" id="myModalLabel2">
+                                                                                Create
+                                                                                Incident Report</h4>
+                                                                        </div>
+                                                                        <form method="POST">
+                                                                            {% csrf_token %}
+                                                                            <div class="modal-body">
+                                                                                <div class="form-group"
+                                                                                     style="display: none;">
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Milestone
+                                                                                        Name</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input name="taskid"
+                                                                                               value="{{ task.id }}"
+                                                                                               class="form-control col-md-7 col-xs-12"
+                                                                                               readonly/>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group"
+                                                                                     style="display: none;">
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Milestone
+                                                                                        Name</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input name="milestoneid"
+                                                                                               value="{{ ms.id }}"
+                                                                                               class="form-control col-md-7 col-xs-12"
+                                                                                               readonly/>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group" style="display:none;">
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Milestone
+                                                                                        Name</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input name="milestoneName"
+                                                                                               value="{{ ms.milestoneName }}"
+                                                                                               class="form-control col-md-7 col-xs-12"
+                                                                                               readonly/>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group" style="display:none;">
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Task
+                                                                                        Name</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input name="taskName"
+                                                                                               value="{{ task.taskName }}"
+                                                                                               class="form-control col-md-7 col-xs-12"
+                                                                                               readonly/>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div class="form-group"
+                                                                                     style="display: none;">
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                                                           for="first-name">Task
+                                                                                        Name<span
+                                                                                                class="required"></span>
+                                                                                    </label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input type="text" name="taskID"
+                                                                                               value="{{ task.id }}"
+                                                                                               class="form-control col-md-7 col-xs-12">
+                                                                                    </div>
+                                                                                </div>
+                                                                                 <div class="form-group">
+                                                                                     <label class="control-label col-md-3 col-sm-3 col-xs-12">Category</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <select class="form-control"
+                                                                                                name="issueCategory">
+                                                                                            <option value="Budget">Project Budget
+                                                                                            </option>
+                                                                                            <option value="Milestone/Task">
+                                                                                                Milestone/Task
+                                                                                            </option>
+                                                                                            <option value="Data Gathering">Data Gathering
+                                                                                            </option>
+                                                                                            <option value="Project Member">Project Member
+                                                                                            </option>
+                                                                                            <option value="Deadline">Deadline
+                                                                                            </option>
+                                                                                            <option value="Funding Agency">Funding Agency
+                                                                                            </option>
+                                                                                             <option value="Others">Others
+                                                                                            </option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Issue
+                                                                                        Encountered</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input type="text"
+                                                                                               name="issueEncountered"
+                                                                                               class="form-control col-md-9 col-sm-9 col-xs-12">
+
+
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group">
+
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Description
+                                                                                        of the Issue</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                         <textarea class="form-control col-md-9 col-sm-9 col-xs-12" name="issueDescription"></textarea>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Select
+                                                                                        Status</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <select class="form-control"
+                                                                                                name="issuePriority">
+                                                                                            <option value="Low">Low
+                                                                                            </option>
+                                                                                            <option value="Medium">
+                                                                                                Medium
+                                                                                            </option>
+                                                                                            <option value="High">High
+                                                                                            </option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group">
+
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Date
+                                                                                        when the issue was
+                                                                                        encountered</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input type="date"
+                                                                                               id="dateEncountered-{{ task.id }}"
+                                                                                               name="dateEncountered"
+                                                                                               class="form-control col-md-9 col-sm-9 col-xs-12">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="modal-footer"
+                                                                                 style="margin-top: 180px;">
+
+                                                                                <input type="submit"
+                                                                                       class="btn btn-primary"
+                                                                                       onclick="return compareDate({{ task.id }})">
+                                                                            </div>
+
+                                                                        </form>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="modal fade bs-example-modal-sm-{{ task.id }}"
+                                                                 tabindex="-1"
+                                                                 role="dialog" aria-hidden="true">
+                                                                <div class="modal-dialog modal-lg">
+                                                                    <div class="modal-content">
+
+                                                                        <div class="modal-header">
+                                                                            <button type="button" class="close"
+                                                                                    data-dismiss="modal"
+                                                                                    aria-label="Close"><span
+                                                                                    aria-hidden="true">×</span>
+                                                                            </button>
+                                                                            <h4 class="modal-title" id="myModalLabel2">
+                                                                                Edit
+                                                                                Status
+                                                                                and Date</h4>
+                                                                        </div>
+                                                                        <form method="POST"
+                                                                              enctype="multipart/form-data"
+                                                                                >
+                                                                            {% csrf_token %}
+
+                                                                            <div class="modal-body">
+                                                                                 <h3>Note: If you have multiple file uploads, please upload it in a zip file.</h3>
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Milestone
+                                                                                        Name</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input name="milestoneName"
+                                                                                               value="{{ ms.milestoneName }}"
+                                                                                               class="form-control col-md-7 col-xs-12"
+                                                                                               readonly/>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Task
+                                                                                        Name</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input name="taskName"
+                                                                                               value="{{ task.taskName }}"
+                                                                                               class="form-control col-md-7 col-xs-12"
+                                                                                               readonly/>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <input name="taskID"
+                                                                                       value="{{ task.id }}"
+                                                                                       class="form-control col-md-7 col-xs-12"
+                                                                                       readonly style="display: none;"/>
+                                                                                <div class="form-group"
+                                                                                     id="selectstatus">
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Select
+                                                                                        Status</label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <select class="form-control"
+                                                                                                id="taskStatus-{{ task.id }}"
+                                                                                                name="taskStatus"
+                                                                                                onchange='yesNoCheck({{ task.id }})'>
+                                                                                            <option value="In Progress">
+                                                                                                In
+                                                                                                Progress
+                                                                                            </option>
+                                                                                            <option value="Completed">
+                                                                                                Completed
+                                                                                            </option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <div id="dateFinished-{{ task.id }}"
+                                                                                         style="display: none;">
+                                                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Date
+                                                                                            Finished</label>
+                                                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                            <input type="date" name="taskFinished" id="taskFinished-{{ task.id }}" onchange="compareDateFinished({{ task.id }})"
+                                                                       class="form-control col-md-9 col-xs-12">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group"
+                                                                                     id="receipt-{{ task.id }}"
+                                                                                     style="display: none">
+                                                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12"
+                                                                                           for="first-name">File<span
+                                                                                            class="required"></span>
+                                                                                    </label>
+                                                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                                                        <input type="file"
+                                                                                               class="form-control col-md-2 col-xs-12"
+                                                                                               name="receipt"
+                                                                                               placeholder="Receipt"
+                                                                                               id="receipt"
+                                                                                               data-role="magic-overlay"
+                                                                                               data-target="#pictureBtn"
+                                                                                               data-edit="insertImage">
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div class="modal-footer"
+                                                                                     style="margin-top: 80px;">
+
+                                                                                    <input type="submit"
+                                                                                           style="margin-top: 10px;   "
+                                                                                           class="btn btn-primary">
+                                                                                </div>
+
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                            {# TODO: Modal #}
+
+
+                                                            </tbody>
+
+                                                        {% else %}
+                                                            <h4 style="margin-top: 20px;">No task is assigned to you for
+                                                                this milestone.</h4>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                    </table>
+
+                                    {% for task in ms.task_set.all %}
+                                        <div class="modal fade bs-example-modal-incident-{{ task.id }}"
+                                             tabindex="-1" role="dialog" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close"><span
+                                                                aria-hidden="true">×</span>
+                                                        </button>
+                                                        <h4 class="modal-title" id="myModalLabel2">Issues
+                                                            Encountered</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+
+                                                        <table class="table">
+                                                            <thead>
+
+                                                            <tr>
+                                                                <th>Issue Encountered</th>
+                                                                <th>Description of the Issue</th>
+                                                                <th>Date Encountered</th>
+                                                                <th>Status</th>
+                                                                <th>Resolved By</th>
+                                                                <th>Resolution</th>
+                                                            </tr>
+
+                                                            </thead>
+                                                            <tbody>
+                                                            {% for issue in task.incidentreport_set.all %}
+                                                                <tr>
+                                                                    <td>{{ issue.issueEncountered }}</td>
+                                                                    <td>{{ issue.issueDescription }}</td>
+                                                                    <td>{{ issue.dateEncountered }}</td>
+                                                                    <td>{% if not issue.issueStatus %}
+                                                                        <button class="btn btn-xs btn-primary">
+                                                                            Unresolved
+                                                                        </button>{% else %}
+                                                                        <button class="btn btn-xs btn-success">
+                                                                            Resolved
+                                                                        </button>{% endif %}</td>
+                                                                <td>{{ issue.resolvedBy.first_name }} {{ issue.resolvedBy.last_name               }}</td>
+                                                                    <td>{% if not issue.issueResolution %}
+                                                                        N/A {% else %}
+                                                                        {{ issue.issueResolution }}{% endif %}</td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                            </tbody>
+                                                        </table>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+
+
+                                    </h4>
+                                    <!-- end project list -->
+
+                                </div>
+
+                            </div>
+
+                            </div>
+                        {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /page content -->
+
+    {% endblock %}
+    {% block script %}
+        <script>
+            $('#generateReport').click(function () {
+                var redirect = confirm('Are you sure you want to be redirected?');
+                if (redirect == true) {
+                    window.location = {% url 'accomplishmentreport' %};
+                } else {
+                    e.preventDefault();
+                }
+
+
+            });
+            $('#financialReport').click(function () {
+                var redirect = confirm('Are you sure you want to be redirected?');
+                if (redirect == true) {
+                    window.location = {% url 'expense-report' %};
+                } else {
+                    e.preventDefault();
+                }
+
+
+            });
+            $('#uploadReport').click(function () {
+                var redirect = confirm('Are you sure you want to be redirected?');
+                if (redirect == true) {
+                    window.location = {% url 'uploadfinalreport' %};
+                } else {
+                    e.preventDefault();
+                }
+
+
+            });
+        </script>
+        <script>
+        function compareDateFinished(id) {
+                var fullDate = new Date();
+                var twoDigitMonth = ((fullDate.getMonth().length + 1) === 1) ? (fullDate.getMonth() + 1) : (fullDate.getMonth() + 1);
+
+                if (fullDate.getDate() > 10) {
+                    var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+                    var encountered = document.getElementById('taskFinished-' + id).value;
+
+                    if (encountered > currentDate) {
+                        alert('Only past dates can be accepted!')
+                        return false;
+                    }
+                } else if (twoDigitMonth > 10) {
+                    var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+                    var encountered = document.getElementById('taskFinished-' + id).value;
+
+                    if (encountered > currentDate) {
+                        alert('Only past dates can be accepted!')
+                        return false;
+                    }
+                } else if (fullDate.getDate() < 10) {
+                    var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + '0' + fullDate.getDate();
+                    var encountered = document.getElementById('taskFinished-' + id).value;
+                    alert(fullDate.getDate());
+                    alert(encountered)
+                    if (encountered > currentDate) {
+                        alert('Only past dates can be accepted!')
+
+                        return false;
+                    }
+                } else if (twoDigitMonth < 10) {
+                    var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + fullDate.getDate();
+                    var encountered = document.getElementById('taskFinished-' + id).value;
+
+                    if (encountered > currentDate) {
+                        alert('Only past dates can be accepted!')
+
+                        return false;
+                    }
+                } else if (twoDigitMonth < 10 && fullDate.getDate() < 10) {
+                    var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + '0' + fullDate.getDate();
+                    var encountered = document.getElementById('taskFinished-' + id).value;
+
+                    if (encountered > currentDate) {
+                        alert('Only past dates can be accepted!')
+
+                        return false;
+                    }
+                }
+
+
+            }
+        </script>
+        <script>
+
+            function compareDate(id) {
+                var fullDate = new Date();
+                var twoDigitMonth = ((fullDate.getMonth().length + 1) === 1) ? (fullDate.getMonth() + 1) : (fullDate.getMonth() + 1);
+
+                if (fullDate.getDate() > 10) {
+                    var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+                    var encountered = document.getElementById('dateEncountered-' + id).value;
+                    if (encountered > currentDate) {
+                        alert('Only past dates can be accepted!')
+                        return false;
+                    }
+                } else if (twoDigitMonth > 10) {
+                    var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
+                    var encountered = document.getElementById('dateEncountered-' + id).value;
+                    if (encountered > currentDate) {
+                        alert('Only past dates can be accepted!')
+                        return false;
+                    }
+                } else if (fullDate.getDate() < 10) {
+                    var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + '0' + fullDate.getDate();
+                    var encountered = document.getElementById('dateEncountered-' + id).value;
+                    alert(fullDate.getDate());
+                    alert(encountered)
+                    if (encountered > currentDate) {
+                        alert('Only past dates can be accepted!')
+
+                        return false;
+                    }
+                } else if (twoDigitMonth < 10) {
+                    var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + fullDate.getDate();
+                    var encountered = document.getElementById('dateEncountered-' + id).value;
+                    if (encountered > currentDate) {
+                        alert('Only past dates can be accepted!')
+
+                        return false;
+                    }
+                } else if (twoDigitMonth < 10 && fullDate.getDate() < 10) {
+                    var currentDate = fullDate.getFullYear() + "-" + '0' + twoDigitMonth + "-" + '0' + fullDate.getDate();
+                    var encountered = document.getElementById('dateEncountered-' + id).value;
+                    if (encountered > currentDate) {
+                        alert('Only past dates can be accepted!')
+
+                        return false;
+                    }
+                }
+
+
+            }
+        </script>
+        <script>
+            function yesNoCheck(id) {
+                if (document.getElementById('taskStatus-' + id).value == 'Completed') {
+                    document.getElementById("dateFinished-" + id).style.display = "block";
+                    document.getElementById("receipt-" + id).style.display = "block";
+                } else {
+                    document.getElementById("dateFinished-" + id).style.display = "none";
+                    document.getElementById("receipt-" + id).style.display = "none";
+                }
+            }
+        </script>
+        <script>
+            $('#myDatepicker2').datetimepicker({
+                format: 'DD.MM.YYYY'
+            });
+
+
+        </script>
+        {% load staticfiles %}
+        <!-- Datatables -->
+        <script src="{% static 'sdrc/vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+        <script src="{% static 'sdrc/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+        <script src="{% static 'sdrc/vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+        <script src="{% static 'sdrc/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+        <script src="{% static 'sdrc/vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+        <script src="{% static 'sdrc/vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+        <script src="{% static 'sdrc/vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+        <script src="{% static 'sdrc/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+        <script src="{% static 'sdrc/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+        <script src="{% static 'sdrc/vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+        <script src="{% static 'sdrc/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+        <script src="{% static 'sdrc/vendors/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
+        <script src="{% static 'sdrc/vendors/jszip/dist/jszip.min.js' %}"></script>
+        <script src="{% static 'sdrc/vendors/pdfmake/build/pdfmake.min.js' %}"></script>
+        <script src="{% static 'sdrc/vendors/pdfmake/build/vfs_fonts.js' %}"></script>
+        <script src="{% static 'sdrc/vendors/validator/validator.js' %}"></script>
+        </div>{% endblock %}
